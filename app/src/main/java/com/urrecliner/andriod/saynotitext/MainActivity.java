@@ -20,14 +20,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
-import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
-import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
-import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
-import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
-import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
+import static com.urrecliner.andriod.saynotitext.Vars.Tts;
+import static com.urrecliner.andriod.saynotitext.Vars.act;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
+import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
+import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
+import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
+import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
+import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.smsXcludes;
 
 public class MainActivity extends AppCompatActivity{
@@ -41,8 +43,6 @@ public class MainActivity extends AppCompatActivity{
     private final static int MY_PERMISSIONS_CONTACTS = 103;
     private final static int MY_PERMISSIONS_PHONE = 104;
 
-    tts tts = new tts();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity{
 //        boolean isGrantStorage = grantExternalStoragePermission();
 //        if (!isGrantStorage)
 //            return;
+        if (act == null) act = this;
+        if (Tts == null) Tts = new tts();
 
         if (getPermission.isPermitted(getApplicationContext(), this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, MY_PERMISSIONS_WRITE_FILE) == 0 ||
@@ -62,7 +64,6 @@ public class MainActivity extends AppCompatActivity{
             finish();
             System.exit(0);
             android.os.Process.killProcess(android.os.Process.myPid());
-
         }
 
         boolean isPermissionAllowed = isNotificationAllowed();
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity{
 
 //        NotificationListener mReceiver = new NotificationListener();
 
-        tts.initiateTTS(this);
+        if (Tts == null) Tts.initiateTTS(this);
         Button mButtonStart = findViewById(R.id.button_start);
         Button mButtonStop = findViewById(R.id.button_stop);
         Button mButtonReload = findViewById(R.id.button_reload);
@@ -87,20 +88,20 @@ public class MainActivity extends AppCompatActivity{
         mPitchView = findViewById(R.id.bar_pitch);
         mSpeedView = findViewById(R.id.bar_speed);
 
-        tts.setPitch((float) mSeekBarPitch.getProgress() / 50);
-        tts.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
+        Tts.setPitch((float) mSeekBarPitch.getProgress() / 50);
+        Tts.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
 
         mButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tts.setSayit(true);
+                Tts.setSayit(true);
             }
         });
 
         mButtonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tts.stop();
+                Tts.stop();
             }
         });
 
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity{
                 if (mPitch < 0.1f) mPitch = 0.1f;
                 DecimalFormat df=new DecimalFormat("0.0");
                 mPitchView.setText(df.format(mPitch));
-                tts.setPitch(mPitch);
+                Tts.setPitch(mPitch);
             }
         });
 
@@ -148,17 +149,15 @@ public class MainActivity extends AppCompatActivity{
                 if (mSpeed < 0.1f) mSpeed = 0.1f;
                 DecimalFormat df=new DecimalFormat("0.0");
                 mSpeedView.setText(df.format(mSpeed));
-                tts.setSpeed(mSpeed);
+                Tts.setSpeed(mSpeed);
             }
         });
         prepareList();
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-//        mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
-        mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
-                .build();
-//        mFocusLoss = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT)
-//                .build();
-
+        if (mAudioManager == null) {
+            mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
+                    .build();
+        }
     }
 
     @Override
@@ -233,17 +232,3 @@ public class MainActivity extends AppCompatActivity{
         return lines;
     }
 }
-
-//    private boolean grantExternalStoragePermission() {
-//        if (Build.VERSION.SDK_INT >= 23) {
-//            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-//                return true;
-//            } else {
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-//                return false;
-//            }
-//        } else {
-//            Toast.makeText(this, "External Storage Permission is Grant", Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
-//    }

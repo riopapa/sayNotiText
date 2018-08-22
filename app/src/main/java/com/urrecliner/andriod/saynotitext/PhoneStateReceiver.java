@@ -12,17 +12,18 @@ import android.widget.Toast;
 
 import static com.urrecliner.andriod.saynotitext.Vars.act;
 import static com.urrecliner.andriod.saynotitext.Vars.speed;
+import static com.urrecliner.andriod.saynotitext.Vars.Tts;
 
 public class PhoneStateReceiver extends BroadcastReceiver {
     String incomingNumber;
     String callerName;
     String state;
     int Count = 0;
-    tts tts;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action;
-        tts = new tts();
+//        tts = new tts();
         try {
 //            System.out.println("Receiver start");
             action = intent.getAction();
@@ -78,16 +79,16 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 String sayText;
                 if (Count++ < 7 && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     sayText = callerName + " 로부터 전화왔어요. " + callerName + " 로부터 전화왔어요. " + "," + Count + " 번,";
-                    tts.speak(sayText);
+                    Tts.speak(sayText);
                     Toast.makeText(con, sayText,Toast.LENGTH_SHORT).show();
                     handler.postDelayed(this, 3000);
                 }
                 else {
                     handler.removeCallbacks(this);
                     speed = mSpeed;
-                    tts.stop();
-                    tts.shutdown();
-                    tts.initiateTTS(act);
+                    Tts.stop();
+                    Tts.shutdown();
+                    Tts.initiateTTS(act);
                 }
             }
         }, 100);

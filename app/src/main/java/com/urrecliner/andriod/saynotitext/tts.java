@@ -19,7 +19,6 @@ import static com.urrecliner.andriod.saynotitext.Vars.speed;
 public class tts {
 
     public void initiateTTS(Activity activity) {
-        act = activity;
 
         mTTS = new TextToSpeech(activity, new TextToSpeech.OnInitListener() {
             @Override

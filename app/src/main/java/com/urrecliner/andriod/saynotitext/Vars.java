@@ -6,23 +6,22 @@ import android.media.AudioManager;
 import android.speech.tts.TextToSpeech;
 
 public class Vars {
-    static String[] packageXcludes;
-    static String[] packageTypes;
-    static String[] packageCodes;
-    static String[] packageNames;
-    static String[] kakaoXcludes;
-    static String[] kakaoPersons;
-    static String[] smsXcludes;
+    static String[] packageXcludes = null;
+    static String[] packageTypes = null;
+    static String[] packageCodes = null;
+    static String[] packageNames = null;
+    static String[] kakaoXcludes = null;
+    static String[] kakaoPersons = null;
+    static String[] smsXcludes = null;
 
-    static TextToSpeech mTTS;
+    static tts Tts = null;      // tts instance
+    static TextToSpeech mTTS = null;
     static boolean sayTTS = true;
     static float pitch;
     static float speed;
-    static Activity act;
-
-    static AudioManager mAudioManager;
-    static AudioFocusRequest mFocusGain;
-    static AudioFocusRequest mFocusLoss;
-
+    static Activity act = null;
+    static AudioManager mAudioManager = null;
+    static AudioFocusRequest mFocusGain = null;
+    static AudioFocusRequest mFocusLoss = null;
 
 }

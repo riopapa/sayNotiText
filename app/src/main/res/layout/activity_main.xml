@@ -92,6 +92,9 @@
         android:id="@+id/text_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scrollIndicators="right"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbars="vertical"
         android:text="Active say Table List"
         android:textAlignment="center"
         android:textSize="16sp" />

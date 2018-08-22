@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.urrecliner.andriod.saynotitext.Vars.Tts;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
@@ -34,8 +35,7 @@ import static java.util.Locale.getDefault;
 public class NotificationListener extends NotificationListenerService {
 
     static final String MY_LOGFOLDER = "/sayNotiTextLog";
-
-    tts tts = new tts();
+//    tts tts;
 
     @Override
     public void onCreate() {
@@ -128,22 +128,10 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-//    @Override
-//    public void onNotificationRemoved(StatusBarNotification sbn) {
-//        if (sbn==null) return;
-//        String packageName = sbn.getPackageName().toLowerCase();
-//        if (packageName.equals("android")) return;
-//        if (packageName.equals("")) return;
-//        speakANDLog(packageName, "Notification Removed:_" +  packageName);
-//        if (sbn.getPackageName().equalsIgnoreCase("com.whatsapp")){
-//            MessageManager mManager=MessageManager.getInstance(this);
-//            if (mManager!=null){
-//                mManager.clearAll();
-//            }
-//        }else if(sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.facebook.orca")){
-//
-//        }
-//    }
+    @Override
+    public void onNotificationRemoved(StatusBarNotification sbn) {
+
+    }
 
     private boolean isInPackageXcludes(String packageName) {
         for (String packageXclude : packageXcludes) {
@@ -196,7 +184,7 @@ public class NotificationListener extends NotificationListenerService {
     private void speakANDLog(String tag, String text) {
         if (isHeadphonesPlugged() || isRingerON()) {
             if (!tag.equals("now"))
-                tts.speak("저 주인님 잠시만요!.. " + text);
+                Tts.speak("저 알림 있어요!.. " + text);
         }
 
         File directory = new File(Environment.getExternalStorageDirectory(), MY_LOGFOLDER);
