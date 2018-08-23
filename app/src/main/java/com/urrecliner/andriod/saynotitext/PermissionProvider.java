@@ -7,7 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
-public class getPermission {
+public class PermissionProvider {
 
     public static int isPermitted(Context c, Activity a, String Permission, int NormalCode) {
         if (ContextCompat.checkSelfPermission(c, Permission)

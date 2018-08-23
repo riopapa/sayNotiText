@@ -8,11 +8,11 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
-import static com.urrecliner.andriod.saynotitext.Vars.act;
-import static com.urrecliner.andriod.saynotitext.Vars.speed;
 import static com.urrecliner.andriod.saynotitext.Vars.Tts;
+import static com.urrecliner.andriod.saynotitext.Vars.speed;
 
 public class PhoneStateReceiver extends BroadcastReceiver {
     String incomingNumber;
@@ -22,22 +22,18 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action;
-//        tts = new tts();
+//        String action;
         try {
 //            System.out.println("Receiver start");
-            action = intent.getAction();
-                    Toast.makeText(context, "call action [" + action + "]", Toast.LENGTH_SHORT);
+//            action = intent.getAction();
+//            Toast.makeText(context, "call action [" + action + "]", Toast.LENGTH_SHORT);
             state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
             incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-
             if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
-//                Toast.makeText(context," Number is -"+incomingNumber,Toast.LENGTH_SHORT).show();
-
                 callerName = getContactName(context, incomingNumber);
                 if (callerName != null) {
                     Count = 0;
-                    sayCallerName(callerName, context);
+                    sayCallerName(callerName);
                 }
             }
             if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))){
@@ -67,32 +63,28 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         }
         return name;
     }
-    private void sayCallerName (String calledBy, Context context) {
+    private void sayCallerName (String calledBy) {
         final Handler handler = new Handler();
         final String callerName = calledBy;
         final float mSpeed = speed;
-        final Context con = context;
         speed = 0.9f;
 
         handler.postDelayed(new Runnable() {
             public void run() {
                 String sayText;
-                if (Count++ < 7 && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                if (Count++ < 5 && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     sayText = callerName + " 로부터 전화왔어요. " + callerName + " 로부터 전화왔어요. " + "," + Count + " 번,";
                     Tts.speak(sayText);
-                    Toast.makeText(con, sayText,Toast.LENGTH_SHORT).show();
-                    handler.postDelayed(this, 3000);
+                    Log.w("sayCall", sayText);
+                    handler.postDelayed(this, 5000);
                 }
                 else {
                     handler.removeCallbacks(this);
                     speed = mSpeed;
-                    Tts.stop();
                     Tts.shutdown();
-                    Tts.initiateTTS(act);
+                    Tts.initiateTTS();
                 }
             }
-        }, 100);
+        }, 1000);
     }
-
 }
-

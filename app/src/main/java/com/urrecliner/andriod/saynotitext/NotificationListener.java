@@ -23,6 +23,7 @@ import java.util.Date;
 import static com.urrecliner.andriod.saynotitext.Vars.Tts;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.mPrepareLists;
 import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
@@ -35,12 +36,18 @@ import static java.util.Locale.getDefault;
 public class NotificationListener extends NotificationListenerService {
 
     static final String MY_LOGFOLDER = "/sayNotiTextLog";
-//    tts tts;
+    int Counter = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
         speakANDLog("now","Notification Listener created!");
+        Log.w("now","Notification Listener created! ------ _x_");
+        if (mPrepareLists == null) {
+            Log.w("_x_ onCreate", "mPrepareList is null");
+            mPrepareLists = new PrepareLists();
+            mPrepareLists.read();
+        }
     }
 
     //    @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -63,6 +70,7 @@ public class NotificationListener extends NotificationListenerService {
         if(isInPackageXcludes(packageName)) {
             return;
         }
+        logFreeMemory();
         packageType = getPackageType(packageName);
         packageCode = getPackageCode(packageName);
 //        speakANDLog("now",packageType + "_" + packageCode+"_" + packageName + " detected ");
@@ -71,31 +79,32 @@ public class NotificationListener extends NotificationListenerService {
         Bundle extras = mNotification.extras;
         String eTitle = extras.getString(Notification.EXTRA_TITLE);
         String eText = extras.getString(Notification.EXTRA_TEXT);
-        String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
 
 //        speakANDLog("now",packageName + eTitle + "_text : " + eText);
 
         if(packageType.equals("kk")) {   // kakao
             if (eTitle == null || eText == null) return;
+            String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
             if (eSubT != null) {
                 if (!isInKakaoXcludes(eSubT))  // eSub: 채팅방
-                    speakANDLog(packageCode,  "카카오톡 메세지 옴_" + eSubT + "_채팅방 에서_" + eTitle + "_님으로 부터_" + eText);
+                    speakANDLog(packageCode,  "카카오톡 챗 옴_" + eSubT + "_채팅방 에서_" + eTitle + "_님으로 부터._" + eText);
             }
             else {
                 if(!isInKakaoPersons(eTitle))   // eTitle: 개인 이름
-                    speakANDLog(packageCode,  "카카오톡 메세지 옴_" + eTitle + "_님으로 부터_" + eText);
+                    speakANDLog(packageCode,  "카카오톡 챗 옴_" + eTitle + "_님으로 부터._" + eText);
             }
         }
         else if(packageName.equals("android")) {
             if (eTitle != null) {
+                String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
                 if (!eTitle.contains("이(가) 다른 앱 위에") && !eTitle.contains("USB로") &&
-                        !eTitle.contains("뭔가 다른 거")) {
+                        !eTitle.contains("뭔가 다른 거") && !eTitle.contains("Wi-Fi")) {
                     speakANDLog("xtras_" + packageName, "title_" + eTitle +
                             "_text_" + eText + "_sub_" + eSubT);
                 }
             }
             else {
-                speakANDLog("xtrasnull_" + packageName, "_text_" + eText + "_sub_" + eSubT);
+                speakANDLog("xtrasnull_" + packageName, "_text_" + eText);
             }
         }
         else if(packageType.equals("to")) {  // eText only
@@ -105,11 +114,11 @@ public class NotificationListener extends NotificationListenerService {
             if(!isInSmsXcludes(eTitle)) {
                 assert eText != null;
                 eText = eText.replace("[Web발신]","");
-                speakANDLog(packageCode, eTitle + " 로부터의 메세지입니다 " + eText);
+                speakANDLog(packageCode, eTitle + " 로부터의 SMS 메세지입니다 " + eText);
             }
         }
         else if(packageType.equals("tt")) {  // eTitle + eText
-            speakANDLog(packageCode,    packageCode + " 메세지입니다. " + eTitle + "_로 부터_" + eText);
+            speakANDLog(packageCode,    packageCode + ", 일반 메세지입니다. " + eTitle + "_로 부터_" + eText);
         }
 //        else if (packageCode.equals("whatsapp")){
 //            eTitle=sbn.getNotification().tickerText.toString();
@@ -124,7 +133,7 @@ public class NotificationListener extends NotificationListenerService {
 //        }
         else {
             if(eTitle != null && eText != null)
-                speakANDLog("unknown " + packageName, "title_" + eTitle + "_text_" + eText + "_sub_" + eSubT);
+                speakANDLog("unknown " + packageName, "title_" + eTitle + "_text_" + eText);
         }
     }
 
@@ -134,6 +143,11 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean isInPackageXcludes(String packageName) {
+
+        if (packageXcludes == null) {
+            mPrepareLists.read();
+            Log.w("xtbl", "packagexclude is reloaded _x_");
+        }
         for (String packageXclude : packageXcludes) {
             if (packageName.contains(packageXclude)) return true;
         }
@@ -141,12 +155,10 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private String getPackageType(String packageName){
-        int idx = 0;
-        while (idx < packageNames.length) {
+        for (int idx = 0; idx < packageNames.length; idx++) {
             if (packageName.contains(packageNames[idx])) {
                 return packageTypes[idx];
             }
-            idx++;
         }
         return "unKnownT";
     }
@@ -195,6 +207,7 @@ public class NotificationListener extends NotificationListenerService {
         }
         text = text.replace("\n", " | ");
         append2file(directory, tag  + ".txt", getIMGTimeText() + text);
+        Log.w(tag, text);
 
 //        File file = new File(directory, filename);
 //        FileOutputStream os;
@@ -263,6 +276,16 @@ public class NotificationListener extends NotificationListenerService {
                 Toast.makeText(getApplicationContext(), "File write EXEXEX ex \n" + filename + ex.toString(),
                         Toast.LENGTH_LONG).show();
             }
+        }
+    }
+    private void logFreeMemory() {
+        try {
+            Runtime info = Runtime.getRuntime();
+            long freeSize = info.freeMemory();
+            long totalSize = info.totalMemory();
+            Log.w("_x_" + Counter++,  "totalSZ = " + totalSize + ", freeSZ = " + freeSize);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

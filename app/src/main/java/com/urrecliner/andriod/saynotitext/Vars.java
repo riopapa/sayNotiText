@@ -14,14 +14,14 @@ public class Vars {
     static String[] kakaoPersons = null;
     static String[] smsXcludes = null;
 
-    static tts Tts = null;      // tts instance
+    static Text2Speech Tts = null;      // tts instance
     static TextToSpeech mTTS = null;
-    static boolean sayTTS = true;
     static float pitch;
     static float speed;
     static Activity act = null;
     static AudioManager mAudioManager = null;
     static AudioFocusRequest mFocusGain = null;
     static AudioFocusRequest mFocusLoss = null;
+    static PrepareLists mPrepareLists = null;
 
 }
