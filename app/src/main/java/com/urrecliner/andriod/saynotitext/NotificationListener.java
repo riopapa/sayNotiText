@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.urrecliner.andriod.saynotitext.Vars.Tts;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.mPrepareLists;
@@ -29,6 +28,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.smsXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
 import static java.util.Locale.getDefault;
 
 
@@ -37,12 +37,12 @@ public class NotificationListener extends NotificationListenerService {
 
     static final String MY_LOGFOLDER = "/sayNotiTextLog";
     int Counter = 0;
+    File directory = new File(Environment.getExternalStorageDirectory(), MY_LOGFOLDER);
 
     @Override
     public void onCreate() {
         super.onCreate();
-        speakANDLog("now","Notification Listener created!");
-        Log.w("now","Notification Listener created! ------ _x_");
+        speakANDLog("now","Listener created! " + ++Counter);
         if (mPrepareLists == null) {
             Log.w("_x_ onCreate", "mPrepareList is null");
             mPrepareLists = new PrepareLists();
@@ -53,8 +53,9 @@ public class NotificationListener extends NotificationListenerService {
     //    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        if (sbn==null) return;
-        addNotification(sbn);
+        if (sbn != null) {
+            addNotification(sbn);
+        }
     }
 
     //    @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -70,28 +71,29 @@ public class NotificationListener extends NotificationListenerService {
         if(isInPackageXcludes(packageName)) {
             return;
         }
-        logFreeMemory();
         packageType = getPackageType(packageName);
         packageCode = getPackageCode(packageName);
-//        speakANDLog("now",packageType + "_" + packageCode+"_" + packageName + " detected ");
 
         Notification mNotification=sbn.getNotification();
         Bundle extras = mNotification.extras;
         String eTitle = extras.getString(Notification.EXTRA_TITLE);
         String eText = extras.getString(Notification.EXTRA_TEXT);
+//        speakANDLog("now",packageType + "_" + packageCode+"_" + packageName + " title:"+ eTitle + " text:" + eText);
 
-//        speakANDLog("now",packageName + eTitle + "_text : " + eText);
+//        speakANDLog("now",packageName +  "_title " + eTitle + "_text : " + eText);
+
 
         if(packageType.equals("kk")) {   // kakao
+//            speakANDLog("now",packageName +  "_카카오일 것 " + eTitle + "_text : " + eText);
             if (eTitle == null || eText == null) return;
             String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
             if (eSubT != null) {
                 if (!isInKakaoXcludes(eSubT))  // eSub: 채팅방
-                    speakANDLog(packageCode,  "카카오톡 챗 옴_" + eSubT + "_채팅방 에서_" + eTitle + "_님으로 부터._" + eText);
+                    speakANDLog(packageCode,  "카카오톡 옴_" + eSubT + "_채팅방 에서_" + eTitle + "_님._" + eText);
             }
             else {
                 if(!isInKakaoPersons(eTitle))   // eTitle: 개인 이름
-                    speakANDLog(packageCode,  "카카오톡 챗 옴_" + eTitle + "_님으로 부터._" + eText);
+                    speakANDLog(packageCode,  "카카오톡 옴_" + eTitle + "_님으로 부터._" + eText);
             }
         }
         else if(packageName.equals("android")) {
@@ -108,29 +110,25 @@ public class NotificationListener extends NotificationListenerService {
             }
         }
         else if(packageType.equals("to")) {  // eText only
-            speakANDLog(packageCode,  packageCode + " 메세지 " + eText);
+            speakANDLog(packageCode,  packageCode + " (메세지) " + eText);
         }
         else if(packageType.equals("sm")) {  // sms
             if(!isInSmsXcludes(eTitle)) {
                 assert eText != null;
                 eText = eText.replace("[Web발신]","");
-                speakANDLog(packageCode, eTitle + " 로부터의 SMS 메세지입니다 " + eText);
+                if (!eTitle.equals("메세지")) {
+                    speakANDLog(packageCode, eTitle + " 로부터의 SMS 메세지입니다 " + eText);
+                }
             }
         }
         else if(packageType.equals("tt")) {  // eTitle + eText
-            speakANDLog(packageCode,    packageCode + ", 일반 메세지입니다. " + eTitle + "_로 부터_" + eText);
+            if (packageCode.equals("밴드") && eTitle.contains("아직 읽지 않은 ")) {
+                return;
+            }
+            else {
+                speakANDLog(packageCode,packageCode + ", 메세지입니다. " + eTitle + "_로 부터_" + eText);
+            }
         }
-//        else if (packageCode.equals("whatsapp")){
-//            eTitle=sbn.getNotification().tickerText.toString();
-//            speakANDLog(packageCode,"whatsapp>> from: "+eTitle);
-//        }
-//        else if(packageCode.equals("facebook")) {
-//            StringTokenizer stringTokenizer = new StringTokenizer(sbn.getNotification().tickerText.toString(),":");
-////            speakANDLog(packageCode,"Ticker: "+sbn.getNotification().tickerText.toString());
-//            eTitle=stringTokenizer.nextToken();
-//            eText=stringTokenizer.nextToken();
-//            speakANDLog(packageCode,"facebook>>"+"from: "+eTitle+", Text: "+eText);
-//        }
         else {
             if(eTitle != null && eText != null)
                 speakANDLog("unknown " + packageName, "title_" + eTitle + "_text_" + eText);
@@ -174,41 +172,52 @@ public class NotificationListener extends NotificationListenerService {
 
     private boolean isInKakaoXcludes(String chatbang) {
         for (String kakaoXclude : kakaoXcludes) {
-            if (chatbang.equals(kakaoXclude)) return true;
+            if (chatbang.contains(kakaoXclude)) return true;
         }
         return false;
     }
 
     private boolean isInKakaoPersons(String person){
         for (String kakaoPerson : kakaoPersons) {
-            if (person.equals(kakaoPerson)) return true;
+            if (person.contains(kakaoPerson)) return true;
         }
         return false;
     }
 
     private boolean isInSmsXcludes(String smsFrom) {
         for (String smsXclude : smsXcludes) {
-            if (smsFrom.equals(smsXclude)) return true;
+            if (smsFrom.contains(smsXclude)) return true;
         }
         return false;
     }
 
     private void speakANDLog(String tag, String text) {
         if (isHeadphonesPlugged() || isRingerON()) {
+//            Log.w("speakNlog " + tag, text);
+            if (text2Speech == null) {
+                Log.e("speakcall0","text2speech created");
+                text2Speech = new Text2Speech();
+                Log.w("speakcall2","Text2Speech speakandlog");
+                text2Speech.initiateTTS(getApplicationContext());
+            }
             if (!tag.equals("now"))
-                Tts.speak("저 알림 있어요!.. " + text);
+                text2Speech.speak("저어 알릴게 있어요!.. " + text);
         }
 
-        File directory = new File(Environment.getExternalStorageDirectory(), MY_LOGFOLDER);
         try {
-            if (!directory.exists()) directory.mkdirs();
+            if (!directory.exists()) {
+                boolean result = directory.mkdirs();
+                Log.e("Directory", "Creation Error :" + result);
+            }
         } catch (Exception e) {
             Log.e("creating Folder error", directory + tag + "_" + e.toString());
         }
         text = text.replace("\n", " | ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        tag = dateFormat.format(new Date()) + "_" + tag;
         append2file(directory, tag  + ".txt", getIMGTimeText() + text);
         Log.w(tag, text);
-
+//        logFreeMemory();
 //        File file = new File(directory, filename);
 //        FileOutputStream os;
 //        try {
@@ -223,7 +232,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private String getIMGTimeText() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss_", getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss_", getDefault());
         return dateFormat.format(new Date());
     }
 
@@ -256,14 +265,16 @@ public class NotificationListener extends NotificationListenerService {
         try {
             File file = new File(fullName);
             // if file doesnt exists, then create it
-            if (!file.exists()) file.createNewFile();
+            if (!file.exists()) {
+                if(!file.createNewFile()) {
+                    Log.e("createFile"," Error");
+                }
+            }
 
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
-            bw.write("\n\n" + textline);
-//            Toast.makeText(getApplicationContext(), "File wrote to " + fullName,
-//                    Toast.LENGTH_SHORT).show();
+            bw.write("\n" + textline + "\n");
 
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(), "ERROR File write\n" + filename + e.toString(),
@@ -273,7 +284,7 @@ public class NotificationListener extends NotificationListenerService {
                 if (bw != null) bw.close();
                 if (fw != null) fw.close();
             } catch (IOException ex) {
-                Toast.makeText(getApplicationContext(), "File write EXEXEX ex \n" + filename + ex.toString(),
+                Toast.makeText(getApplicationContext(), "FileWrite Err \n" + filename + ex.toString(),
                         Toast.LENGTH_LONG).show();
             }
         }
@@ -281,12 +292,22 @@ public class NotificationListener extends NotificationListenerService {
     private void logFreeMemory() {
         try {
             Runtime info = Runtime.getRuntime();
-            long freeSize = info.freeMemory();
-            long totalSize = info.totalMemory();
-            Log.w("_x_" + Counter++,  "totalSZ = " + totalSize + ", freeSZ = " + freeSize);
+            Log.w("_x_" + Counter++,  "totalSZ = " + info.totalMemory() + ", freeSZ = " + info.freeMemory());
+            append2file(directory, "freesize"  + ".txt", getIMGTimeText() + info.freeMemory());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 }
+//        else if (packageCode.equals("whatsapp")){
+//            eTitle=sbn.getNotification().tickerText.toString();
+//            speakANDLog(packageCode,"whatsapp>> from: "+eTitle);
+//        }
+//        else if(packageCode.equals("facebook")) {
+//            StringTokenizer stringTokenizer = new StringTokenizer(sbn.getNotification().tickerText.toString(),":");
+////            speakANDLog(packageCode,"Ticker: "+sbn.getNotification().tickerText.toString());
+//            eTitle=stringTokenizer.nextToken();
+//            eText=stringTokenizer.nextToken();
+//            speakANDLog(packageCode,"facebook>>"+"from: "+eTitle+", Text: "+eText);
+//        }
