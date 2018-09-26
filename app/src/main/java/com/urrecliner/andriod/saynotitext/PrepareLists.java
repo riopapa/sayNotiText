@@ -1,7 +1,6 @@
 package com.urrecliner.andriod.saynotitext;
 
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +12,13 @@ import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.smsXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 public class PrepareLists {
 
     public void read () {
 
-        Log.w("PREPARE", "prepare.read()");
+        utils.log("PREPARE", "read()");
         File storage = Environment.getExternalStorageDirectory();
         String directory = storage.toString() + "/download/sayNotiText/";
         packageXcludes =  readParameterFile(directory + "packageXcludes.txt");
@@ -40,7 +40,7 @@ public class PrepareLists {
     }
 
     private String[] readParameterFile(String filename) {
-        HandlePlainFile rf = new HandlePlainFile();
+        Utils rf = new Utils();
         String[] lines = {""};
         try {
             lines = rf.readLines(filename);
@@ -49,7 +49,7 @@ public class PrepareLists {
         catch(IOException e)
         {
             // Print out the exception that occurred
-            Log.e("PrepareLists", "Unable to create "+filename+": "+e.getMessage());
+            utils.logE("PrepareLists", "Unable to create "+filename+": "+e.getMessage());
         }
         return lines;
     }

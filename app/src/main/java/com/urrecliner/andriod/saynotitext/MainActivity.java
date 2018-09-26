@@ -9,7 +9,6 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -18,18 +17,20 @@ import android.widget.Toast;
 
 import java.util.Set;
 
-import static com.urrecliner.andriod.saynotitext.Vars.Tts;
-import static com.urrecliner.andriod.saynotitext.Vars.act;
-import static com.urrecliner.andriod.saynotitext.Vars.mPrepareLists;
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.mActivity;
 import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
+import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
+import static com.urrecliner.andriod.saynotitext.Vars.mPrepareLists;
 import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.smsXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
+import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -45,13 +46,17 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        if (act == null) act = this;
-        if (Tts == null) {
-            Tts = new Text2Speech();
-            Tts.initiateTTS();
+        mActivity = this;
+        mContext = this; // getApplicationContext();
+        if (text2Speech == null) {
+            utils.logE("text2Speech", "IS NULL");
+            text2Speech = new Text2Speech();
         }
+        text2Speech.initiateTTS(getApplicationContext());
+//        text2Speech.customToast("MainActivity Created ",Toast.LENGTH_LONG);
 
         if (PermissionProvider.isPermitted(getApplicationContext(), this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, MY_PERMISSIONS_WRITE_FILE) == 0 ||
@@ -69,8 +74,7 @@ public class MainActivity extends AppCompatActivity{
         boolean isPermissionAllowed = isNotificationAllowed();
 
         if(!isPermissionAllowed) {
-            Toast.makeText(getApplicationContext(),"안드로이드 알림에서 sayNotiText 를 허가해 주세요.",
-                    Toast.LENGTH_LONG).show();
+            utils.customToast("안드로이드 알림에서 sayNotiText 를 허가해 주세요.", Toast.LENGTH_LONG);
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
@@ -83,10 +87,10 @@ public class MainActivity extends AppCompatActivity{
         mPitchView = findViewById(R.id.bar_pitch);
         mSpeedView = findViewById(R.id.bar_speed);
 
-        Tts.setPitch((float) mSeekBarPitch.getProgress() / 50);
-        Tts.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
+        text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
+        text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
 
-        mPrepareLists = new PrepareLists();
+//        mPrepareLists = new PrepareLists();
 
         mButtonReload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,21 +114,17 @@ public class MainActivity extends AppCompatActivity{
                 if (mPitch < 0.1f) mPitch = 0.1f;
                 DecimalFormat df=new DecimalFormat("0.0");
                 mPitchView.setText(df.format(mPitch));
-                Tts.setPitch(mPitch);
+                text2Speech.setPitch(mPitch);
             }
         });
 
-        Toast.makeText(getApplicationContext(),"sayNotiText Initiated", Toast.LENGTH_SHORT).show();
-
-                mSeekBarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mSeekBarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 float mSpeed = (float) mSeekBarSpeed.getProgress() / 50;
@@ -133,27 +133,17 @@ public class MainActivity extends AppCompatActivity{
                 if (mSpeed < 0.1f) mSpeed = 0.1f;
                 DecimalFormat df=new DecimalFormat("0.0");
                 mSpeedView.setText(df.format(mSpeed));
-                Tts.setSpeed(mSpeed);
+                text2Speech.setSpeed(mSpeed);
             }
         });
         prepareTable();
+
         if (mAudioManager == null) {
             mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
                     .build();
         }
-//        long usedSize = -1L;
-        try {
-            long freeSize, totalSize;
-            Runtime info = Runtime.getRuntime();
-            freeSize = info.freeMemory();
-            totalSize = info.totalMemory();
-//            usedSize = totalSize - freeSize;
-            Log.w("_main_",  "totalSZ = " + totalSize + ", freeSZ = " + freeSize +"  _x_");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        utils.customToast("sayNotiText Initiated", Toast.LENGTH_SHORT);
     }
 
     private void prepareTable() {
@@ -174,7 +164,8 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(),"Now Purge the app",Toast.LENGTH_LONG).show();
+        text2Speech.shutdown();
+        utils.customToast("Now Purge the app",Toast.LENGTH_SHORT);
         finish();
 //        System.exit(0);
 //        android.os.Process.killProcess(android.os.Process.myPid());

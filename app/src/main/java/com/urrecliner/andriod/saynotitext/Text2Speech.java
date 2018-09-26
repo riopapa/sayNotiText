@@ -1,23 +1,27 @@
 package com.urrecliner.andriod.saynotitext;
 
+import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Locale;
 
-import static com.urrecliner.andriod.saynotitext.Vars.act;
+import static com.urrecliner.andriod.saynotitext.Vars.mActivity;
 import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
+import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
-import static com.urrecliner.andriod.saynotitext.Vars.mTTS;
 import static com.urrecliner.andriod.saynotitext.Vars.pitch;
 import static com.urrecliner.andriod.saynotitext.Vars.speed;
+import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 public class Text2Speech {
 
-    public void initiateTTS() {
-
-        mTTS = new TextToSpeech(act, new TextToSpeech.OnInitListener() {
+    private TextToSpeech mTTS;
+    public void initiateTTS(Context context) {
+        mContext = context;
+        utils.log("mTTS", "initiating...");
+        mTTS = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status == TextToSpeech.SUCCESS) {
@@ -25,7 +29,7 @@ public class Text2Speech {
                     if (result == TextToSpeech.LANG_MISSING_DATA
                             || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Log.e("TTS", "Language not supported");
-                        Toast.makeText(act,"Language not supported",
+                        Toast.makeText(mActivity, "Language not supported",
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -47,13 +51,13 @@ public class Text2Speech {
         final int STRING_MAX = 150;
 
         if (text.length() > STRING_MAX) {
-            text = text.substring(0, STRING_MAX) + " 등등등";
+            text = text.substring(0, STRING_MAX) + " ! 등등등";
         }
         text = text.replace("_", " ");
         mTTS.setPitch(pitch);
         mTTS.setSpeechRate(speed);
         getAudioFocus();
-        mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
 //            isTTSSpeaking();
 //            releaseAudioFocus();
     }
@@ -61,17 +65,6 @@ public class Text2Speech {
         mTTS.stop();
         mTTS.shutdown();
     }
-
-//    public void checkRelease() {
-//        long l = 0;
-//        Toast.makeText(act,"Speaking check " + l, Toast.LENGTH_SHORT).show();
-//        while (mTTS.isSpeaking()) {
-//            l += 1;
-//        }
-//        Toast.makeText(act,"Speaking done " + l, Toast.LENGTH_SHORT).show();
-//        releaseAudioFocus();
-//    }
-//                if (!mTTS.isSpeaking()) {
 
     private void getAudioFocus() {
 //        AudioManager mAudioManager = (AudioManager) act.getSystemService(Context.AUDIO_SERVICE);
@@ -94,5 +87,4 @@ public class Text2Speech {
 //        boolean audioActive = am.isMusicActive();
 //        return audioActive;
 //    }
-
 }
