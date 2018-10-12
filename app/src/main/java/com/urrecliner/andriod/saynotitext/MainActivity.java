@@ -39,10 +39,6 @@ public class MainActivity extends AppCompatActivity{
     private TextView mPitchView;
     private TextView mSpeedView;
 
-    private final static int MY_PERMISSIONS_WRITE_FILE = 101;
-    private final static int MY_PERMISSIONS_CONTACTS = 103;
-    private final static int MY_PERMISSIONS_PHONE = 104;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,19 +47,17 @@ public class MainActivity extends AppCompatActivity{
 
         mActivity = this;
         mContext = this; // getApplicationContext();
-        if (text2Speech == null) {
-            utils.logE("text2Speech", "IS NULL");
-            text2Speech = new Text2Speech();
-        }
-        text2Speech.initiateTTS(getApplicationContext());
-//        text2Speech.customToast("MainActivity Created ",Toast.LENGTH_LONG);
+//        if (text2Speech == null) {
+//            utils.logE("text2Speech", "IS NULL");
+//            text2Speech = new Text2Speech();
+//        }
 
-        if (PermissionProvider.isPermitted(getApplicationContext(), this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE, MY_PERMISSIONS_WRITE_FILE) == 0 ||
-           PermissionProvider.isPermitted(getApplicationContext(), this,
-                Manifest.permission.READ_CONTACTS, MY_PERMISSIONS_CONTACTS) == 0 ||
-           PermissionProvider.isPermitted(getApplicationContext(), this,
-                        Manifest.permission.READ_PHONE_STATE, MY_PERMISSIONS_PHONE) == 0 ) {
+        if (PermissionProvider.isNotReady(getApplicationContext(), this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+           PermissionProvider.isNotReady(getApplicationContext(), this,
+                Manifest.permission.READ_CONTACTS) ||
+           PermissionProvider.isNotReady(getApplicationContext(), this,
+                        Manifest.permission.READ_PHONE_STATE) ) {
             Toast.makeText(getApplicationContext(),"Check android permission",
                     Toast.LENGTH_LONG).show();
             finish();
@@ -80,6 +74,8 @@ public class MainActivity extends AppCompatActivity{
         }
 
         Button mButtonReload = findViewById(R.id.button_reload);
+
+        text2Speech.initiateTTS(getApplicationContext());
 
         mSeekBarPitch = findViewById(R.id.seek_bar_pitch);
         mSeekBarSpeed = findViewById(R.id.seek_bar_speed);
@@ -98,10 +94,27 @@ public class MainActivity extends AppCompatActivity{
                 prepareTable();
             }
         });
+        setmSeekBarPitch();
+        setmSeekBarSpeed();
+        prepareTable();
+
+        if (mAudioManager == null) {
+            mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                    .build();
+        }
+        utils.customToast("sayNotiText Initiated", Toast.LENGTH_SHORT);
+    }
+
+    private void setmSeekBarPitch() {
 
         mSeekBarPitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float mPitch = (float) progress / 50;
+                DecimalFormat df=new DecimalFormat("0.0");
+                mPitchView.setText(df.format(mPitch));
+                text2Speech.setPitch(mPitch);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -109,18 +122,22 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 float mPitch = (float) mSeekBarPitch.getProgress() / 50;
-                if (mPitch > 1.0f) mPitch *= 1.2f;
-                if (mPitch < 1.0f) mPitch /= 1.2f;
-                if (mPitch < 0.1f) mPitch = 0.1f;
                 DecimalFormat df=new DecimalFormat("0.0");
                 mPitchView.setText(df.format(mPitch));
                 text2Speech.setPitch(mPitch);
             }
         });
 
+    }
+    private void setmSeekBarSpeed() {
+
         mSeekBarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float mSpeed = (float) progress / 50;
+                DecimalFormat df=new DecimalFormat("0.0");
+                mSpeedView.setText(df.format(mSpeed));
+                text2Speech.setSpeed(mSpeed);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -128,22 +145,11 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 float mSpeed = (float) mSeekBarSpeed.getProgress() / 50;
-                if (mSpeed > 1.0f) mSpeed *= 1.2f;
-                if (mSpeed < 1.0f) mSpeed /= 1.2f;
-                if (mSpeed < 0.1f) mSpeed = 0.1f;
                 DecimalFormat df=new DecimalFormat("0.0");
                 mSpeedView.setText(df.format(mSpeed));
                 text2Speech.setSpeed(mSpeed);
             }
         });
-        prepareTable();
-
-        if (mAudioManager == null) {
-            mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
-                    .build();
-        }
-        utils.customToast("sayNotiText Initiated", Toast.LENGTH_SHORT);
     }
 
     private void prepareTable() {
@@ -161,6 +167,7 @@ public class MainActivity extends AppCompatActivity{
                         "\nkakaoPersons: " + kakaoPersons.length + "\nsmsXcludes: " + smsXcludes.length
                 ,Toast.LENGTH_SHORT).show();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -170,6 +177,7 @@ public class MainActivity extends AppCompatActivity{
 //        System.exit(0);
 //        android.os.Process.killProcess(android.os.Process.myPid());
     }
+
     private boolean isNotificationAllowed() {
         Set<String> notiListenerSet = NotificationManagerCompat.getEnabledListenerPackages(this);
         String myPackageName = getPackageName();

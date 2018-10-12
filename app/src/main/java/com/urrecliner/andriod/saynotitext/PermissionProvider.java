@@ -9,20 +9,20 @@ import android.widget.Toast;
 
 public class PermissionProvider {
 
-    public static int isPermitted(Context c, Activity a, String Permission, int NormalCode) {
+    public static boolean isNotReady(Context c, Activity a, String Permission) {
         if (ContextCompat.checkSelfPermission(c, Permission)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(a,
-                    new String[]{Permission}, NormalCode);
+                    new String[]{Permission}, 123);
             if (ContextCompat.checkSelfPermission(c, Permission)
                     == PackageManager.PERMISSION_GRANTED) {
-                return NormalCode;
+                return false;
             } else {
                 Toast.makeText(c,Permission + " is not granted..", Toast.LENGTH_LONG).show();
-                return 0;
+                return true;
             }
         }
-        else return NormalCode;
+        else return false;
     }
 
 }

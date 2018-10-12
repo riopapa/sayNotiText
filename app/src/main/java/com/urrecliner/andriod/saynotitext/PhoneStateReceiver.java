@@ -7,45 +7,63 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.ContactsContract;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import static com.urrecliner.andriod.saynotitext.Vars.mActivity;
-import static com.urrecliner.andriod.saynotitext.Vars.speed;
 import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 public class PhoneStateReceiver extends BroadcastReceiver {
-    String incomingNumber;
-    String callerName;
-    String state;
+    String contactName;
+    String phoneState;
+    TelephonyManager telephony;
     Context mContext;
-    int repeatCount;
+    Intent mIntent;
+    Boolean phoneRinging = false;
+    int speakCount;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        phoneRinging = false;
         mContext = context;
-        String action;
-        try {
-            action = intent.getAction();
-            utils.customToast("call action [" + action + "]", Toast.LENGTH_SHORT);
-//            utils.logE("onReceive", "call action is " + action);
-            state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-            incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
-                callerName = getContactName(context, incomingNumber);
-                if (callerName != null) {
-                    sayCallerName(callerName);
-                }
+        mIntent = intent;
+        utils.log("action", action);
+        MyPhoneStateListener phoneListener = new MyPhoneStateListener();
+        telephony = (TelephonyManager) context
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        telephony.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+    }
+
+    public class MyPhoneStateListener extends PhoneStateListener {
+
+        public void onCallStateChanged(int state, String incomingNumber) {
+
+//            utils.logE("zz call changed", "phoneState is " + phoneState);
+            switch (state) {
+                case TelephonyManager.CALL_STATE_IDLE:
+                    phoneRinging = false;
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    utils.customToast("Call OFFHOOK",Toast.LENGTH_SHORT);
+                    phoneRinging = false;
+                    break;
+                case TelephonyManager.CALL_STATE_RINGING:
+
+                    phoneRinging = true;
+//                    incomingNumber = mIntent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                    contactName = getContactName(mContext, incomingNumber);
+                    if (contactName != null) {
+                        utils.customToast(contactName, Toast.LENGTH_LONG);
+                        sayWhoIsCalling(contactName);
+                    }
+                    break;
+                default:
+                    phoneRinging = false;
+                    break;
             }
-//            if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))){
-//                text2Speech.customToast("Call Received State",Toast.LENGTH_SHORT);
-//            }
-//            if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)){
-//                text2Speech.customToast("Call Idle State", Toast.LENGTH_SHORT);
-//            }
-        }
-        catch (Exception e){
-            e.printStackTrace();
         }
     }
 
@@ -64,28 +82,27 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         }
         return name;
     }
-    private void sayCallerName (String calledBy) {
+
+    private void sayWhoIsCalling(String calledBy) {
         final Handler handler = new Handler();
         final String callerName = calledBy;
-        final float mSpeed = speed;
-        speed = 0.9f;
         handler.postDelayed(new Runnable() {
             public void run() {
                 String sayText;
-                if (repeatCount++ < 5 && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                    utils.customToast("[" + state + "]", Toast.LENGTH_SHORT);
-                    sayText = callerName + " 로부터 전화왔어요. "  + "," + repeatCount + " 번,";
+                if (phoneRinging && speakCount++ < 4) {
+                    sayText = callerName + " 로부터 전화왔어요. ";
                     text2Speech.speak(sayText);
-                    utils.log("sayCall", sayText);
-                    handler.postDelayed(this, 5000);
+                    utils.log("sayCall", phoneState + ":" + sayText);
+                    handler.postDelayed(this, 8000);
                 }
                 else {
+                    phoneRinging = false;
                     handler.removeCallbacks(this);
-                    speed = mSpeed;
                     text2Speech.shutdown();
                     text2Speech.initiateTTS(mActivity);
                 }
             }
-        }, 2000);
+        }, 200);
     }
 }
+

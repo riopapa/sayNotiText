@@ -23,17 +23,21 @@
         <TextView
             android:id="@+id/bar_pitch"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="1.0"
+            android:layout_weight="1"
+            android:text="1.2"
             android:textSize="16sp" />
 
         <SeekBar
             android:id="@+id/seek_bar_pitch"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="0dp"
-            android:layout_weight="6"
             android:layout_height="wrap_content"
-            android:progress="50" />
+            android:layout_weight="6"
+            android:max="100"
+            android:min="20"
+            android:progress="60"
+            android:scrollbarStyle="outsideOverlay" />
 
     </LinearLayout>
     <LinearLayout
@@ -51,18 +55,22 @@
         <TextView
             android:id="@+id/bar_speed"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="1.0"
+            android:layout_weight="1"
+            android:text="1.4"
             android:textSize="16sp" />
 
         <SeekBar
             android:id="@+id/seek_bar_speed"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="0dp"
-            android:layout_weight="6"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:progress="50" />
+            android:layout_weight="6"
+            android:max="100"
+            android:min="20"
+            android:progress="70"
+            android:scrollbarStyle="outsideOverlay" />
 
     </LinearLayout>
 
@@ -77,8 +85,9 @@
         android:id="@+id/text_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:scrollIndicators="right"
-        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbars="vertical"
         android:text="Active say Table List"
         android:textAlignment="center"

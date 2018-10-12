@@ -14,8 +14,6 @@ public class Vars {
     static String[] kakaoPersons = null;
     static String[] smsXcludes = null;
 
-    static float pitch;
-    static float speed;
     static Activity mActivity = null;
     static Context mContext = null;
     static AudioManager mAudioManager = null;
@@ -25,4 +23,5 @@ public class Vars {
     static Text2Speech text2Speech = new Text2Speech();
     static PrepareLists mPrepareLists = new PrepareLists();
     static Utils utils = new Utils();
+
 }

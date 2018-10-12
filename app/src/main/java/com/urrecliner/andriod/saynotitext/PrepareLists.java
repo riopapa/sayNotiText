@@ -18,7 +18,7 @@ public class PrepareLists {
 
     public void read () {
 
-        utils.log("PREPARE", "read()");
+        utils.log("1", "read()");
         File storage = Environment.getExternalStorageDirectory();
         String directory = storage.toString() + "/download/sayNotiText/";
         packageXcludes =  readParameterFile(directory + "packageXcludes.txt");

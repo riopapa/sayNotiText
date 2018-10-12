@@ -7,17 +7,8 @@ import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.widget.Toast;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
@@ -29,14 +20,10 @@ import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.smsXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
-import static java.util.Locale.getDefault;
 
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class NotificationListener extends NotificationListenerService {
-
-    static final String MY_LOGFOLDER = "/sayNotiTextLog";
-    File directory = new File(Environment.getExternalStorageDirectory(), MY_LOGFOLDER);
 
     @Override
     public void onCreate() {
@@ -73,13 +60,8 @@ public class NotificationListener extends NotificationListenerService {
         Bundle extras = mNotification.extras;
         String eTitle = extras.getString(Notification.EXTRA_TITLE);
         String eText = extras.getString(Notification.EXTRA_TEXT);
-//        speakANDLog("now",packageType + "_" + packageCode+"_" + packageName + " title:"+ eTitle + " text:" + eText);
-
-//        speakANDLog("now",packageName +  "_title " + eTitle + "_text : " + eText);
-
 
         if(packageType.equals("kk")) {   // kakao
-//            speakANDLog("now",packageName +  "_카카오일 것 " + eTitle + "_text : " + eText);
             if (eTitle == null || eText == null) return;
             String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
             if (eSubT != null) {
@@ -95,13 +77,13 @@ public class NotificationListener extends NotificationListenerService {
             if (eTitle != null) {
                 String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
                 if (!eTitle.contains("이(가) 다른 앱 위에") && !eTitle.contains("USB로") &&
-                        !eTitle.contains("뭔가 다른 거") && !eTitle.contains("Wi-Fi")) {
-                    speakANDLog("xtras_" + packageName, "title_" + eTitle +
+                        !eTitle.contains("Wi-Fi") && !eTitle.contains("인터넷 연결 확실치")) {
+                    speakANDLog("others_" + packageName, "title_" + eTitle +
                             "_text_" + eText + "_sub_" + eSubT);
                 }
             }
             else {
-                speakANDLog("xtrasnull_" + packageName, "_text_" + eText);
+                speakANDLog("OthersNull_" + packageName, "_text_" + eText);
             }
         }
         else if(packageType.equals("to")) {  // eText only
@@ -110,23 +92,29 @@ public class NotificationListener extends NotificationListenerService {
         else if(packageType.equals("sm")) {  // sms
             if(!isInSmsXcludes(eTitle)) {
                 assert eText != null;
-                eText = eText.replace("[Web발신]","");
-                if (!eTitle.equals("메세지")) {
-                    speakANDLog(packageCode, eTitle + " 로부터의 SMS 메세지입니다 " + eText);
+                eText = eText.replace("[Web발신]","+");
+                eTitle = eTitle.replace("[Web발신]","+");
+                if (!eTitle.contains("메세지") && eText != null) {
+                    speakANDLog(packageCode, eTitle + " 로부터의 SMS 메세지입니다. " + eText);
+                }
+                else {
+                    eText +=  " ; BIG[" + extras.getString(Notification.EXTRA_BIG_TEXT) + "]";
+                    utils.log(packageName, eTitle + "_ 로부터의 메세지? " + eText);
+                    speakANDLog(packageName, eTitle + "_ 로부터의 메세지? " + eText);
                 }
             }
         }
         else if(packageType.equals("tt")) {  // eTitle + eText
             if (packageCode.equals("밴드") && eTitle.contains("아직 읽지 않은 ")) {
-                return;
+                // ignore
             }
-            else {
-                speakANDLog(packageCode,packageCode + ", 메세지입니다. " + eTitle + "_로 부터_" + eText);
+            else if (eText != null) {
+                speakANDLog(packageCode,packageCode + "의 메세지입니다. " + eTitle + "_로 부터_" + eText);
             }
         }
         else {
-            if(eTitle != null && eText != null)
-                speakANDLog("unknown " + packageName, "title_" + eTitle + "_text_" + eText);
+            if (eTitle != null && eText != null)
+                speakANDLog("unknown " + packageName, "title:" + eTitle + "_text:" + eText);
         }
     }
 
@@ -139,7 +127,7 @@ public class NotificationListener extends NotificationListenerService {
 
         if (packageXcludes == null) {
             mPrepareLists.read();
-            utils.log("xtbl", "packagexclude is reloaded _x_");
+            utils.logE("xtbl", "packagexclude is reloaded _x_");
         }
         for (String packageXclude : packageXcludes) {
             if (packageName.contains(packageXclude)) return true;
@@ -190,33 +178,16 @@ public class NotificationListener extends NotificationListenerService {
         if (isHeadphonesPlugged() || isRingerON()) {
 //            utils.log("speakNlog " + tag, text);
             if (text2Speech == null) {
-                utils.logE("speak 0","text2speech created");
+                utils.logE("speak 0","tts reCreated");
                 text2Speech = new Text2Speech();
-                utils.log("speak 1","Text2Speech speakandlog");
                 text2Speech.initiateTTS(getApplicationContext());
             }
             if (!tag.equals("now"))
                 text2Speech.speak("저어 알릴게 있어요!.. " + text);
         }
-
-        try {
-            if (!directory.exists()) {
-                boolean result = directory.mkdirs();
-                utils.logE("Directory", "Creation Error :" + result);
-            }
-        } catch (Exception e) {
-            utils.logE("creating Folder error", directory + tag + "_" + e.toString());
-        }
         text = text.replace("\n", " | ");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        tag = dateFormat.format(new Date()) + "_" + tag;
-        append2file(directory, tag  + ".txt", getTimeStamp() + text);
-        utils.log(tag, text);
-    }
-
-    private String getTimeStamp() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss_", getDefault());
-        return dateFormat.format(new Date());
+        String filename = tag + ".txt";
+        utils.append2file(filename, text);
     }
 
     private boolean isRingerON() {
@@ -240,47 +211,15 @@ public class NotificationListener extends NotificationListenerService {
         }
         return false;
     }
-    private void append2file (File directory, String filename, String textline) {
-        BufferedWriter bw = null;
-        FileWriter fw = null;
-        String fullName = directory + "/" + filename;
-
-        try {
-            File file = new File(fullName);
-            // if file doesnt exists, then create it
-            if (!file.exists()) {
-                if(!file.createNewFile()) {
-                    utils.logE("createFile"," Error");
-                }
-            }
-
-            // true = append file
-            fw = new FileWriter(file.getAbsoluteFile(), true);
-            bw = new BufferedWriter(fw);
-            bw.write("\n" + textline + "\n");
-
-        } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), "ERROR File write\n" + filename + e.toString(),
-                    Toast.LENGTH_LONG).show();
-        } finally {
-            try {
-                if (bw != null) bw.close();
-                if (fw != null) fw.close();
-            } catch (IOException ex) {
-                Toast.makeText(getApplicationContext(), "FileWrite Err \n" + filename + ex.toString(),
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-    private void logFreeMemory() {
-        try {
-            Runtime info = Runtime.getRuntime();
-            utils.log("_x_",  "totalSZ = " + info.totalMemory() + ", freeSZ = " + info.freeMemory());
-            append2file(directory, "freesize"  + ".txt", getTimeStamp() + info.freeMemory());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void logFreeMemory() {
+//        try {
+//            Runtime info = Runtime.getRuntime();
+//            utils.log("_x_",  "totalSZ = " + info.totalMemory() + ", freeSZ = " + info.freeMemory());
+//            utils.append2file(directory, "freesize"  + ".txt", "" + info.freeMemory());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }
 //        else if (packageCode.equals("whatsapp")){
