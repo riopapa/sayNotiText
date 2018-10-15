@@ -62,7 +62,7 @@ public class Text2Speech {
         mAudioManager.requestAudioFocus(mFocusGain);
         mTTS.setPitch(pitch);
         mTTS.setSpeechRate(speed);
-        long delayTime = (long) ((float) (text.length() * 220) / speed);
+        long delayTime = (long) ((float) (text.length() * 240) / speed);
         mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         new Timer().schedule(new TimerTask() {
             public void run () {
