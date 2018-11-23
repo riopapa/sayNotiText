@@ -25,6 +25,7 @@ public class Text2Speech {
     public void initiateTTS(Context context) {
         mContext = context;
         utils.log("mTTS", "initiating...");
+        mTTS = null;
         mTTS = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -56,20 +57,32 @@ public class Text2Speech {
         if (text.length() > STRING_MAX) {
             text = text.substring(0, STRING_MAX) + " ! 등등등";
         }
-        String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
+//        String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]"; 한글, 영문, 숫자만 OK
+        String match = "[`~!@#$%^&*()'/+;<>\\_▶★]";
         text =text.replaceAll(match, " ");
-        utils.log("replace", text);
-        mAudioManager.requestAudioFocus(mFocusGain);
-        mTTS.setPitch(pitch);
-        mTTS.setSpeechRate(speed);
+        justSpeak(text);
         long delayTime = (long) ((float) (text.length() * 240) / speed);
-        mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         new Timer().schedule(new TimerTask() {
             public void run () {
             mAudioManager.abandonAudioFocusRequest(mFocusGain);
             }
         }, delayTime);
+    }
 
+    public void justSpeak(String text) {
+        utils.readyAudioManager(mContext);
+        mAudioManager.requestAudioFocus(mFocusGain);
+        mTTS.setPitch(pitch);
+        mTTS.setSpeechRate(speed);
+        mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+    }
+
+    public void flushSpeak(String text) {
+        utils.readyAudioManager(mContext);
+        mAudioManager.requestAudioFocus(mFocusGain);
+        mTTS.setPitch(pitch);
+        mTTS.setSpeechRate(speed);
+        mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
     }
 
     public void shutdown() {

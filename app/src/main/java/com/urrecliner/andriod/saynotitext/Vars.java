@@ -21,7 +21,7 @@ public class Vars {
 //    static AudioFocusRequest mFocusLoss = null;
 
     static Text2Speech text2Speech = new Text2Speech();
-    static PrepareLists mPrepareLists = new PrepareLists();
+    static PrepareLists prepareLists = new PrepareLists();
     static Utils utils = new Utils();
 
 }

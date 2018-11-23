@@ -30,12 +30,11 @@ public class PrepareLists {
         packageCodes = new String[packageNames.length];
         packageTypes = new String[packageNames.length];
         for (int idx = 0; idx < packageNames.length; idx++) {
-            String type = packageNames[idx].split(";")[0].trim();
-            String code = packageNames[idx].split(";")[1].trim();
-            String name = packageNames[idx].split(";")[2].trim();
-            packageTypes[idx] = type;
-            packageCodes[idx] = code;
-            packageNames[idx] = name;
+            String packageName[] = packageNames[idx].split(";");
+//            String name = packageNames[idx].split(";")[2].trim();
+            packageTypes[idx] = packageName[0].trim();
+            packageCodes[idx] = packageName[1].trim();
+            packageNames[idx] = packageName[2].trim();
         }
     }
 
