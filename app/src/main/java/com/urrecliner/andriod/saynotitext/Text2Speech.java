@@ -14,17 +14,21 @@ import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
+import static com.urrecliner.andriod.saynotitext.Vars.ttsPitch;
+import static com.urrecliner.andriod.saynotitext.Vars.ttsSpeed;
 
 public class Text2Speech {
 
-    float pitch;
-    float speed;
-
+    final String notifyFile = "notification.txt";
     private TextToSpeech mTTS;
 
     public void initiateTTS(Context context) {
+        if (context == null) {
+            utils.append2file(notifyFile, "initiate TTS Context NULL ");
+            utils.customToast("Context is null for initiateTTS", Toast.LENGTH_LONG);
+        }
         mContext = context;
-        utils.log("mTTS", "initiating...");
+        utils.append2file(notifyFile, "initiate mTTS ");
         mTTS = null;
         mTTS = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
@@ -42,13 +46,19 @@ public class Text2Speech {
                 }
             }
         });
+        if (ttsPitch == 0f) {
+            ttsPitch = 1.2f;
+            ttsSpeed = 1.4f;
+            utils.append2file(notifyFile, "pitch, speed ZERO ");
+        }
     }
 
-    public void setPitch (float p) {
-        pitch = p;
+    public void setPitch(float p) {
+        ttsPitch = p;
     }
-    public void setSpeed (float s) {
-        speed = s;
+
+    public void setSpeed(float s) {
+        ttsSpeed = s;
     }
 
     public void speak(String text) {
@@ -58,31 +68,40 @@ public class Text2Speech {
             text = text.substring(0, STRING_MAX) + " ! 등등등";
         }
 //        String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]"; 한글, 영문, 숫자만 OK
-        String match = "[`~!@#$%^&*()'/+;<>\\_▶★]";
-        text =text.replaceAll(match, " ");
-        justSpeak(text);
-        long delayTime = (long) ((float) (text.length() * 240) / speed);
+        String match = "[`~!@#$%^&*()'/+;<>\\_▶★]"; // 특수문자 읽기 방지
+        text = text.replaceAll(match, " ");
+        ttsSpeak(text, TextToSpeech.QUEUE_ADD);
+        long delayTime = (long) ((float) (text.length() * 240) / ttsSpeed);
         new Timer().schedule(new TimerTask() {
-            public void run () {
-            mAudioManager.abandonAudioFocusRequest(mFocusGain);
+            public void run() {
+                mAudioManager.abandonAudioFocusRequest(mFocusGain);
             }
         }, delayTime);
     }
 
-    public void justSpeak(String text) {
-        utils.readyAudioManager(mContext);
-        mAudioManager.requestAudioFocus(mFocusGain);
-        mTTS.setPitch(pitch);
-        mTTS.setSpeechRate(speed);
-        mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+    public void ttsSpeak(String text, int queue) {
+        try {
+            readyAudioTTS();
+            mTTS.speak(text, queue, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        } catch (Exception e) {
+            utils.append2file(notifyFile, "justSpeak exception\n" + e.toString());
+        }
     }
 
-    public void flushSpeak(String text) {
+    private void readyAudioTTS() {
         utils.readyAudioManager(mContext);
         mAudioManager.requestAudioFocus(mFocusGain);
-        mTTS.setPitch(pitch);
-        mTTS.setSpeechRate(speed);
-        mTTS.speak(text, TextToSpeech.QUEUE_FLUSH, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        if (ttsPitch == 0f) {
+            ttsPitch = 1.2f;
+            ttsSpeed = 1.4f;
+            utils.append2file(notifyFile, "$$ Pitch, speed ZERO ");
+        }
+        if (mTTS == null) {
+            utils.append2file(notifyFile, "$$ mTTS NULL ");
+            initiateTTS(mContext);
+        }
+        mTTS.setPitch(ttsPitch);
+        mTTS.setSpeechRate(ttsSpeed);
     }
 
     public void shutdown() {

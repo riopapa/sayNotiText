@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.speech.tts.TextToSpeech;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -51,7 +52,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 if (contactName != null) {
                     speakCount = 0;
                     utils.customToast(contactName, Toast.LENGTH_LONG);
-                    startCalling(contactName);
+//                    startCalling(contactName);
                 }
             }
             else
@@ -120,7 +121,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
     private void saySomebodyCalling() {
         String sayText = contactName + " 로부터 전화왔어요. ";
-        text2Speech.flushSpeak(sayText);
+        text2Speech.ttsSpeak(sayText, TextToSpeech.QUEUE_FLUSH);
         utils.append2file("call.txt", sayText);
         speakCount++;
         if (phoneRinging) {

@@ -44,8 +44,10 @@ public class NotificationListener extends NotificationListenerService {
     //    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void addNotification(StatusBarNotification sbn)  {
 
-        utils.readyAudioManager(getApplicationContext());
-
+        if (packageXcludes == null) {
+            prepareLists.read();
+            utils.readyAudioManager(getApplicationContext());
+        }
         String packageName = sbn.getPackageName().toLowerCase();
         String packageCode, packageType;
         final String TT_TITLE_TEXT = "tt";
@@ -68,10 +70,10 @@ public class NotificationListener extends NotificationListenerService {
         String eText = extras.getString(Notification.EXTRA_TEXT);
         if (eTitle == null && eText == null)
             return;
-        if (eText != null && eText.length() > 50) {
-            eText = eText.substring(0,50);
+        if (eText != null && eText.length() > 70) {
+            eText = eText.substring(0,70);
         }
-        String filename = "notification.txt";
+        final String filename = "notification.txt";
         utils.append2file(filename, "\n-----notification--- type:" + packageType);
         dumpAll(packageCode,filename, eTitle, eText, extras);
 
@@ -120,10 +122,10 @@ public class NotificationListener extends NotificationListenerService {
     private void sayAndroid(String packageCode, String eTitle, String eText) {
         if (eTitle == null || eText == null)
             return;
-        if (eTitle.contains("이(가) 다른 앱 위에") || eTitle.contains("USB로") ||
+        if (eTitle.contains("이(가) 다른 앱 위에") || eTitle.contains("USB로") || eTitle.contains("도시락톡") ||
                 eTitle.contains("Wi-Fi") || eTitle.contains("인터넷 연결 확실치"))
             return;
-        speakANDLog("안드로이드","eTitle ~" + eTitle + " eText~" + eText);
+        speakANDLog(packageCode,"eTitle ~" + eTitle + " eText~" + eText);
     }
 
     private void sayTitleText(String packageCode, String packageName, String eTitle, String eText, StatusBarNotification sbn) {
@@ -153,7 +155,7 @@ public class NotificationListener extends NotificationListenerService {
 
     String lastTimeLog = "";
     private void saySMS(String packageCode, String eTitle, String eText, StatusBarNotification sbn) {
-        String filename = "SMS_log.txt";
+        final String filename = "SMS_log.txt";
         String nowTimeLog = utils.getTimeStamp();
         if (nowTimeLog.equals(lastTimeLog)) {   // due to "메세지","메세지 보기"
             utils.append2file(filename, "sms 같은 시각 무시 title~" + smsCount + eTitle + ", text~" + eText );

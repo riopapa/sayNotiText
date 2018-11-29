@@ -21,7 +21,10 @@ public class Vars {
 //    static AudioFocusRequest mFocusLoss = null;
 
     static Text2Speech text2Speech = new Text2Speech();
+    static float ttsPitch = 1.2f;
+    static float ttsSpeed = 1.4f;
+
     static PrepareLists prepareLists = new PrepareLists();
-    static Utils utils = new Utils();
+    final static Utils utils = new Utils();
 
 }
