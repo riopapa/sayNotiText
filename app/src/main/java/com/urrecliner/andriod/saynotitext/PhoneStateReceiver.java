@@ -34,9 +34,9 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         mContext = context;
         mIntent = intent;
 //        utils.log("action", action);
-        MyPhoneStateListener phoneListener = new MyPhoneStateListener();
-        telephony = (TelephonyManager) context
-                .getSystemService(Context.TELEPHONY_SERVICE);
+//        MyPhoneStateListener phoneListener = new MyPhoneStateListener();
+//        telephony = (TelephonyManager) context
+//                .getSystemService(Context.TELEPHONY_SERVICE);
 //        telephony.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE); // 벨소리가 안나서 일단 죽임
     }
 

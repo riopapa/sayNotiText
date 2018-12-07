@@ -63,13 +63,18 @@ public class Text2Speech {
 
     public void speak(String text) {
 
-        final int STRING_MAX = 150;
-        if (text.length() > STRING_MAX) {
-            text = text.substring(0, STRING_MAX) + " ! 등등등";
-        }
+//        final int STRING_MAX = 150;
+//        if (text.length() > STRING_MAX) {
+//            text = text.substring(0, STRING_MAX) + " ! 등등등";
+//        }
 //        String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]"; 한글, 영문, 숫자만 OK
         String match = "[`~!@#$%^&*()'/+;<>\\_▶★]"; // 특수문자 읽기 방지
         text = text.replaceAll(match, " ");
+        try {
+            mAudioManager.requestAudioFocus(mFocusGain);
+        } catch (Exception e) {
+            utils.append2file(notifyFile, "mAudioManager requestAudioFocus Error");
+        }
         ttsSpeak(text, TextToSpeech.QUEUE_ADD);
         long delayTime = (long) ((float) (text.length() * 240) / ttsSpeed);
         new Timer().schedule(new TimerTask() {
@@ -88,9 +93,18 @@ public class Text2Speech {
         }
     }
 
-    private void readyAudioTTS() {
+    public void ttsStop() {
+        mTTS.stop();
+        try {
+            readyAudioTTS();
+        } catch (Exception e) {
+            utils.append2file(notifyFile, "ttsStop exception\n" + e.toString());
+        }
+    }
+
+
+    public void readyAudioTTS() {
         utils.readyAudioManager(mContext);
-        mAudioManager.requestAudioFocus(mFocusGain);
         if (ttsPitch == 0f) {
             ttsPitch = 1.2f;
             ttsSpeed = 1.4f;

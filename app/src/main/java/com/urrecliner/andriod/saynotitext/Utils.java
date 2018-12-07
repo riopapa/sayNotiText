@@ -30,6 +30,7 @@ public class Utils {
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss");
+    final static String notifyFile = "notification.txt";
 
     public String[] readLines(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
@@ -49,29 +50,15 @@ public class Utils {
     }
 
     public void append2file(String filename, String textLine) {
-        File directory = new File(Environment.getExternalStorageDirectory(), "sayNotiTextLog");
-        try {
-            if (!directory.exists()) {
-                boolean result = directory.mkdirs();
-                logE("Directory",  directory.toString() + " created");
-            }
-        } catch (Exception e) {
-            Log.e("creating Directory error", directory.toString() + "_" + e.toString());
-        }
 
-        File directoryDate = new File(directory, dateFormat.format(new Date()));
-        try {
-            if (!directoryDate.exists()) {
-                if (directoryDate.mkdirs())
-                    log("Directory", directoryDate.toString() + " created ");
-            }
-        } catch (Exception e) {
-            logE("creating Folder error", directoryDate + "_" + e.toString());
-        }
+        File directoryDate = readyFileFolder(filename);
 
         BufferedWriter bw = null;
         FileWriter fw = null;
         String fullName = directoryDate.toString() + "/" + filename;
+        if (textLine.length() > 100) {
+            textLine = textLine.substring(0,100);
+        }
 
         try {
             File file = new File(fullName);
@@ -106,14 +93,40 @@ public class Utils {
             }
         }
     }
+    private File readyFileFolder(String filename) {
+        File directory = new File(Environment.getExternalStorageDirectory(), "sayNotiTextLog");
+        try {
+            if (!directory.exists()) {
+                boolean result = directory.mkdirs();
+                logE("Directory",  directory.toString() + " created");
+            }
+        } catch (Exception e) {
+            Log.e("creating Directory error", directory.toString() + "_" + e.toString());
+        }
+
+        File directoryDate = new File(directory, dateFormat.format(new Date()));
+        try {
+            if (!directoryDate.exists()) {
+                if (directoryDate.mkdirs())
+                    log("Directory", directoryDate.toString() + " created ");
+            }
+        } catch (Exception e) {
+            logE("creating Folder error", directoryDate + "_" + e.toString());
+        }
+        return directoryDate;
+    }
 
     public void readyAudioManager(Context context) {
         if(mAudioManager == null) {
-            append2file("timestamp.txt", "mAudioManager");
+            append2file(notifyFile, "mAudioManager is NULL");
             mContext = context;
-            mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-            mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
-                    .build();
+            try {
+                mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                        .build();
+            } catch (Exception e) {
+                append2file("timestamp.txt", "mAudioManager Error " + e.toString());
+            }
         }
     }
 
@@ -148,5 +161,4 @@ public class Utils {
         toastView.setBackgroundColor(Color.YELLOW);
         toast.show();
     }
-
 }

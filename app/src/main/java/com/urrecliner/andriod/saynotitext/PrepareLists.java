@@ -1,12 +1,14 @@
 package com.urrecliner.andriod.saynotitext;
 
 import android.os.Environment;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
@@ -36,6 +38,7 @@ public class PrepareLists {
             packageCodes[idx] = packageName[1].trim();
             packageNames[idx] = packageName[2].trim();
         }
+        Toast.makeText(mContext, "PrepareList reloaded", Toast.LENGTH_SHORT).show();
     }
 
     private String[] readParameterFile(String filename) {

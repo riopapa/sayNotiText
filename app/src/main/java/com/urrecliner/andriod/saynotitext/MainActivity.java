@@ -13,16 +13,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.mActivity;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
-import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
 import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
 import static com.urrecliner.andriod.saynotitext.Vars.smsXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
@@ -70,40 +72,53 @@ public class MainActivity extends AppCompatActivity{
 
         Button mButtonReload = findViewById(R.id.button_reload);
 
-        text2Speech.initiateTTS(getApplicationContext());
-
         mSeekBarPitch = findViewById(R.id.seek_bar_pitch);
         mSeekBarSpeed = findViewById(R.id.seek_bar_speed);
 
         mPitchView = findViewById(R.id.bar_pitch);
         mSpeedView = findViewById(R.id.bar_speed);
 
-        text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
-        text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
-
-//        prepareLists = new PrepareLists();
-
+        utils = new Utils();
         utils.append2file("timestamp.txt", "initial load");
         mButtonReload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                utils.log("hey","I started");
+                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
+                updateIntent.putExtra("isUpdate", true);
+                startService(updateIntent);
+
                 prepareTable();
             }
         });
         setSeekBarPitch();
         setSeekBarSpeed();
+        prepareLists = new PrepareLists();
         prepareTable();
+
+        text2Speech = new Text2Speech();
+        text2Speech.initiateTTS(getApplicationContext());
+        text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
+        text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
 
         utils.readyAudioManager(getApplicationContext());
         utils.customToast("Initiated", Toast.LENGTH_SHORT);
 
 //        new Timer().schedule(new TimerTask() {
 //            public void run () {
-//                String filename = "timer.txt";
-//                utils.append2file(filename, "now Timer activated");
+//                String notifyFile = "timer.txt";
+//                utils.append2file(notifyFile, "now Timer activated");
 //                if (packageNames.length == 0) prepareTable();
 //            }
 //        }, 10000000, 1000000); // not to sleep long
+
+        new Timer().schedule(new TimerTask() {
+            public void run () {
+                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
+                updateIntent.putExtra("isUpdate", true);
+                startService(updateIntent);
+            }
+            }, 1000);
     }
 
     private void setSeekBarPitch() {
