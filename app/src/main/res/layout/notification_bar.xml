@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/reLoad"
             android:layout_weight="1"
-            android:layout_width="24dp"
+            android:layout_width="32dp"
             android:padding="4dp"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_reload_foreground"
@@ -27,11 +27,11 @@
         <ImageView
             android:id="@+id/stopSay"
             android:layout_weight="1"
-            android:layout_width="24dp"
+            android:layout_width="32dp"
             android:layout_marginRight="48dp"
             android:padding="4dp"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_stop_saying"
+            android:src="@mipmap/ic_stop_say_talking"
             android:layout_marginLeft="40dp" />
 
 </LinearLayout>

@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -36,10 +35,10 @@ public class NotificationService extends Service {
         super.onCreate();
         mContext = this;
         if (null != mRemoteViews) {
-            mRemoteViews.removeAllViews(R.layout.custom_notification_dark);
+            mRemoteViews.removeAllViews(R.layout.notification_bar);
             mRemoteViews = null;
         }
-        mRemoteViews = new RemoteViews(mContext.getPackageName(), R.layout.custom_notification_dark);
+        mRemoteViews = new RemoteViews(mContext.getPackageName(), R.layout.notification_bar);
     }
 
     @Nullable
@@ -86,10 +85,10 @@ public class NotificationService extends Service {
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")
                     .setSmallIcon(R.mipmap.ic_saynotitext_foreground)
-                    .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(),
-                            R.mipmap.ic_launcher))
+//                    .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(),
+//                            R.mipmap.ic_launcher))
                     .setContent(mRemoteViews)
-                    .setOnlyAlertOnce(false)
+                    .setOnlyAlertOnce(true)
                     .setAutoCancel(false)
                     .setOngoing(true);
         }
@@ -122,7 +121,8 @@ public class NotificationService extends Service {
 //            mRemoteViews.setTextViewText(R.id.music_title, newTitle);
 //            mMusicTitle = newTitle;
 //        }
-        mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.ic_stop_saying);
+        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reload_foreground);
+        mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.ic_stop_say_talking);
     }
 
     @Override

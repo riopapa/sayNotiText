@@ -102,7 +102,6 @@ public class Text2Speech {
         }
     }
 
-
     public void readyAudioTTS() {
         utils.readyAudioManager(mContext);
         if (ttsPitch == 0f) {
