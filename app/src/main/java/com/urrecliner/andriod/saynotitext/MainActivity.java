@@ -102,15 +102,7 @@ public class MainActivity extends AppCompatActivity{
         text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
 
         utils.readyAudioManager(getApplicationContext());
-        utils.customToast("Initiated", Toast.LENGTH_SHORT);
-
-//        new Timer().schedule(new TimerTask() {
-//            public void run () {
-//                String notifyFile = "timer.txt";
-//                utils.append2file(notifyFile, "now Timer activated");
-//                if (packageNames.length == 0) prepareTable();
-//            }
-//        }, 10000000, 1000000); // not to sleep long
+//        utils.customToast("Initiated", Toast.LENGTH_SHORT);
 
         new Timer().schedule(new TimerTask() {
             public void run () {

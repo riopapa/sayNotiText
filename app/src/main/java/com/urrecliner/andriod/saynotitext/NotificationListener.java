@@ -83,8 +83,12 @@ public class NotificationListener extends NotificationListenerService {
         String eText = extras.getString(Notification.EXTRA_TEXT);
         if (eTitle == null && eText == null)
             return;
-        if (eText != null && eText.length() > 150) {
-            eText = eText.substring(0,150);
+        if (eText != null) {
+            if (eText.length() > 150) {
+                eText = eText.substring(0, 150);
+                eText = eText.replaceAll("\n\n","|");
+                eText = eText.replaceAll("\n","|");
+            }
         }
         String nowTimeLog = utils.getTimeStamp();
         if (nowTimeLog.equals(lastTimeLog)) {   // due to "메세지","메세지 보기"
@@ -110,7 +114,7 @@ public class NotificationListener extends NotificationListenerService {
                 saySMS(packageCode, eTitle, eText, sbn);
                 break;
             case TT_TITLE_TEXT :
-                sayTitleText(packageCode, packageName, eTitle, eText);
+                sayTitleText(packageCode, eTitle, eText);
                 break;
             case AN_ANDROID :
                 sayAndroid(packageCode, eTitle, eText);
@@ -141,13 +145,14 @@ public class NotificationListener extends NotificationListenerService {
     private void sayAndroid(String packageCode, String eTitle, String eText) {
         if (eTitle == null || eText == null)
             return;
-        if (eTitle.contains("이(가) 다른 앱 위에") || eTitle.contains("USB로") || eTitle.contains("도시락톡") ||
-                eTitle.contains("Wi-Fi") || eTitle.contains("인터넷 연결 확실치"))
-            return;
+        final String [] ignoreTables  = {"이(가) 다른 앱 위에", "USB로", "도시락톡", "Wi-Fi", "인터넷 연결 확실치"};
+        for (String ignoreTable : ignoreTables) {
+            if (eTitle.contains(ignoreTable)) return;
+        }
         speakANDLog(packageCode,"eTitle ~" + eTitle + " eText~" + eText);
     }
 
-    private void sayTitleText(String packageCode, String packageName, String eTitle, String eText) {
+    private void sayTitleText(String packageCode, String eTitle, String eText) {
         if (packageCode.equals("밴드")) {
             if (eTitle.contains("읽지 않은"))
                 return;
@@ -174,23 +179,23 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         utils.append2file(filename, "-- sms --- " + smsCount);
-        String text = eText.replace("[Web발신]","");
-        text = text.replaceAll("\n","|");
-        utils.append2file(filename, "sms org title~" + eTitle + ";sms text~" + text);
+        utils.append2file(filename, "sms org title~" + eTitle + ";sms text~" + eText);
         Bundle extras = sbn.getNotification().extras;
 //        dumpAll(packageCode,notifyFile, eTitle, text, extras);
 
         final String msg = "메세지";
     //                assert eText != null;
         if (eTitle.contains(msg)) {
-            dumpAll(packageCode,filename, "@@@ title 에 메세지 가 있음 "+ smsCount +  eTitle, text, extras);
+            dumpAll(packageCode,filename, "@@@ title 에 메세지 가 있음 "+ smsCount +  eTitle, eText, extras);
             return;
         }
         if (eText.contains("메세지 보기")) {
-            dumpAll(packageCode,filename, "@@@ text에 메세지 보기 " + eTitle, text, extras);
+            dumpAll(packageCode,filename, "@@@ text에 메세지 보기 " + eTitle, eText, extras);
             return;
         }
-        speakANDLog(packageCode, eTitle + " 로부터 SMS 메세지가 왔어요. ~" + text + "~");
+        eText = eText.replace("[Web발신]","");
+
+        speakANDLog(packageCode, eTitle + " 로부터 SMS 메세지가 왔어요. ~" + eText + "~");
     }
     
     private void dumpAll (String packageCode, String filename, String eTitle, String eText, Bundle extras){
@@ -210,9 +215,8 @@ public class NotificationListener extends NotificationListenerService {
     private boolean isInPackageXcludes(String packageName) {
 
         if (packageXcludes == null) {
-            utils.append2file(notifyFile, "xclude null, so reload prepareLists");
+            utils.append2file(notifyFile, "@@ xclude null, so reload prepareLists");
             prepareLists.read();
-//            utils.logE("xtbl", "packagexclude is reloaded _x_");
         }
         for (String packageXclude : packageXcludes) {
             if (packageName.contains(packageXclude)) return true;
@@ -262,7 +266,7 @@ public class NotificationListener extends NotificationListenerService {
     private void speakANDLog(String tag, String text) {
         if (isHeadphonesPlugged() || isRingerON()) {
             if (text2Speech == null) {
-                utils.append2file("speakANdlog.txt", "tts is null, reCreated");
+                utils.append2file(notifyFile, "tts is null, reCreated");
                 text2Speech = new Text2Speech();
                 text2Speech.initiateTTS(getApplicationContext());
             }
