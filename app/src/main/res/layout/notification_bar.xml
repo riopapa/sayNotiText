@@ -4,37 +4,34 @@
     android:id="@+id/ll_customNotification"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="0dp"
     android:background="#3D6b6a6a"
-    android:orientation="horizontal"
-    android:padding="0dp">
-        android:id="@+id/icon"
-        android:layout_margin="0dp"
-        android:layout_alignParentLeft="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    android:baselineAligned="false"
+    tools:ignore="ContentDescription"
+    android:orientation="horizontal">
+        <ImageView
+            android:layout_width="64sp"
+            android:layout_height="64sp"
+            android:src="@mipmap/ic_launcher_foreground" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/app_name"
+            android:textSize="16sp" />
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_weight="3"
-            android:layout_height="64dp"
-            android:src="@mipmap/ic_launcher_foreground" />
-        <ImageView
             android:id="@+id/reLoad"
-            android:layout_weight="2"
-            android:layout_width="24dp"
-            android:padding="4dp"
-            android:layout_height="64dp"
-            android:src="@mipmap/ic_reload_foreground"
-            android:layout_marginLeft="40dp" />
+            android:layout_width="64sp"
+            android:layout_height="64sp"
+            android:src="@mipmap/ic_reload_foreground" />
+
         <ImageView
             android:id="@+id/stopSay"
-            android:layout_weight="2"
-            android:layout_width="24dp"
-            android:layout_marginRight="48dp"
-            android:padding="4dp"
-            android:layout_height="64dp"
-            android:src="@mipmap/ic_stop_say_talking"
-            android:layout_marginLeft="40dp" />
+            android:layout_width="64sp"
+            android:layout_height="64sp"
+            android:layout_marginLeft="16sp"
+            android:src="@mipmap/ic_stop_say_talking" />
+
 
 </LinearLayout>

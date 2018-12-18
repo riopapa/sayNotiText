@@ -6,13 +6,14 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 
 public class Vars {
-    static String[] packageXcludes = null;
+    static String[] packageIgnores = null;
     static String[] packageTypes = null;
     static String[] packageCodes = null;
     static String[] packageNames = null;
-    static String[] kakaoXcludes = null;
+    static String[] kakaoIgnores = null;
     static String[] kakaoPersons = null;
-    static String[] smsXcludes = null;
+    static String[] smsIgnores = null;
+    static String[] systemIgnores = null;
 
     static Activity mActivity = null;
     static Context mContext = null;

@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
@@ -28,8 +29,8 @@ import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
 
 public class Utils {
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+    final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
     final static String notifyFile = "notification.txt";
 
     public String[] readLines(String filename) throws IOException {

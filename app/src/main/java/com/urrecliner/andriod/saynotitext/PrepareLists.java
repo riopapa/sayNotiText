@@ -7,13 +7,14 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
-import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
-import static com.urrecliner.andriod.saynotitext.Vars.smsXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
+import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
+import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 public class PrepareLists {
@@ -23,17 +24,17 @@ public class PrepareLists {
         utils.log("1", "read()");
         File storage = Environment.getExternalStorageDirectory();
         String directory = storage.toString() + "/download/sayNotiText/";
-        packageXcludes =  readParameterFile(directory + "packageXcludes.txt");
+        packageIgnores =  readParameterFile(directory + "packageIgnores.txt");
         packageNames =  readParameterFile(directory + "packageNames.txt");
-        kakaoXcludes =  readParameterFile(directory + "kakaoXcludes.txt");
+        kakaoIgnores =  readParameterFile(directory + "kakaoIgnores.txt");
         kakaoPersons =  readParameterFile(directory + "kakaoPersons.txt");
-        smsXcludes =  readParameterFile(directory + "smsXcludes.txt");
+        smsIgnores =  readParameterFile(directory + "smsIgnores.txt");
+        systemIgnores =  readParameterFile(directory + "systemIgnores.txt");
 
         packageCodes = new String[packageNames.length];
         packageTypes = new String[packageNames.length];
         for (int idx = 0; idx < packageNames.length; idx++) {
             String packageName[] = packageNames[idx].split(";");
-//            String name = packageNames[idx].split(";")[2].trim();
             packageTypes[idx] = packageName[0].trim();
             packageCodes[idx] = packageName[1].trim();
             packageNames[idx] = packageName[2].trim();

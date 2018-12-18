@@ -16,16 +16,17 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.mActivity;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
+import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
-import static com.urrecliner.andriod.saynotitext.Vars.packageXcludes;
 import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
-import static com.urrecliner.andriod.saynotitext.Vars.smsXcludes;
+import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
+import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
@@ -172,8 +173,9 @@ public class MainActivity extends AppCompatActivity{
         text_table.setText(packageSaying.toString());
 
         Toast.makeText(getApplicationContext(),"Reading param files\n" +
-                        "\npackageXcludes: " + packageXcludes.length + "\nkakaoXcludes: " + kakaoXcludes.length +
-                        "\nkakaoPersons: " + kakaoPersons.length + "\nsmsXcludes: " + smsXcludes.length
+                        "\npackageIgnores: " + packageIgnores.length + "\nkakaoIgnores: " + kakaoIgnores.length +
+                        "\nkakaoPersons: " + kakaoPersons.length + "\nsmsIgnores: " + smsIgnores.length +
+                        "\nsystemIgnores: " + systemIgnores.length
                 ,Toast.LENGTH_SHORT).show();
     }
 
