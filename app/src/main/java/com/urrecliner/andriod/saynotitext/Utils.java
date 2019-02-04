@@ -29,7 +29,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
 
 public class Utils {
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
     final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
     final static String notifyFile = "notification.txt";
 
@@ -52,7 +52,7 @@ public class Utils {
 
     public void append2file(String filename, String textLine) {
 
-        File directoryDate = readyFileFolder(filename);
+        File directoryDate = getTodayFolder();
 
         BufferedWriter bw = null;
         FileWriter fw = null;
@@ -94,12 +94,11 @@ public class Utils {
             }
         }
     }
-    private File readyFileFolder(String filename) {
+    private File getTodayFolder() {
         File directory = new File(Environment.getExternalStorageDirectory(), "sayNotiTextLog");
         try {
             if (!directory.exists()) {
-                boolean result = directory.mkdirs();
-                logE("Directory",  directory.toString() + " created");
+                directory.mkdirs();
             }
         } catch (Exception e) {
             Log.e("creating Directory error", directory.toString() + "_" + e.toString());

@@ -24,14 +24,13 @@
             android:id="@+id/reLoad"
             android:layout_width="64sp"
             android:layout_height="64sp"
-            android:src="@mipmap/ic_reload_foreground" />
+            android:src="@mipmap/ic_reloading" />
 
         <ImageView
             android:id="@+id/stopSay"
             android:layout_width="64sp"
             android:layout_height="64sp"
             android:layout_marginLeft="16sp"
-            android:src="@mipmap/ic_stop_say_talking" />
-
+            android:src="@mipmap/ic_stop_say" />
 
 </LinearLayout>

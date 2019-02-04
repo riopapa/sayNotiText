@@ -25,7 +25,6 @@ public class NotificationService extends Service {
     private RemoteViews mRemoteViews;
     private boolean isCancel;
     private String mMusicTitle;
-    private static final int LAST_MUSIC = 10000;
     private static final int STOP_SAY = 10011;
     private static final int RE_LOAD = 10022;
     private static final int CANCEL_NOTIFY = 10003;
@@ -121,8 +120,8 @@ public class NotificationService extends Service {
 //            mRemoteViews.setTextViewText(R.id.music_title, newTitle);
 //            mMusicTitle = newTitle;
 //        }
-        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reload_foreground);
-        mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.ic_stop_say_talking);
+        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
+        mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.ic_stop_say);
     }
 
     @Override
