@@ -45,6 +45,9 @@
 | an | android| android |
 | to | text only |notification without title |
 
+- package based log file is created at /sdcard/sayNotiText/yyyy-mm-dd folder, e.g, kakaoTalk.txt
+- You may update above table by reviewing these log files.
+ 
 <H3>Notification Bar</H3>
  
 - Press <img src="./app/src/main/res/mipmap-xxhdpi/ic_reloading.png" width=32 height=32> will reload tables if you had changed some
