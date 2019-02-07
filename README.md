@@ -13,6 +13,7 @@
 - Notification bar is for refresh(reload) above files and stop speaking temporary and immediately
 - Speaking pitch and speed can be adjusted.
 - When tables are updated, press \[reload] button to apply
+- Speaking will be executed when (1) no silent mode or (2) bluetooth or earphone is connected regardless of silent mode. 
 
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <img src="./screenshots/mainActivity.jpg" width=240 height=480>
@@ -34,19 +35,22 @@
 
 
 <H3>packageNames file format</H3>
+
 - it depends on real application name, some gives title and text and some others not
     
     
-|type| keyword | real application name|
-| --- | --- | --- |
-| kk | kakaoTalk| kakao.talk |
-| tt | telegram| text with title |
-| sm | sms text| android.messaging |
-| an | android| android |
-| to | text only |notification without title |
+|type| keyword<br>examples | real application name| remarks|
+| --- | --- | --- |---|
+| kk | kakaoTalk| kakao.talk|kakao is very special |
+| tt | telegram| telegram|text with title |
+| tt | SC Bank| danb.scbankapp | |
+| sm | sms text| android.messaging | SMS, LMS|
+| an | android| android | android messages|
+| to | magazine|apps.magazine|text only application |
 
-- package based log file is created at /sdcard/sayNotiText/yyyy-mm-dd folder, e.g, kakaoTalk.txt
-- You may update above table by reviewing these log files.
+- multiple types can be specified in multiple lines
+- package based log file is created at */sdcard/sayNotiText/yyyy-mm-dd* folder, e.g, kakaoTalk.txt, telegram.txt
+- You may update above table by reviewing these log files especially when you install new application with notifications.
  
 <H3>Notification Bar</H3>
  
@@ -69,7 +73,7 @@
 
 - PhoneStateReceiver : by phone number, I can detect who's calling, can can say it like papa, mom, but could not make the rining volume down while saying mom, so remarked out now.
 
-- When rebooted this app is active, this appl is serviced but no notification bar launched, so stopping is not available. soon boot receiver will be added
+- When rebooted this app is active but no notification bar is launched, so immediate stopping speaking is not available. soon boot receiver will be added. Relaunch will be work around.
 
-<H3>Thanks all persons in GitHub for good examples.</H3>
+<H3>Thanks to all persons in GitHub for good examples.</H3>
 
