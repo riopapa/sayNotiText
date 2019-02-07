@@ -261,16 +261,4 @@ public class NotificationListener extends NotificationListenerService {
             return true;
         return false;
     }
-
 }
-//        else if (packageCode.equals("whatsapp")){
-//            eTitle=sbn.getNotification().tickerText.toString();
-//            speakANDLog(packageCode,"whatsapp>> from: "+eTitle);
-//        }
-//        else if(packageCode.equals("facebook")) {
-//            StringTokenizer stringTokenizer = new StringTokenizer(sbn.getNotification().tickerText.toString(),":");
-////            speakANDLog(packageCode,"Ticker: "+sbn.getNotification().tickerText.toString());
-//            eTitle=stringTokenizer.nextToken();
-//            eText=stringTokenizer.nextToken();
-//            speakANDLog(packageCode,"facebook>>"+"from: "+eTitle+", Text: "+eText);
-//        }

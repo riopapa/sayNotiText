@@ -9,12 +9,10 @@ public class PhoneStateReceiver extends BroadcastReceiver {
      * C U R R E N T L Y       I G N O R E D
      * due to lack of controls on telephone ringing, volume control
      */
-//    String contactName;
-//    TelephonyManager telephony;
+
     Context mContext;
     Intent mIntent;
     Boolean phoneRinging = false;
-//    int speakCount = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {

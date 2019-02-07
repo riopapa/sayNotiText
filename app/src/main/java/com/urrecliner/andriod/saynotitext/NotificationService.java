@@ -17,17 +17,13 @@ import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
 
 public class NotificationService extends Service {
 
-    private static final String TAG = NotificationService.class.getSimpleName();
     private Context mContext;
     NotificationCompat.Builder mBuilder = null;
     NotificationChannel mNotificationChannel = null;
     NotificationManager mNotificationManager;
     private RemoteViews mRemoteViews;
-    private boolean isCancel;
-    private String mMusicTitle;
     private static final int STOP_SAY = 10011;
     private static final int RE_LOAD = 10022;
-    private static final int CANCEL_NOTIFY = 10003;
 
     @Override
     public void onCreate() {
@@ -49,7 +45,6 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int operation = intent.getIntExtra("operation", -1);
-        boolean isFromNotification = intent.getBooleanExtra("isFromNotification", false);
         boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
         createNotification(); 
         if (isUpdate) {
@@ -73,7 +68,7 @@ public class NotificationService extends Service {
     }
 
     private void createNotification() {
-        isCancel = false;
+
         if (null == mNotificationChannel) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -84,8 +79,6 @@ public class NotificationService extends Service {
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")
                     .setSmallIcon(R.mipmap.ic_saynotitext_foreground)
-//                    .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(),
-//                            R.mipmap.ic_launcher))
                     .setContent(mRemoteViews)
                     .setOnlyAlertOnce(true)
                     .setAutoCancel(false)
@@ -111,15 +104,7 @@ public class NotificationService extends Service {
 
     }
 
-//    private void setImgToPause() {
-//        mRemoteViews.setImageViewResource(R.id.tv_addSchedule,R.drawable.stopmusic_btn);
-//    }
-
     private void updateRemoteViews() {
-//        if(!TextUtils.equals(newTitle, mMusicTitle)) {
-//            mRemoteViews.setTextViewText(R.id.music_title, newTitle);
-//            mMusicTitle = newTitle;
-//        }
         mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
         mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.ic_stop_say);
     }

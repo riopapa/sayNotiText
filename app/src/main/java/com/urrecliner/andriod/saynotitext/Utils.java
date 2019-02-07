@@ -29,9 +29,9 @@ import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
 
 public class Utils {
 
-    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-    final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
-    final static String notifyFile = "notification.txt";
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
+    private static final String notifyFile = "notification.txt";
 
     public String[] readLines(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
@@ -46,11 +46,11 @@ public class Utils {
         return lines.toArray(new String[lines.size()]);
     }
 
-    public String getTimeStamp() {
+    String getTimeStamp() {
         return timeFormat.format(new Date());
     }
 
-    public void append2file(String filename, String textLine) {
+    void append2file(String filename, String textLine) {
 
         File directoryDate = getTodayFolder();
 
@@ -94,7 +94,7 @@ public class Utils {
             }
         }
     }
-    private File getTodayFolder() {
+    File getTodayFolder() {
         File directory = new File(Environment.getExternalStorageDirectory(), "sayNotiTextLog");
         try {
             if (!directory.exists()) {
@@ -144,7 +144,7 @@ public class Utils {
         Log.e("<" + tag + ">" , where + " " + text);
     }
 
-    public void customToast  (String text, int length) {
+    void customToast  (String text, int length) {
 
         Toast toast = Toast.makeText(mContext, text, length);
         toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER, 0,0);

@@ -17,7 +17,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
-public class PrepareLists {
+class PrepareLists {
 
     public void read () {
 
@@ -56,6 +56,5 @@ public class PrepareLists {
         }
         return lines;
     }
-
 }
 

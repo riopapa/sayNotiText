@@ -42,13 +42,9 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        utils = new Utils();
         mActivity = this;
-        mContext = this; // getApplicationContext();
-//        if (text2Speech == null) {
-//            utils.logE("text2Speech", "IS NULL");
-//            text2Speech = new Text2Speech();
-//        }
+        mContext = this;
 
         if (PermissionProvider.isNotReady(getApplicationContext(), this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
@@ -79,7 +75,6 @@ public class MainActivity extends AppCompatActivity{
         mPitchView = findViewById(R.id.bar_pitch);
         mSpeedView = findViewById(R.id.bar_speed);
 
-        utils = new Utils();
         utils.append2file("timestamp.txt", "initial load");
         mButtonReload.setOnClickListener(new View.OnClickListener() {
             @Override
