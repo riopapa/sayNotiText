@@ -14,6 +14,7 @@ public class Vars {
     static String[] kakaoPersons = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
+    static String Booted = null;
 
     static Activity mActivity = null;
     static Context mContext = null;

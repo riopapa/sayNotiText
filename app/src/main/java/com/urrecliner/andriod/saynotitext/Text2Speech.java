@@ -17,12 +17,12 @@ import static com.urrecliner.andriod.saynotitext.Vars.utils;
 import static com.urrecliner.andriod.saynotitext.Vars.ttsPitch;
 import static com.urrecliner.andriod.saynotitext.Vars.ttsSpeed;
 
-public class Text2Speech {
+class Text2Speech {
 
-    final String notifyFile = "notification.txt";
+    String notifyFile = "notification.txt";
     private TextToSpeech mTTS;
 
-    public void initiateTTS(Context context) {
+    void initiateTTS(Context context) {
         if (context == null) {
             utils.append2file(notifyFile, "initiate TTS Context NULL ");
             utils.customToast("Context is null for initiateTTS", Toast.LENGTH_LONG);
@@ -53,15 +53,15 @@ public class Text2Speech {
         }
     }
 
-    public void setPitch(float p) {
+    void setPitch(float p) {
         ttsPitch = p;
     }
 
-    public void setSpeed(float s) {
+    void setSpeed(float s) {
         ttsSpeed = s;
     }
 
-    public void speak(String text) {
+    void speak(String text) {
 
 //        final int STRING_MAX = 150;
 //        if (text.length() > STRING_MAX) {
@@ -84,7 +84,7 @@ public class Text2Speech {
         }, delayTime);
     }
 
-    public void ttsSpeak(String text, int queue) {
+    private void ttsSpeak(String text, int queue) {
         try {
             readyAudioTTS();
             mTTS.speak(text, queue, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
@@ -93,7 +93,7 @@ public class Text2Speech {
         }
     }
 
-    public void ttsStop() {
+    void ttsStop() {
         mTTS.stop();
         try {
             readyAudioTTS();
@@ -102,7 +102,7 @@ public class Text2Speech {
         }
     }
 
-    public void readyAudioTTS() {
+    void readyAudioTTS() {
         utils.readyAudioManager(mContext);
         if (ttsPitch == 0f) {
             ttsPitch = 1.2f;
@@ -117,7 +117,7 @@ public class Text2Speech {
         mTTS.setSpeechRate(ttsSpeed);
     }
 
-    public void shutdown() {
+    void shutdown() {
         mTTS.speak("_", TextToSpeech.QUEUE_FLUSH, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         mTTS.stop();
         mTTS.shutdown();

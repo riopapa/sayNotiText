@@ -5,11 +5,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 public class PermissionProvider {
 
-    public static boolean isNotReady(Context c, Activity a, String Permission) {
+     static public boolean isNotReady(Context c, Activity a, String Permission) {
         if (ContextCompat.checkSelfPermission(c, Permission)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(a,
@@ -18,11 +19,12 @@ public class PermissionProvider {
                     == PackageManager.PERMISSION_GRANTED) {
                 return false;
             } else {
-                Toast.makeText(c,Permission + " is not granted..", Toast.LENGTH_LONG).show();
+                String text = Permission+" is not granted..";
+                Log.e("Permission",text);
+                Toast.makeText(c,text , Toast.LENGTH_LONG).show();
                 return true;
             }
         }
         else return false;
     }
-
 }

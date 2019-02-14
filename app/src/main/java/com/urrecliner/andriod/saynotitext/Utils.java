@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,13 +28,13 @@ import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
 
-public class Utils {
+class Utils {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
     private static final String notifyFile = "notification.txt";
 
-    public String[] readLines(String filename) throws IOException {
+    String[] readLines(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         List<String> lines = new ArrayList<>();
@@ -43,7 +44,7 @@ public class Utils {
         }
         bufferedReader.close();
 
-        return lines.toArray(new String[lines.size()]);
+        return lines.toArray(new String[0]);
     }
 
     String getTimeStamp() {
@@ -57,13 +58,9 @@ public class Utils {
         BufferedWriter bw = null;
         FileWriter fw = null;
         String fullName = directoryDate.toString() + "/" + filename;
-        if (textLine.length() > 100) {
-            textLine = textLine.substring(0,100);
-        }
 
         try {
             File file = new File(fullName);
-            // if file doesnt exists, then create it
             if (!file.exists()) {
                 if (!file.createNewFile()) {
                     logE("createFile", " Error");
@@ -76,13 +73,6 @@ public class Utils {
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
             bw.write(outText);
-
-//            for (int i = 3; i < 8; i++) {
-//                bw.write("                ".substring(0, i ) + "+- " + i + traces[i].getMethodName() + "#" +traces[i].getLineNumber() + "\n");
-//            }
-            //            Toast.makeText(getApplicationContext(), "File wrote to " + fullName,
-//                    Toast.LENGTH_SHORT).show();
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -94,21 +84,23 @@ public class Utils {
             }
         }
     }
-    File getTodayFolder() {
-        File directory = new File(Environment.getExternalStorageDirectory(), "sayNotiTextLog");
+    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiTextLog");
+    private File getTodayFolder() {
         try {
-            if (!directory.exists()) {
-                directory.mkdirs();
+            if (!packageDirectory.exists()) {
+                packageDirectory.mkdirs();
             }
         } catch (Exception e) {
-            Log.e("creating Directory error", directory.toString() + "_" + e.toString());
+            Log.e("creating Directory error", packageDirectory.toString() + "_" + e.toString());
         }
 
-        File directoryDate = new File(directory, dateFormat.format(new Date()));
+        File directoryDate = new File(packageDirectory, dateFormat.format(new Date()));
         try {
             if (!directoryDate.exists()) {
-                if (directoryDate.mkdirs())
+                if (directoryDate.mkdirs()) {
+                    deleteOldFiles();
                     log("Directory", directoryDate.toString() + " created ");
+                }
             }
         } catch (Exception e) {
             logE("creating Folder error", directoryDate + "_" + e.toString());
@@ -116,7 +108,7 @@ public class Utils {
         return directoryDate;
     }
 
-    public void readyAudioManager(Context context) {
+    void readyAudioManager(Context context) {
         if(mAudioManager == null) {
             append2file(notifyFile, "mAudioManager is NULL");
             mContext = context;
@@ -130,14 +122,14 @@ public class Utils {
         }
     }
 
-    public void log(String tag, String text) {
+    void log(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
         String where = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber();
         Log.w(tag , where + " " + text);
     }
 
-    public void logE(String tag, String text) {
+    void logE(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
         String where = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber();
@@ -160,5 +152,35 @@ public class Utils {
         toastMessage.setPadding(4,4,24,4);
         toastView.setBackgroundColor(Color.YELLOW);
         toast.show();
+    }
+
+    /* delete old packageDirectory / files if storage is less than xx */
+    public void deleteOldFiles() {
+
+        String weekAgo = dateFormat.format(System.currentTimeMillis() - 3*24*60*60*1000L);
+        File[] files = getDirectoryList(packageDirectory);
+        Collator myCollator = Collator.getInstance();
+        for (File file : files) {
+            String shortFileName = file.getName();
+            if (myCollator.compare(shortFileName, weekAgo) < 0) {
+                deleteRecursive(file);
+            }
+        }
+    }
+
+    public File[] getDirectoryList(File fullPath) {
+        File[] files = fullPath.listFiles();
+//        log("# of files", "in dir : " + files.length);
+        return files;
+    }
+
+    /* delete directory and files under that directory */
+    public void deleteRecursive(File fileOrDirectory) {
+//        Log.w("deleteRecursive",fileOrDirectory.toString());
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child);
+            }
+        fileOrDirectory.delete();
     }
 }

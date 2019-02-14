@@ -19,7 +19,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 class PrepareLists {
 
-    public void read () {
+    void read () {
 
         utils.log("1", "read()");
         File storage = Environment.getExternalStorageDirectory();

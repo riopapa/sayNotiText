@@ -6,6 +6,7 @@ import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.urrecliner.andriod.saynotitext.Vars.Booted;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.mActivity;
@@ -45,13 +47,17 @@ public class MainActivity extends AppCompatActivity{
         utils = new Utils();
         mActivity = this;
         mContext = this;
+        Log.w("onCreate","Started");
 
         if (PermissionProvider.isNotReady(getApplicationContext(), this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
                 PermissionProvider.isNotReady(getApplicationContext(), this,
                         Manifest.permission.READ_CONTACTS) ||
                 PermissionProvider.isNotReady(getApplicationContext(), this,
+                        Manifest.permission.RECEIVE_BOOT_COMPLETED) ||
+                PermissionProvider.isNotReady(getApplicationContext(), this,
                         Manifest.permission.READ_PHONE_STATE)) {
+            Log.e("Permission","NOT GRANTED");
             Toast.makeText(getApplicationContext(), "Check android permission",
                     Toast.LENGTH_LONG).show();
             finish();
@@ -59,9 +65,8 @@ public class MainActivity extends AppCompatActivity{
             android.os.Process.killProcess(android.os.Process.myPid());
         }
 
-        boolean isPermissionAllowed = isNotificationAllowed();
 
-        if (!isPermissionAllowed) {
+        if (!isNotificationAllowed()) {
             utils.customToast("안드로이드 알림에서 sayNotiText 를 허가해 주세요.", Toast.LENGTH_LONG);
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
@@ -106,7 +111,14 @@ public class MainActivity extends AppCompatActivity{
                 updateIntent.putExtra("isUpdate", true);
                 startService(updateIntent);
             }
-            }, 1000);
+            }, 100);
+        if (Booted != null) {
+            Booted = null;
+            Intent i = new Intent(mContext, MainActivity.class);
+            i.addCategory("android.intent.category.HOME");
+            i.setFlags(Intent.FLAG_FROM_BACKGROUND);
+            startActivity(i);
+        }
     }
 
     private void setSeekBarPitch() {

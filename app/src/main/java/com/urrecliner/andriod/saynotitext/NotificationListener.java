@@ -87,8 +87,8 @@ public class NotificationListener extends NotificationListenerService {
         if (eTitle == null && eText == null)
             return;
         if (eText != null) {
-            if (eText.length() > 200) {
-                eText = eText.substring(0, 200) + ". 등등등";
+            if (eText.length() > 250) {
+                eText = eText.substring(0, 250) + ". 등등등";
             }
             eText = eText.replaceAll("\n\n","|");
             eText = eText.replaceAll("\n","|");
@@ -115,7 +115,7 @@ public class NotificationListener extends NotificationListenerService {
                 speakANDLog(packageCode,  packageCode + " (메세지입니다) " + eText);
                 break;
             case SM_SMS :
-                saySMS(packageCode, eTitle, eText, sbn);
+                saySMS(packageCode, eTitle, eText);
                 break;
             case TT_TITLE_TEXT :
                 sayTitleText(packageCode, eTitle, eText);
@@ -124,10 +124,7 @@ public class NotificationListener extends NotificationListenerService {
                 sayAndroid(packageCode, eTitle, eText);
                 break;
             default :
-                if (eTitle.contains("Vaccine")) {
-                // ignore
-                }
-                else {
+                if (eTitle != null && !eTitle.contains("Vaccine")) {
                     speakANDLog("unknown " + packageName, "title:" + eTitle + "_text:" + eText);
                 }
                 break;
@@ -166,10 +163,9 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    private void saySMS(String packageCode, String eTitle, String eText, StatusBarNotification sbn) {
+    private void saySMS(String packageCode, String eTitle, String eText) {
 
         smsCount++;
-        final String filename = "SMS_log.txt";
         if (isNumberOnly(eTitle)) {
             return;
         }
@@ -227,9 +223,6 @@ public class NotificationListener extends NotificationListenerService {
             }
             text2Speech.speak("잠시만요 " + text);
         }
-        if (text.length() > 120) {
-            text = text.substring(0,120);
-        }
         String filename = tag + ".txt";
         utils.append2file(filename, text);
     }
@@ -256,9 +249,8 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean isNumberOnly(String who) {
-        String temp = who.replaceAll("[0-9]|-()|\\s","");   // https://regex101.com/
-        if (temp.length() <= 2)
-            return true;
-        return false;
+        String regex = "[0-9]|-()|\\s";
+        String temp = who.replaceAll(regex,"");
+        return temp.length() <= 2;
     }
 }

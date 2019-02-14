@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!--<uses-permission android:name="android.permission.INTERACT_ACROSS_USERS"/>-->
 
     <application android:icon="@mipmap/ic_launcher"
@@ -29,6 +30,11 @@
             </intent-filter>
         </service>
         <service android:name=".NotificationService"/>
+        <receiver android:name=".BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
     <!--android:supportsRtl="true"-->

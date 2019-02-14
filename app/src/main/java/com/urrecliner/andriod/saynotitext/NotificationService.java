@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
@@ -27,6 +28,7 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate() {
+        Log.w("NotiSVC","Started");
         super.onCreate();
         mContext = this;
         if (null != mRemoteViews) {
@@ -46,7 +48,7 @@ public class NotificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         int operation = intent.getIntExtra("operation", -1);
         boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
-        createNotification(); 
+        createNotification();
         if (isUpdate) {
             updateRemoteViews();
             startForeground(100, mBuilder.build());
