@@ -19,7 +19,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.ttsSpeed;
 
 class Text2Speech {
 
-    String notifyFile = "notification.txt";
+    private String notifyFile = "notification.txt";
     private TextToSpeech mTTS;
 
     void initiateTTS(Context context) {
@@ -75,7 +75,7 @@ class Text2Speech {
         } catch (Exception e) {
             utils.append2file(notifyFile, "mAudioManager requestAudioFocus Error");
         }
-        ttsSpeak(text, TextToSpeech.QUEUE_ADD);
+        ttsSpeak(text);
         long delayTime = (long) ((float) (text.length() * 240) / ttsSpeed);
         new Timer().schedule(new TimerTask() {
             public void run() {
@@ -84,10 +84,10 @@ class Text2Speech {
         }, delayTime);
     }
 
-    private void ttsSpeak(String text, int queue) {
+    private void ttsSpeak(String text) {
         try {
             readyAudioTTS();
-            mTTS.speak(text, queue, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+            mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         } catch (Exception e) {
             utils.append2file(notifyFile, "justSpeak exception\n" + e.toString());
         }
@@ -116,11 +116,11 @@ class Text2Speech {
         mTTS.setPitch(ttsPitch);
         mTTS.setSpeechRate(ttsSpeed);
     }
-
-    void shutdown() {
-        mTTS.speak("_", TextToSpeech.QUEUE_FLUSH, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
-        mTTS.stop();
-        mTTS.shutdown();
-    }
+//
+//    void shutdown() {
+//        mTTS.speak("_", TextToSpeech.QUEUE_FLUSH, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+//        mTTS.stop();
+//        mTTS.shutdown();
+//    }
 
 }

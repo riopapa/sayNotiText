@@ -15,12 +15,12 @@
 - When tables are updated, press \[reload] button to apply
 - Speaking will be executed when (1) no silent mode or (2) bluetooth or earphone is connected regardless of silent mode. 
 
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="./screenshots/mainActivity.jpg" width=240 height=480>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="./screenshots/mainActivity1.jpg" width=240 height=480>
 
 <H3>Tables used</H3>
 
-- Location : /sdcard/download/download
+- Location : /sdcard/sayNotiText/tables
 - Files in that directory
 
     |text file| purpose|
@@ -28,16 +28,16 @@
     |kakaoIgnores| chatting group names to be ignored  |
     |kakaoPersons| chatting persons to be ignored |
     | packageIgnores | packageNames to be ignored |
-    |packageNames|convert packageNames into simple keyword|
+    |packageTables|convert packageTables<br>(refer next pharagraph)|
     |smsIgnores| phone numbers to be ignored |
     |systemIgnores|system informational message to be ignored|
-- names are compared in 'contain' not 'equals to', so you should describe with the consideration of unique name for each specific requirements
+- Names are compared in 'contain' not 'equals to', so you should describe with the consideration of unique name for each specific requirements. For example, in case of 'android.youtube' 'youtube' may be OK if you are sure 'youtube' is unique application identifier.
 
+<H3>packageTables format</H3>
 
-<H3>packageNames file format</H3>
-
-- it depends on real application name, some gives title and text and some others not
-    
+- Package Tables has different format than others. It contains three columns separated by semi-colon. 
+- It depends on real application name, some gives title and text and some others not
+- Whenever you want to give your own name, you can specify in keyword column.
     
 |type| keyword<br>examples | real application name| remarks|
 | --- | --- | --- |---|
@@ -49,8 +49,16 @@
 | to | magazine|apps.magazine|text only application |
 
 - multiple types can be specified in multiple lines
-- package based log file is created at */sdcard/sayNotiText/yyyy-mm-dd* folder, e.g, kakaoTalk.txt, telegram.txt
+- package based log file is created under */sdcard/sayNotiText/yyyy-mm-dd* folder, <br>for example <br>kakaoTalk.txt, telegram.txt<br>where file name is defined in keyword
 - You may update above table by reviewing these log files especially when you install new application with notifications.
+ 
+<H3>Table Edit</H3>
+ 
+- Press one of the table will show the table contents and you can edit them.
+- Save button will be shown while editing and after editing the table you can save the table contents and the all the tables will be reloaded
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="./screenshots/mainActivity2.jpg" width=240 height=480>
+
  
 <H3>Notification Bar</H3>
  

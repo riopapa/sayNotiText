@@ -10,6 +10,7 @@ public class Vars {
     static String[] packageTypes = null;
     static String[] packageCodes = null;
     static String[] packageNames = null;
+    static String[] packageTables = null;
     static String[] kakaoIgnores = null;
     static String[] kakaoPersons = null;
     static String[] smsIgnores = null;

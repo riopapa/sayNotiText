@@ -28,7 +28,7 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate() {
-        Log.w("NotiSVC","Started");
+        Log.w("Noti SVC","Started");
         super.onCreate();
         mContext = this;
         if (null != mRemoteViews) {

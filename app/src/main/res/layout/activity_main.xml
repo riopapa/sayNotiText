@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="32dp"
+    android:paddingTop="16dp"
     android:paddingBottom="32dp"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="8dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
@@ -43,7 +43,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="8dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
@@ -73,24 +73,131 @@
             android:scrollbarStyle="outsideOverlay" />
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_kakaoIgnores"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="Kakao Ignores" />
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_kakaoPersons"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="Kakao Persons" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_packageIgnores"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="Package Ignores" />
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_packageTables"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="Package Tables" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_smsIgnores"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="SMS Ignores" />
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_systemIgnores"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="System Ignores" />
+    </LinearLayout>
 
     <Button
-        android:id="@+id/button_reload"
+        android:id="@+id/button_save"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        android:textAllCaps="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Reload Table" />
+        android:text="Save Table" />
 
-    <TextView
+    <EditText
         android:id="@+id/text_table"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:layout_height="400sp"
         android:gravity="center_horizontal"
-        android:scrollIndicators="right"
-        android:scrollbarAlwaysDrawHorizontalTrack="true"
-        android:scrollbars="vertical"
+        android:inputType="text|textMultiLine"
         android:text="Active say Table List"
         android:textAlignment="center"
         android:textSize="16sp" />
 
 </LinearLayout>
+    <!--android:scrollIndicators="right"-->
+    <!--android:scrollbarAlwaysDrawHorizontalTrack="true"-->
+    <!--android:scrollbars="vertical"-->

@@ -103,7 +103,7 @@ public class NotificationListener extends NotificationListenerService {
         utils.append2file(notifyFile, "== Start == type: " + packageType + ", code: " + packageCode);
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
         String msgText = extras.getString(Notification.EXTRA_MESSAGES);
-        dumpExtras(eTitle, eSubT, eText, msgText);
+//        dumpExtras(eTitle, eSubT, eText, msgText);
 
         switch (packageType) {
             case KK_KAKAO :
@@ -121,12 +121,15 @@ public class NotificationListener extends NotificationListenerService {
                 sayTitleText(packageCode, eTitle, eText);
                 break;
             case AN_ANDROID :
-                sayAndroid(packageCode, eTitle, eText);
+                sayAndroid(packageName, eTitle, eText);
                 break;
             default :
                 if (eTitle != null && !eTitle.contains("Vaccine")) {
                     speakANDLog("unknown " + packageName, "title:" + eTitle + "_text:" + eText);
                 }
+                else
+                    dumpExtras(eTitle, eSubT, eText, msgText);
+
                 break;
         }
     }
@@ -143,10 +146,10 @@ public class NotificationListener extends NotificationListenerService {
             }
         }
     }
-    private void sayAndroid(String packageCode, String eTitle, String eText) {
+    private void sayAndroid(String packageName, String eTitle, String eText) {
         if (eTitle == null || eText == null || eText.equals("") || canBeIgnored(eTitle, systemIgnores) || canBeIgnored(eText, systemIgnores))
             return;
-        speakANDLog(packageCode,"eTitle ~" + eTitle + " eText~" + eText);
+        speakANDLog(packageName, " Title ~" + eTitle + " Text~" + eText);
     }
 
     private void sayTitleText(String packageCode, String eTitle, String eText) {
@@ -249,8 +252,8 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean isNumberOnly(String who) {
-        String regex = "[0-9]|-()|\\s";
-        String temp = who.replaceAll(regex,"");
+//        String regex = "[0-9]|-()|\\s";
+        String temp = who.replaceAll(getString(R.string.number_only),"");
         return temp.length() <= 2;
     }
 }

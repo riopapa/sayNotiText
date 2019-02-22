@@ -40,7 +40,8 @@ class Utils {
         List<String> lines = new ArrayList<>();
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            lines.add(line);
+            if (line.length()>0)
+                lines.add(line);
         }
         bufferedReader.close();
 
@@ -84,7 +85,7 @@ class Utils {
             }
         }
     }
-    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiTextLog");
+    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
     private File getTodayFolder() {
         try {
             if (!packageDirectory.exists()) {
