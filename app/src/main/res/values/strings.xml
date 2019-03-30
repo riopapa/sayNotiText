@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Say Notification Text</string>
+    <string name="number_only">[0-9]|-()|\s</string>
 </resources>
