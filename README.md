@@ -16,7 +16,7 @@
 - Speaking will be executed when (1) no silent mode or (2) bluetooth or earphone is connected regardless of silent mode. 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="./screenshots/mainActivity1.jpg" width=240 height=480>
+    <img src="./screenshots/mainActivity1.jpg" width=400 height=800>
 
 <H3>Tables used</H3>
 
@@ -37,7 +37,7 @@
 
 - Package Tables has different format than others. It contains three columns separated by semi-colon. 
 - It depends on real application name, some gives title and text and some others not
-- Whenever you want to give your own name, you can specify in keyword column.
+- Whenever you want to give your own name, you can specify in keyword column
     
 |type| keyword<br>examples | real application name| remarks|
 | --- | --- | --- |---|
@@ -48,6 +48,7 @@
 | an | android| android | android messages|
 | to | magazine|apps.magazine|text only application |
 
+
 - multiple types can be specified in multiple lines
 - package based log file is created under */sdcard/sayNotiText/yyyy-mm-dd* folder, <br>for example <br>kakaoTalk.txt, telegram.txt<br>where file name is defined in keyword
 - You may update above table by reviewing these log files especially when you install new application with notifications.
@@ -57,14 +58,14 @@
 - Press one of the table will show the table contents and you can edit them.
 - Save button will be shown while editing and after editing the table you can save the table contents and the all the tables will be reloaded
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="./screenshots/mainActivity2.jpg" width=240 height=480>
+    <img src="./screenshots/mainActivity2.jpg" width="400" height="800">
 
  
 <H3>Notification Bar</H3>
  
 - Press <img src="./app/src/main/res/mipmap-xxhdpi/ic_reloading.png" width=32 height=32> will reload tables if you had changed some
 - Press <img src="./app/src/main/res/mipmap-xxhdpi/ic_stop_say.png" width=32 height=32> to stop immediately while it says notification
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./screenshots/notificationBar.png" width=240 height=40>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./screenshots/notificationBar.png" width=320 height=60>
 
 <H1>Comments</H1>
 

@@ -41,9 +41,8 @@ public class NotificationListener extends NotificationListenerService {
     //    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        if (sbn != null) {
+        if (sbn != null)
             addNotification(sbn);
-        }
     }
 
     //    @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -100,7 +99,7 @@ public class NotificationListener extends NotificationListenerService {
         }
         lastTimeLog = nowTimeLog;
 
-        utils.append2file(notifyFile, "== Start == type: " + packageType + ", code: " + packageCode);
+//        utils.append2file(notifyFile, "== Start type: " + packageType + ", code: " + packageCode);
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
         String msgText = extras.getString(Notification.EXTRA_MESSAGES);
 //        dumpExtras(eTitle, eSubT, eText, msgText);
@@ -153,28 +152,21 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayTitleText(String packageCode, String eTitle, String eText) {
-        if (packageCode.equals("밴드")) {
-            if (eTitle.contains("읽지 않은"))
+        if (packageCode.equals("밴드") && eTitle.contains("읽지 않은"))
                 return;
-        }
-        else if (packageCode.equals("씨티은행")) {
-            if (eTitle.contains("Vaccine"))
+        if (packageCode.equals("씨티은행") && eTitle.contains("Vaccine"))
                 return;
-        }
-        if (eText != null) {
+        if (eText != null)
             speakANDLog(packageCode,packageCode + " 메세지입니다. " + eTitle + "_로 부터 " + eText);
-        }
     }
 
     private void saySMS(String packageCode, String eTitle, String eText) {
 
         smsCount++;
-        if (isNumberOnly(eTitle)) {
+        if (isPhoneNumber(eTitle))
             return;
-        }
-        if (canBeIgnored(eTitle, smsIgnores)) {
+        if (canBeIgnored(eTitle, smsIgnores))
             return;
-        }
         eText = eText.replace("[Web발신]","");
         speakANDLog(packageCode, eTitle + " 로부터 SMS 메세지가 왔어요 " + eText);
     }
@@ -194,18 +186,16 @@ public class NotificationListener extends NotificationListenerService {
 
     private String getPackageType(String packageName){
         for (int idx = 0; idx < packageNames.length; idx++) {
-            if (packageName.contains(packageNames[idx])) {
+            if (packageName.contains(packageNames[idx]))
                 return packageTypes[idx];
-            }
         }
         return "noType";
     }
 
     private String getPackageCode(String packageName){
         for (int idx = 0; idx < packageNames.length; idx++) {
-            if (packageName.contains(packageNames[idx])) {
+            if (packageName.contains(packageNames[idx]))
                 return packageCodes[idx];
-            }
         }
         return "noCode";
     }
@@ -251,7 +241,7 @@ public class NotificationListener extends NotificationListenerService {
         return false;
     }
 
-    private boolean isNumberOnly(String who) {
+    private boolean isPhoneNumber(String who) {
 //        String regex = "[0-9]|-()|\\s";
         String temp = who.replaceAll(getString(R.string.number_only),"");
         return temp.length() <= 2;

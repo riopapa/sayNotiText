@@ -126,16 +126,28 @@ class Utils {
     void log(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String where = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber();
-        Log.w(tag , where + " " + text);
+        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceShortName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
+        Log.w(tag, log);
     }
 
     void logE(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String where = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber();
-        Log.e("<" + tag + ">" , where + " " + text);
+        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceShortName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
+        Log.e("<" + tag + ">" , log);
     }
+
+    private String traceName (String s) {
+        if (s.equals("performResume") || s.equals("performCreate") || s.equals("callActivityOnResume") || s.equals("access$1200")
+                || s.equals("handleReceiver"))
+            return "";
+        else
+            return s + "> ";
+    }
+    private String traceShortName (String s) {
+        return s.substring(s.lastIndexOf(".")+1);
+    }
+
 
     void customToast  (String text, int length) {
 
@@ -156,7 +168,7 @@ class Utils {
     }
 
     /* delete old packageDirectory / files if storage is less than xx */
-    public void deleteOldFiles() {
+    private void deleteOldFiles() {
 
         String weekAgo = dateFormat.format(System.currentTimeMillis() - 3*24*60*60*1000L);
         File[] files = getDirectoryList(packageDirectory);
@@ -169,14 +181,14 @@ class Utils {
         }
     }
 
-    public File[] getDirectoryList(File fullPath) {
+    private File[] getDirectoryList(File fullPath) {
         File[] files = fullPath.listFiles();
 //        log("# of files", "in dir : " + files.length);
         return files;
     }
 
     /* delete directory and files under that directory */
-    public void deleteRecursive(File fileOrDirectory) {
+    private void deleteRecursive(File fileOrDirectory) {
 //        Log.w("deleteRecursive",fileOrDirectory.toString());
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles()) {
