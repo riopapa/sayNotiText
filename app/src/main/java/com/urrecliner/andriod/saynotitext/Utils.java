@@ -167,7 +167,7 @@ class Utils {
         toast.show();
     }
 
-    /* delete old packageDirectory / files if storage is less than xx */
+    /* delete old packageDirectory / files if storage is less than x days */
     private void deleteOldFiles() {
 
         String weekAgo = dateFormat.format(System.currentTimeMillis() - 3*24*60*60*1000L);
