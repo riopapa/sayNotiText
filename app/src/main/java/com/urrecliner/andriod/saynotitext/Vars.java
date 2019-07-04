@@ -8,7 +8,7 @@ import android.media.AudioManager;
 public class Vars {
     static String[] packageIgnores = null;
     static String[] packageTypes = null;
-    static String[] packageCodes = null;
+    static String[] packageShortNames = null;
     static String[] packageNames = null;
     static String[] packageTables = null;
     static String[] kakaoIgnores = null;
@@ -21,7 +21,6 @@ public class Vars {
     static Context mContext = null;
     static AudioManager mAudioManager = null;
     static AudioFocusRequest mFocusGain = null;
-//    static AudioFocusRequest mFocusLoss = null;
 
     static Text2Speech text2Speech = null;
     static float ttsPitch = 1.2f;

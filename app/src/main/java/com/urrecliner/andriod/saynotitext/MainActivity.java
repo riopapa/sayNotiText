@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity{
 //        for (int i = 0; i < packageNames.length - 1; i++) {
 //            if (packageTypes[i] != null) {
 //                packageSaying.append(String.format("\n%s ; %s ; %s",
-//                        packageTypes[i], packageCodes[i], packageNames[i]));
+//                        packageTypes[i], packageShortNames[i], packageNames[i]));
 //            }
 //        }
         TextView tV = findViewById(R.id.text_table);
@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity{
         }
         return false;
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

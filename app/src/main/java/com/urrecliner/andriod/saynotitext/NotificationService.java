@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -38,7 +37,6 @@ public class NotificationService extends Service {
         mRemoteViews = new RemoteViews(mContext.getPackageName(), R.layout.notification_bar);
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;

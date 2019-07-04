@@ -138,16 +138,16 @@ class Utils {
     }
 
     private String traceName (String s) {
-        if (s.equals("performResume") || s.equals("performCreate") || s.equals("callActivityOnResume") || s.equals("access$1200")
-                || s.equals("handleReceiver"))
-            return "";
-        else
-            return s + "> ";
+        String omits [] = { "performResume", "performCreate", "callActivityOnResume", "access$",
+                "handleReceiver", "handleMessage", "dispatchKeyEvent"};
+        for (String o : omits) {
+            if (s.contains(o)) return "";
+        }
+        return s + "> ";
     }
     private String traceShortName (String s) {
         return s.substring(s.lastIndexOf(".")+1);
     }
-
 
     void customToast  (String text, int length) {
 

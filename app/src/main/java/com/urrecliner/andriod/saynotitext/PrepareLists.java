@@ -9,7 +9,7 @@ import java.io.IOException;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
-import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
+import static com.urrecliner.andriod.saynotitext.Vars.packageShortNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
@@ -32,19 +32,19 @@ class PrepareLists {
         smsIgnores =  readParameterFile(directory + "smsIgnores.txt");
         systemIgnores =  readParameterFile(directory + "systemIgnores.txt");
 
-        packageCodes = new String[packageTables.length];
+        packageShortNames = new String[packageTables.length];
         packageTypes = new String[packageTables.length];
         packageNames = new String[packageTables.length];
         for (int idx = 0; idx < packageTables.length; idx++) {
             if (packageTables[idx].indexOf(";")>2) {    // line should contain ";"
                 String packageName[] = packageTables[idx].split(";");
                 packageTypes[idx] = packageName[0].trim();
-                packageCodes[idx] = packageName[1].trim();
+                packageShortNames[idx] = packageName[1].trim();
                 packageNames[idx] = packageName[2].trim();
             }
             else {
                 packageTypes[idx] = "";
-                packageCodes[idx] = "";
+                packageShortNames[idx] = "";
                 packageNames[idx] = "";
             }
         }

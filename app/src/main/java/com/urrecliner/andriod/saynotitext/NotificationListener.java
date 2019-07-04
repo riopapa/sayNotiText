@@ -10,12 +10,12 @@ import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.packageCodes;
+import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.andriod.saynotitext.Vars.packageShortNames;
+import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
-import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
 import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
@@ -63,21 +63,23 @@ public class NotificationListener extends NotificationListenerService {
             prepareLists.read();
             utils.append2file(notifyFile, "$$ PREPARE IS NULL " + ++listCount);
         }
-        String packageName = sbn.getPackageName().toLowerCase();
-        String packageCode, packageType;
+        String packageFullName = sbn.getPackageName().toLowerCase();
+        String packageShortName, packageType;
         final String TT_TITLE_TEXT = "tt";
         final String SM_SMS = "sm";
         final String KK_KAKAO = "kk";
         final String AN_ANDROID = "an";
         final String TO_TEXT_ONLY = "to";
-        if (packageName.equals("")) {
+        if (packageFullName.equals("")) {
             return;
         }
-        if(canBeIgnored(packageName, packageIgnores))
+        if(canBeIgnored(packageFullName, packageIgnores))
             return;
 
-        packageType = getPackageType(packageName);
-        packageCode = getPackageCode(packageName);
+        packageType = getPackageType(packageFullName);
+        packageShortName = getPackageShortName(packageFullName);
+        if (packageFullName.equals("android"))
+            packageType = AN_ANDROID;
 
         Notification mNotification=sbn.getNotification();
         Bundle extras = mNotification.extras;
@@ -99,7 +101,7 @@ public class NotificationListener extends NotificationListenerService {
         }
         lastTimeLog = nowTimeLog;
 
-//        utils.append2file(notifyFile, "== Start type: " + packageType + ", code: " + packageCode);
+//        utils.append2file(notifyFile, "== Start type: " + packageType + ", code: " + packageShortName);
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
         String msgText = extras.getString(Notification.EXTRA_MESSAGES);
 //        dumpExtras(eTitle, eSubT, eText, msgText);
@@ -107,24 +109,24 @@ public class NotificationListener extends NotificationListenerService {
         switch (packageType) {
             case KK_KAKAO :
                 if (eText != null) {
-                    sayKakao(packageCode, eTitle, eSubT, eText);
+                    sayKakao(packageShortName, eTitle, eSubT, eText);
                 }
                 break;
             case TO_TEXT_ONLY :
-                speakANDLog(packageCode,  packageCode + " (메세지입니다) " + eText);
+                speakANDLog(packageShortName,  packageShortName + " (메세지입니다) " + eText);
                 break;
             case SM_SMS :
-                saySMS(packageCode, eTitle, eText);
+                saySMS(packageShortName, eTitle, eText);
                 break;
             case TT_TITLE_TEXT :
-                sayTitleText(packageCode, eTitle, eText);
+                sayTitleText(packageShortName, eTitle, eText);
                 break;
             case AN_ANDROID :
-                sayAndroid(packageName, eTitle, eText);
+                sayAndroid(packageFullName, eTitle, eText);
                 break;
             default :
                 if (eTitle != null && !eTitle.contains("Vaccine")) {
-                    speakANDLog("unknown " + packageName, "title:" + eTitle + "_text:" + eText);
+                    speakANDLog("unknown " + packageFullName, "title:" + eTitle + "_text:" + eText);
                 }
                 else
                     dumpExtras(eTitle, eSubT, eText, msgText);
@@ -133,34 +135,35 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    private void sayKakao (String packageCode, String eTitle, String eSubT, String eText) {
+    private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
         if (eSubT != null) {
             if (!canBeIgnored(eSubT, kakaoIgnores)) { // eSub: 채팅방
-                speakANDLog(packageCode, "카카오톡 " + eSubT + "_단톡방 " + eTitle + "_님으로부터." + eText);
+                speakANDLog(packageShortName, "카카오톡 " + eSubT + "_단톡방 " + eTitle + "_님으로부터." + eText);
             }
         }
         else {
             if(!canBeIgnored(eTitle, kakaoPersons)) {  // eTitle: 개인 이름
-                speakANDLog(packageCode, "카카오톡." + eTitle + "_님으로 부터._" + eText);
+                speakANDLog(packageShortName, "카카오톡." + eTitle + "_님으로 부터._" + eText);
             }
         }
     }
-    private void sayAndroid(String packageName, String eTitle, String eText) {
+    private void sayAndroid(String packageFullName, String eTitle, String eText) {
+
         if (eTitle == null || eText == null || eText.equals("") || canBeIgnored(eTitle, systemIgnores) || canBeIgnored(eText, systemIgnores))
             return;
-        speakANDLog(packageName, " Title ~" + eTitle + " Text~" + eText);
+        speakANDLog(packageFullName, " Title ~" + eTitle + " Text~" + eText);
     }
 
-    private void sayTitleText(String packageCode, String eTitle, String eText) {
-        if (packageCode.equals("밴드") && eTitle.contains("읽지 않은"))
+    private void sayTitleText(String packageShortName, String eTitle, String eText) {
+        if (packageShortName.equals("밴드") && eTitle.contains("읽지 않은"))
                 return;
-        if (packageCode.equals("씨티은행") && eTitle.contains("Vaccine"))
+        if (packageShortName.equals("씨티은행") && eTitle.contains("Vaccine"))
                 return;
         if (eText != null)
-            speakANDLog(packageCode,packageCode + " 메세지입니다. " + eTitle + "_로 부터 " + eText);
+            speakANDLog(packageShortName,packageShortName + " 메세지입니다. " + eTitle + "_로 부터 " + eText);
     }
 
-    private void saySMS(String packageCode, String eTitle, String eText) {
+    private void saySMS(String packageShortName, String eTitle, String eText) {
 
         smsCount++;
         if (isPhoneNumber(eTitle))
@@ -168,7 +171,7 @@ public class NotificationListener extends NotificationListenerService {
         if (canBeIgnored(eTitle, smsIgnores))
             return;
         eText = eText.replace("[Web발신]","");
-        speakANDLog(packageCode, eTitle + " 로부터 SMS 메세지가 왔어요 " + eText);
+        speakANDLog(packageShortName, eTitle + " 로부터 SMS 메세지가 왔어요 " + eText);
     }
     
     private void dumpExtras(String eTitle, String eSubT, String eText, String msgText){
@@ -184,18 +187,18 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) { }
 
-    private String getPackageType(String packageName){
+    private String getPackageType(String packageFullName){
         for (int idx = 0; idx < packageNames.length; idx++) {
-            if (packageName.contains(packageNames[idx]))
+            if (packageFullName.contains(packageNames[idx]))
                 return packageTypes[idx];
         }
         return "noType";
     }
 
-    private String getPackageCode(String packageName){
+    private String getPackageShortName(String packageFullName){
         for (int idx = 0; idx < packageNames.length; idx++) {
-            if (packageName.contains(packageNames[idx]))
-                return packageCodes[idx];
+            if (packageFullName.contains(packageNames[idx]))
+                return packageShortNames[idx];
         }
         return "noCode";
     }
