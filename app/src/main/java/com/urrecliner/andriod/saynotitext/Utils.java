@@ -32,7 +32,6 @@ class Utils {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
-    private static final String notifyFile = "notification.txt";
 
     String[] readLines(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
@@ -48,7 +47,7 @@ class Utils {
         return lines.toArray(new String[0]);
     }
 
-    String getTimeStamp() {
+    private String getTimeStamp() {
         return timeFormat.format(new Date());
     }
 
@@ -111,7 +110,7 @@ class Utils {
 
     void readyAudioManager(Context context) {
         if(mAudioManager == null) {
-            append2file(notifyFile, "mAudioManager is NULL");
+//            append2file(notifyFile, "mAudioManager is NULL");
             mContext = context;
             try {
                 mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -126,26 +125,27 @@ class Utils {
     void log(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceShortName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
+        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.w(tag, log);
     }
 
     void logE(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceShortName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
+        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.e("<" + tag + ">" , log);
     }
 
     private String traceName (String s) {
-        String omits [] = { "performResume", "performCreate", "callActivityOnResume", "access$",
+        String [] omits = { "performResume", "performCreate", "callActivityOnResume", "access$",
+                "onCreate", "onNotificationPosted", "NotificationListener",
                 "handleReceiver", "handleMessage", "dispatchKeyEvent"};
         for (String o : omits) {
             if (s.contains(o)) return "";
         }
         return s + "> ";
     }
-    private String traceShortName (String s) {
+    private String traceClassName(String s) {
         return s.substring(s.lastIndexOf(".")+1);
     }
 

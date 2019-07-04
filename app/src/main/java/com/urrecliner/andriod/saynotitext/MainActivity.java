@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity{
     private SeekBar mSeekBarSpeed;
     private TextView mPitchView;
     private TextView mSpeedView;
-    private boolean inEditMode = false;
-    private int nowTableId = 0;
     private String nowFileName;
     private View nowView;
 
@@ -77,8 +75,6 @@ public class MainActivity extends AppCompatActivity{
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
-//
-//        Button mButtonReload = findViewById(R.id.button_reload);
 
         mSeekBarPitch = findViewById(R.id.seek_bar_pitch);
         mSeekBarSpeed = findViewById(R.id.seek_bar_speed);
@@ -86,18 +82,6 @@ public class MainActivity extends AppCompatActivity{
         mPitchView = findViewById(R.id.bar_pitch);
         mSpeedView = findViewById(R.id.bar_speed);
 
-        utils.append2file("timestamp.txt", "initial load");
-//        mButtonReload.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                utils.log("hey","I started");
-//                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
-//                updateIntent.putExtra("isUpdate", true);
-//                startService(updateIntent);
-//                nowView.setAlpha(1f);
-//                prepareTable();
-//            }
-//        });
         setSeekBarPitch();
         setSeekBarSpeed();
         prepareLists = new PrepareLists();
@@ -178,33 +162,14 @@ public class MainActivity extends AppCompatActivity{
     private void prepareTable() {
         utils.append2file("timestamp.txt", "prepare");
         prepareLists.read();
-//        StringBuilder packageSaying = new StringBuilder("\n[ sayTable ]\n");
-//        for (int i = 0; i < packageNames.length - 1; i++) {
-//            if (packageTypes[i] != null) {
-//                packageSaying.append(String.format("\n%s ; %s ; %s",
-//                        packageTypes[i], packageShortNames[i], packageNames[i]));
-//            }
-//        }
         TextView tV = findViewById(R.id.text_table);
         tV.setText("");
-//        text_table.setText(packageSaying.toString());
-
-        Toast.makeText(getApplicationContext(),"Reading param files\n" +
+        Toast.makeText(getApplicationContext(),"Reading param files\n" + "\npackageTables: " + packageTables.length +
                         "\npackageIgnores: " + packageIgnores.length + "\nkakaoIgnores: " + kakaoIgnores.length +
                         "\nkakaoPersons: " + kakaoPersons.length + "\nsmsIgnores: " + smsIgnores.length +
                         "\nsystemIgnores: " + systemIgnores.length
-                ,Toast.LENGTH_SHORT).show();
+                ,Toast.LENGTH_LONG).show();
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        text2Speech.shutdown();
-//        utils.customToast("Now Purge the app",Toast.LENGTH_SHORT);
-//        finish();
-//        System.exit(0);
-//        android.os.Process.killProcess(android.os.Process.myPid());
-//    }
 
     void set_Save_Table() {
         Button bt = findViewById(R.id.button_save);
@@ -220,6 +185,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
     public void edit_table(View v) {
+        int nowTableId;
         nowView = v;
         nowTableId = v.getId();
         v.setAlpha(0.5f);
@@ -249,8 +215,7 @@ public class MainActivity extends AppCompatActivity{
 
         nowFileName = fileName;
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < table.length; i++)
-            sb.append(table[i] + "\n");
+        for (String s : table) sb.append(s).append("\n");
         String text = sb.toString()+"\n";
         TextView tv = findViewById(R.id.text_table);
         tv.setText(text);

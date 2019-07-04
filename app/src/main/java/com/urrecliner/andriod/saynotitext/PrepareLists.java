@@ -1,17 +1,15 @@
 package com.urrecliner.andriod.saynotitext;
 
 import android.os.Environment;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.andriod.saynotitext.Vars.mContext;
-import static com.urrecliner.andriod.saynotitext.Vars.packageShortNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
+import static com.urrecliner.andriod.saynotitext.Vars.packageShortNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
 import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
@@ -32,23 +30,26 @@ class PrepareLists {
         smsIgnores =  readParameterFile(directory + "smsIgnores.txt");
         systemIgnores =  readParameterFile(directory + "systemIgnores.txt");
 
+//        utils.log("packageTables", "len="+packageTables.length);
         packageShortNames = new String[packageTables.length];
         packageTypes = new String[packageTables.length];
         packageNames = new String[packageTables.length];
         for (int idx = 0; idx < packageTables.length; idx++) {
-            if (packageTables[idx].indexOf(";")>2) {    // line should contain ";"
-                String packageName[] = packageTables[idx].split(";");
-                packageTypes[idx] = packageName[0].trim();
-                packageShortNames[idx] = packageName[1].trim();
-                packageNames[idx] = packageName[2].trim();
+            if (packageTables[idx].indexOf(";")>1) {    // line should contain ";"
+                String []strings = packageTables[idx].split(";");
+                packageTypes[idx] = strings[0].trim();
+                packageShortNames[idx] = strings[1].trim();
+                packageNames[idx] = strings[2].trim();
+//                utils.log("tbl "+idx, packageTypes[idx]+";"+packageShortNames[idx]+";"+packageNames[idx]);
             }
             else {
+                utils.logE("no good","packageTable "+ packageTables[idx]);
                 packageTypes[idx] = "";
                 packageShortNames[idx] = "";
                 packageNames[idx] = "";
             }
         }
-        Toast.makeText(mContext, "PrepareList reloaded", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(mContext, "PrepareList reloaded", Toast.LENGTH_SHORT).show();
     }
 
     private String[] readParameterFile(String filename) {

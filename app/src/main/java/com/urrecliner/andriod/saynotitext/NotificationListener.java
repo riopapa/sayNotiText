@@ -9,12 +9,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.andriod.saynotitext.Vars.packageShortNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
+import static com.urrecliner.andriod.saynotitext.Vars.packageShortNames;
+import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
 import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
 import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
@@ -31,7 +33,7 @@ public class NotificationListener extends NotificationListenerService {
     int utilsCount = 0;
     int speechCount = 0;
     int listCount  = 0;
-    String lastTimeLog = "";
+    long lastTime = 0;
 
     @Override
     public void onCreate() {
@@ -45,13 +47,23 @@ public class NotificationListener extends NotificationListenerService {
             addNotification(sbn);
     }
 
-    //    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void addNotification(StatusBarNotification sbn)  {
+
+        final String TT_TITLE_TEXT = "tt";
+        final String SM_SMS = "sm";
+        final String KK_KAKAO = "kk";
+        final String AN_ANDROID = "an";
+        final String TO_TEXT_ONLY = "to";
 
         if (utils == null) {
             utils = new Utils();
             utils.append2file(notifyFile, "$$ UTIL IS NULL AND RELOADED " + ++utilsCount);
         }
+        long nowTime = System.currentTimeMillis();
+        if (lastTime == nowTime)
+            return;
+        lastTime = nowTime;
+
         if (text2Speech == null) {
             utils.append2file(notifyFile, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
             text2Speech = new Text2Speech();
@@ -61,25 +73,24 @@ public class NotificationListener extends NotificationListenerService {
         if (packageIgnores == null) {
             prepareLists = new PrepareLists();
             prepareLists.read();
+            utils.log("readqq", "len="+packageTables.length);
             utils.append2file(notifyFile, "$$ PREPARE IS NULL " + ++listCount);
         }
+//        Log.w("then","last time 2 "+lastTime);
+
         String packageFullName = sbn.getPackageName().toLowerCase();
-        String packageShortName, packageType;
-        final String TT_TITLE_TEXT = "tt";
-        final String SM_SMS = "sm";
-        final String KK_KAKAO = "kk";
-        final String AN_ANDROID = "an";
-        final String TO_TEXT_ONLY = "to";
+        if (packageFullName.contains("adguard"))
+            return;
+        String packageNickName, packageType;
         if (packageFullName.equals("")) {
             return;
         }
         if(canBeIgnored(packageFullName, packageIgnores))
             return;
+        Log.w("packageFullName",packageFullName);
 
         packageType = getPackageType(packageFullName);
-        packageShortName = getPackageShortName(packageFullName);
-        if (packageFullName.equals("android"))
-            packageType = AN_ANDROID;
+        packageNickName = getPackageNickName(packageFullName);
 
         Notification mNotification=sbn.getNotification();
         Bundle extras = mNotification.extras;
@@ -91,35 +102,28 @@ public class NotificationListener extends NotificationListenerService {
             if (eText.length() > 250) {
                 eText = eText.substring(0, 250) + ". 등등등";
             }
-            eText = eText.replaceAll("\n\n","|");
-            eText = eText.replaceAll("\n","|");
+            eText = eText.replaceAll("\n\n","|").replaceAll("\n","|");
         }
-        String nowTimeLog = utils.getTimeStamp();
-        if (nowTimeLog.equals(lastTimeLog)) {   // due to "메세지","메세지 보기"
-//            utils.append2file(notifyFile, "@@@ 동일시각에 두번 title~" + eTitle + ", text~" + eText );
-            return;
-        }
-        lastTimeLog = nowTimeLog;
 
-//        utils.append2file(notifyFile, "== Start type: " + packageType + ", code: " + packageShortName);
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
         String msgText = extras.getString(Notification.EXTRA_MESSAGES);
+
 //        dumpExtras(eTitle, eSubT, eText, msgText);
 
         switch (packageType) {
             case KK_KAKAO :
                 if (eText != null) {
-                    sayKakao(packageShortName, eTitle, eSubT, eText);
+                    sayKakao(packageNickName, eTitle, eSubT, eText);
                 }
                 break;
             case TO_TEXT_ONLY :
-                speakANDLog(packageShortName,  packageShortName + " (메세지입니다) " + eText);
+                speakANDLog(packageNickName,  packageNickName + " (메세지입니다) " + eText);
                 break;
             case SM_SMS :
-                saySMS(packageShortName, eTitle, eText);
+                saySMS(packageNickName, eTitle, eText);
                 break;
             case TT_TITLE_TEXT :
-                sayTitleText(packageShortName, eTitle, eText);
+                sayTitleText(packageNickName, eTitle, eText);
                 break;
             case AN_ANDROID :
                 sayAndroid(packageFullName, eTitle, eText);
@@ -195,8 +199,10 @@ public class NotificationListener extends NotificationListenerService {
         return "noType";
     }
 
-    private String getPackageShortName(String packageFullName){
+    private String getPackageNickName(String packageFullName){
+//        utils.log("readGet", "lenxx="+packageTables.length);
         for (int idx = 0; idx < packageNames.length; idx++) {
+//            utils.log("idx"+idx,packageNames[idx]);
             if (packageFullName.contains(packageNames[idx]))
                 return packageShortNames[idx];
         }

@@ -8,9 +8,9 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-public class PermissionProvider {
+class PermissionProvider {
 
-     static public boolean isNotReady(Context c, Activity a, String Permission) {
+     static boolean isNotReady(Context c, Activity a, String Permission) {
         if (ContextCompat.checkSelfPermission(c, Permission)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(a,
