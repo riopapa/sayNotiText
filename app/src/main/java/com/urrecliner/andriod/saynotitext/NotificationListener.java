@@ -14,9 +14,8 @@ import android.util.Log;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
-import static com.urrecliner.andriod.saynotitext.Vars.packageShortNames;
-import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
+import static com.urrecliner.andriod.saynotitext.Vars.packageIncludeNames;
+import static com.urrecliner.andriod.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
 import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
 import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
@@ -28,12 +27,11 @@ import static com.urrecliner.andriod.saynotitext.Vars.utils;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class NotificationListener extends NotificationListenerService {
 
-    final String notifyFile = "notification.txt";
-    int smsCount = 0;
-    int utilsCount = 0;
+//    int utilsCount = 0;
     int speechCount = 0;
     int listCount  = 0;
     long lastTime = 0;
+    final String logID = "notiListener";
 
     @Override
     public void onCreate() {
@@ -57,7 +55,7 @@ public class NotificationListener extends NotificationListenerService {
 
         if (utils == null) {
             utils = new Utils();
-            utils.append2file(notifyFile, "$$ UTIL IS NULL AND RELOADED " + ++utilsCount);
+//            utils.log(logID, "$$ UTIL IS NULL AND RELOADED " + ++utilsCount);
         }
         long nowTime = System.currentTimeMillis();
         if (lastTime == nowTime)
@@ -65,7 +63,7 @@ public class NotificationListener extends NotificationListenerService {
         lastTime = nowTime;
 
         if (text2Speech == null) {
-            utils.append2file(notifyFile, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
+            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
         }
@@ -73,8 +71,7 @@ public class NotificationListener extends NotificationListenerService {
         if (packageIgnores == null) {
             prepareLists = new PrepareLists();
             prepareLists.read();
-            utils.log("readqq", "len="+packageTables.length);
-            utils.append2file(notifyFile, "$$ PREPARE IS NULL " + ++listCount);
+            utils.log(logID,"$$ PREPARE IS NULL " + ++listCount);
         }
 //        Log.w("then","last time 2 "+lastTime);
 
@@ -164,12 +161,11 @@ public class NotificationListener extends NotificationListenerService {
         if (packageShortName.equals("씨티은행") && eTitle.contains("Vaccine"))
                 return;
         if (eText != null)
-            speakANDLog(packageShortName,packageShortName + " 메세지입니다. " + eTitle + "_로 부터 " + eText);
+            speakANDLog(packageShortName,packageShortName + " 메세지입니다. " + eTitle + "_로 부터. " + eText);
     }
 
     private void saySMS(String packageShortName, String eTitle, String eText) {
 
-        smsCount++;
         if (isPhoneNumber(eTitle))
             return;
         if (canBeIgnored(eTitle, smsIgnores))
@@ -185,28 +181,26 @@ public class NotificationListener extends NotificationListenerService {
             eText = eText.replaceAll("\n", "|");
         }
         String dumpText = "TIT:" + eTitle + ", SUBT:" + eSubT + ", TEXT:" + eText + ", MESSAGE:" + msgText;
-        utils.append2file(notifyFile, dumpText);
+        utils.log(logID, dumpText);
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) { }
 
     private String getPackageType(String packageFullName){
-        for (int idx = 0; idx < packageNames.length; idx++) {
-            if (packageFullName.contains(packageNames[idx]))
+        for (int idx = 0; idx < packageIncludeNames.length; idx++) {
+            if (packageFullName.contains(packageIncludeNames[idx]))
                 return packageTypes[idx];
         }
         return "noType";
     }
 
     private String getPackageNickName(String packageFullName){
-//        utils.log("readGet", "lenxx="+packageTables.length);
-        for (int idx = 0; idx < packageNames.length; idx++) {
-//            utils.log("idx"+idx,packageNames[idx]);
-            if (packageFullName.contains(packageNames[idx]))
-                return packageShortNames[idx];
+        for (int idx = 0; idx < packageIncludeNames.length; idx++) {
+            if (packageFullName.contains(packageIncludeNames[idx]))
+                return packageNickNames[idx];
         }
-        return "noCode";
+        return "noNick";
     }
 
     private boolean canBeIgnored(String notiText, String [] Ignores) {
@@ -219,7 +213,7 @@ public class NotificationListener extends NotificationListenerService {
     private void speakANDLog(String tag, String text) {
         if (isHeadphonesPlugged() || isRingerON()) {
             if (text2Speech == null) {
-                utils.append2file(notifyFile, "tts is null, reCreated");
+                utils.log(logID, "tts is null, reCreated");
                 text2Speech = new Text2Speech();
                 text2Speech.initiateTTS(getApplicationContext());
             }

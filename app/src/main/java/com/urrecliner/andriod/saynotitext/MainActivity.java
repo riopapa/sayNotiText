@@ -54,24 +54,10 @@ public class MainActivity extends AppCompatActivity{
         mContext = this;
         Log.w("onCreate","Started");
 
-        if (PermissionProvider.isNotReady(getApplicationContext(), this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                PermissionProvider.isNotReady(getApplicationContext(), this,
-                        Manifest.permission.READ_CONTACTS) ||
-                PermissionProvider.isNotReady(getApplicationContext(), this,
-                        Manifest.permission.RECEIVE_BOOT_COMPLETED) ||
-                PermissionProvider.isNotReady(getApplicationContext(), this,
-                        Manifest.permission.READ_PHONE_STATE)) {
-            Log.e("Permission","NOT GRANTED");
-            Toast.makeText(getApplicationContext(), "Check android permission",
-                    Toast.LENGTH_LONG).show();
-            finish();
-            System.exit(0);
-            android.os.Process.killProcess(android.os.Process.myPid());
-        }
+        verifyPermission();
 
         if (!isNotificationAllowed()) {
-            utils.customToast("안드로이드 알림에서 sayNotiText 를 허가해 주세요.", Toast.LENGTH_LONG);
+            utils.customToast("안드로이드 알림에서 sayNotiText 를 허가해 주세요.");
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
@@ -94,7 +80,6 @@ public class MainActivity extends AppCompatActivity{
         text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
 
         utils.readyAudioManager(getApplicationContext());
-//        utils.customToast("Initiated", Toast.LENGTH_SHORT);
 
         new Timer().schedule(new TimerTask() {
             public void run () {
@@ -109,6 +94,24 @@ public class MainActivity extends AppCompatActivity{
             i.addCategory("android.intent.category.HOME");
             i.setFlags(Intent.FLAG_FROM_BACKGROUND);
             startActivity(i);
+        }
+    }
+
+    private void verifyPermission() {
+        if (PermissionProvider.isNotReady(getApplicationContext(), this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                PermissionProvider.isNotReady(getApplicationContext(), this,
+                        Manifest.permission.READ_CONTACTS) ||
+                PermissionProvider.isNotReady(getApplicationContext(), this,
+                        Manifest.permission.RECEIVE_BOOT_COMPLETED) ||
+                PermissionProvider.isNotReady(getApplicationContext(), this,
+                        Manifest.permission.READ_PHONE_STATE)) {
+            Log.e("Permission","NOT GRANTED");
+            Toast.makeText(getApplicationContext(), "Check android permission",
+                    Toast.LENGTH_LONG).show();
+            finish();
+            System.exit(0);
+            android.os.Process.killProcess(android.os.Process.myPid());
         }
     }
 

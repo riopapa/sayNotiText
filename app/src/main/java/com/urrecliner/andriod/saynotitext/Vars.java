@@ -6,10 +6,10 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 
 public class Vars {
-    static String[] packageIgnores = null;
-    static String[] packageTypes = null;
-    static String[] packageShortNames = null;
-    static String[] packageNames = null;
+    static String[] packageIgnores = null;  // ignore some package messages
+    static String[] packageTypes = null;    // tt: text with title, to: text only, sm: sms ...
+    static String[] packageNickNames = null;
+    static String[] packageIncludeNames = null;
     static String[] packageTables = null;
     static String[] kakaoIgnores = null;
     static String[] kakaoPersons = null;

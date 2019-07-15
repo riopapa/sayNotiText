@@ -38,7 +38,6 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 //                contactName = getContactName(mContext, incomingNumber);
 //                if (contactName != null) {
 //                    speakCount = 0;
-//                    utils.customToast(contactName, Toast.LENGTH_LONG);
 ////                    startCalling(contactName);
 //                }
 //            }

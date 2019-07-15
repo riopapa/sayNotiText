@@ -31,7 +31,8 @@ import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
 class Utils {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss", Locale.KOREA);
+    private final String logFile = "log.txt";
 
     String[] readLines(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
@@ -39,8 +40,10 @@ class Utils {
         List<String> lines = new ArrayList<>();
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            if (line.length()>0)
+            line = line.trim();
+            if (line.length() > 3) {        // at least 3 characters for one line
                 lines.add(line);
+            }
         }
         bufferedReader.close();
 
@@ -68,7 +71,7 @@ class Utils {
             }
             StackTraceElement[] traces;
             traces = Thread.currentThread().getStackTrace();
-            String outText = "\n" + getTimeStamp() + " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " [[" + textLine + "]]\n";
+            String outText = "\n" + getTimeStamp() + " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " " + textLine + "\n";
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
@@ -86,14 +89,14 @@ class Utils {
     }
     private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
     private File getTodayFolder() {
-        try {
-            if (!packageDirectory.exists()) {
+        if (!packageDirectory.exists()) {
+            try {
+                //noinspection ResultOfMethodCallIgnored
                 packageDirectory.mkdirs();
+            } catch (Exception e) {
+                Log.e("creating Directory error", packageDirectory.toString() + "_" + e.toString());
             }
-        } catch (Exception e) {
-            Log.e("creating Directory error", packageDirectory.toString() + "_" + e.toString());
         }
-
         File directoryDate = new File(packageDirectory, dateFormat.format(new Date()));
         try {
             if (!directoryDate.exists()) {
@@ -110,7 +113,7 @@ class Utils {
 
     void readyAudioManager(Context context) {
         if(mAudioManager == null) {
-//            append2file(notifyFile, "mAudioManager is NULL");
+//            append2file(logFile, "mAudioManager is NULL");
             mContext = context;
             try {
                 mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -127,6 +130,7 @@ class Utils {
         traces = Thread.currentThread().getStackTrace();
         String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.w(tag, log);
+        append2file(logFile, log);
     }
 
     void logE(String tag, String text) {
@@ -134,6 +138,7 @@ class Utils {
         traces = Thread.currentThread().getStackTrace();
         String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.e("<" + tag + ">" , log);
+        append2file(logFile, "<ERR> "+log);
     }
 
     private String traceName (String s) {
@@ -149,16 +154,16 @@ class Utils {
         return s.substring(s.lastIndexOf(".")+1);
     }
 
-    void customToast  (String text, int length) {
+    void customToast (String text) {
 
-        Toast toast = Toast.makeText(mContext, text, length);
+        Toast toast = Toast.makeText(mContext, text, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER, 0,0);
         View toastView = toast.getView(); // This'll return the default View of the Toast.
 
         /* And now you can get the TextView of the default View of the Toast. */
         TextView toastMessage = toastView.findViewById(android.R.id.message);
         toastMessage.setTextSize(12);
-        toastMessage.setTextColor(Color.BLACK);
+        toastMessage.setTextColor(Color.GREEN);
         toastMessage.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_launcher, 0, 0, 0);
         toastMessage.setGravity(Gravity.CENTER_VERTICAL);
         toastMessage.setCompoundDrawablePadding(8);
@@ -169,9 +174,8 @@ class Utils {
 
     /* delete old packageDirectory / files if storage is less than x days */
     private void deleteOldFiles() {
-
-        String weekAgo = dateFormat.format(System.currentTimeMillis() - 3*24*60*60*1000L);
-        File[] files = getDirectoryList(packageDirectory);
+        String weekAgo = dateFormat.format(System.currentTimeMillis() - 4*24*60*60*1000L);
+        File[] files = packageDirectory.listFiles();
         Collator myCollator = Collator.getInstance();
         for (File file : files) {
             String shortFileName = file.getName();
@@ -181,19 +185,13 @@ class Utils {
         }
     }
 
-    private File[] getDirectoryList(File fullPath) {
-        File[] files = fullPath.listFiles();
-//        log("# of files", "in dir : " + files.length);
-        return files;
-    }
-
     /* delete directory and files under that directory */
     private void deleteRecursive(File fileOrDirectory) {
-//        Log.w("deleteRecursive",fileOrDirectory.toString());
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles()) {
                 deleteRecursive(child);
             }
+        //noinspection ResultOfMethodCallIgnored
         fileOrDirectory.delete();
     }
 }

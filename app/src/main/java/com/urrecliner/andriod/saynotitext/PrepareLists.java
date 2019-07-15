@@ -8,8 +8,8 @@ import java.io.IOException;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.packageNames;
-import static com.urrecliner.andriod.saynotitext.Vars.packageShortNames;
+import static com.urrecliner.andriod.saynotitext.Vars.packageIncludeNames;
+import static com.urrecliner.andriod.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
 import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
@@ -31,22 +31,24 @@ class PrepareLists {
         systemIgnores =  readParameterFile(directory + "systemIgnores.txt");
 
 //        utils.log("packageTables", "len="+packageTables.length);
-        packageShortNames = new String[packageTables.length];
+        packageNickNames = new String[packageTables.length];
         packageTypes = new String[packageTables.length];
-        packageNames = new String[packageTables.length];
+        packageIncludeNames = new String[packageTables.length];
         for (int idx = 0; idx < packageTables.length; idx++) {
             if (packageTables[idx].indexOf(";")>1) {    // line should contain ";"
                 String []strings = packageTables[idx].split(";");
                 packageTypes[idx] = strings[0].trim();
-                packageShortNames[idx] = strings[1].trim();
-                packageNames[idx] = strings[2].trim();
-//                utils.log("tbl "+idx, packageTypes[idx]+";"+packageShortNames[idx]+";"+packageNames[idx]);
+                packageNickNames[idx] = strings[1].trim();
+                packageIncludeNames[idx] = strings[2].trim();
+//                utils.log("tbl "+idx, packageTypes[idx]+";"+packageNickNames[idx]+";"+packageIncludeNames[idx]);
             }
             else {
-                utils.logE("no good","packageTable "+ packageTables[idx]);
-                packageTypes[idx] = "";
-                packageShortNames[idx] = "";
-                packageNames[idx] = "";
+                if (packageTables[idx].length() > 2) {
+                    utils.logE("no good", "packageTable " + packageTables[idx]);
+                    packageTypes[idx] = "";
+                    packageNickNames[idx] = "";
+                    packageIncludeNames[idx] = "";
+                }
             }
         }
 //        Toast.makeText(mContext, "PrepareList reloaded", Toast.LENGTH_SHORT).show();
