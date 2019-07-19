@@ -85,7 +85,7 @@ class Text2Speech {
             readyAudioTTS();
             mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         } catch (Exception e) {
-            utils.log(logID, "justSpeak exception\n" + e.toString());
+            utils.logE(logID, "justSpeak:" + e.toString());
         }
     }
 
@@ -95,7 +95,7 @@ class Text2Speech {
         try {
             readyAudioTTS();
         } catch (Exception e) {
-            utils.log(logID, "ttsStop exception\n" + e.toString());
+            utils.logE(logID, "ttsStop:" + e.toString());
         }
     }
 

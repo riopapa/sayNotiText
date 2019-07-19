@@ -94,7 +94,7 @@ class Utils {
                 //noinspection ResultOfMethodCallIgnored
                 packageDirectory.mkdirs();
             } catch (Exception e) {
-                Log.e("creating Directory error", packageDirectory.toString() + "_" + e.toString());
+                logE("make Today", packageDirectory.toString() + "_" + e.toString());
             }
         }
         File directoryDate = new File(packageDirectory, dateFormat.format(new Date()));
@@ -136,9 +136,9 @@ class Utils {
     void logE(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
+        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " |err:"+ tag + "| " + text;
         Log.e("<" + tag + ">" , log);
-        append2file(logFile, "<ERR> "+log);
+        append2file(logFile, log);
     }
 
     private String traceName (String s) {

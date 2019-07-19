@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
@@ -76,16 +75,15 @@ public class NotificationListener extends NotificationListenerService {
 //        Log.w("then","last time 2 "+lastTime);
 
         String packageFullName = sbn.getPackageName().toLowerCase();
-        if (packageFullName.contains("adguard"))
-            return;
-        String packageNickName, packageType;
+//        if (packageFullName.contains("adguard"))
+//            return;
         if (packageFullName.equals("")) {
             return;
         }
         if(canBeIgnored(packageFullName, packageIgnores))
             return;
-        Log.w("packageFullName",packageFullName);
 
+        String packageNickName, packageType;
         packageType = getPackageType(packageFullName);
         packageNickName = getPackageNickName(packageFullName);
 
@@ -96,8 +94,8 @@ public class NotificationListener extends NotificationListenerService {
         if (eTitle == null && eText == null)
             return;
         if (eText != null) {
-            if (eText.length() > 250) {
-                eText = eText.substring(0, 250) + ". 등등등";
+            if (eText.length() > 200) {
+                eText = eText.substring(0, 200) + ". 등등등";
             }
             eText = eText.replaceAll("\n\n","|").replaceAll("\n","|");
         }
@@ -245,7 +243,6 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean isPhoneNumber(String who) {
-//        String regex = "[0-9]|-()|\\s";
         String temp = who.replaceAll(getString(R.string.number_only),"");
         return temp.length() <= 2;
     }

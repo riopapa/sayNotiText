@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity{
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.log("save","button");
+//                utils.log("save","button");
                 nowView.setAlpha(1f);
                 if(write_textFile())
                     prepareTable();
@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity{
         }
         catch(IOException ex)
         {
-            utils.log("editor","Error writing to file '" + nowFileName + "'\n"+ex.toString());
+            utils.logE("editor",nowFileName + "'\n"+ex.toString());
             return false;
         }
         tv.setClickable(false);
