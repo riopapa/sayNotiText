@@ -1,11 +1,11 @@
 package com.urrecliner.andriod.saynotitext;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 
-public class Vars {
+class Vars {
     static String[] packageIgnores = null;  // ignore some package messages
     static String[] packageTypes = null;    // tt: text with title, to: text only, sm: sms ...
     static String[] packageNickNames = null;
@@ -17,7 +17,7 @@ public class Vars {
     static String[] systemIgnores = null;
     static String Booted = null;
 
-    static Activity mActivity = null;
+    @SuppressLint("StaticFieldLeak")
     static Context mContext = null;
     static AudioManager mAudioManager = null;
     static AudioFocusRequest mFocusGain = null;
@@ -28,5 +28,4 @@ public class Vars {
 
     static PrepareLists prepareLists = null;
     static Utils utils = null;
-
 }

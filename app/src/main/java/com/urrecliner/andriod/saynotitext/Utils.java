@@ -41,7 +41,7 @@ class Utils {
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             line = line.trim();
-            if (line.length() > 3) {        // at least 3 characters for one line
+            if (line.length() >= 2) {        // at least 3 characters for one line
                 lines.add(line);
             }
         }

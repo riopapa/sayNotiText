@@ -17,10 +17,11 @@ import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 class PrepareLists {
+    String logId = "prepareLists";
 
     void read () {
 
-        utils.log("1", "read()");
+        utils.log(logId, "read()");
         File storage = Environment.getExternalStorageDirectory();
         String directory = storage.toString() + "/sayNotiText/tables/";
         packageIgnores =  readParameterFile(directory + "packageIgnores.txt");
@@ -30,7 +31,6 @@ class PrepareLists {
         smsIgnores =  readParameterFile(directory + "smsIgnores.txt");
         systemIgnores =  readParameterFile(directory + "systemIgnores.txt");
 
-//        utils.log("packageTables", "len="+packageTables.length);
         packageNickNames = new String[packageTables.length];
         packageTypes = new String[packageTables.length];
         packageIncludeNames = new String[packageTables.length];
@@ -40,31 +40,28 @@ class PrepareLists {
                 packageTypes[idx] = strings[0].trim();
                 packageNickNames[idx] = strings[1].trim();
                 packageIncludeNames[idx] = strings[2].trim();
-//                utils.log("tbl "+idx, packageTypes[idx]+";"+packageNickNames[idx]+";"+packageIncludeNames[idx]);
             }
             else {
                 if (packageTables[idx].length() > 2) {
-                    utils.logE("no good", "packageTable " + packageTables[idx]);
+                    utils.logE(logId, "packageTable " + packageTables[idx]);
                     packageTypes[idx] = "";
                     packageNickNames[idx] = "";
                     packageIncludeNames[idx] = "";
                 }
             }
         }
-//        Toast.makeText(mContext, "PrepareList reloaded", Toast.LENGTH_SHORT).show();
     }
 
     private String[] readParameterFile(String filename) {
-        Utils rf = new Utils();
+        Utils utils = new Utils();
         String[] lines = {""};
         try {
-            lines = rf.readLines(filename);
+            lines = utils.readLines(filename);
             return lines;
         }
         catch(IOException e)
         {
-            // Print out the exception that occurred
-            utils.logE("PrepareLists", "Unable to create "+filename+": "+e.getMessage());
+            Vars.utils.logE(logId, "Unable to create "+filename+": "+e.getMessage());
         }
         return lines;
     }

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
@@ -27,7 +26,7 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate() {
-        Log.w("Noti SVC","Started");
+//        Log.w("Noti SVC","Started");
         super.onCreate();
         mContext = this;
         if (null != mRemoteViews) {

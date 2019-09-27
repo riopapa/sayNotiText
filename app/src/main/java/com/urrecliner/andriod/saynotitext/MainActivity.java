@@ -2,12 +2,12 @@ package com.urrecliner.andriod.saynotitext;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -25,7 +25,6 @@ import java.util.TimerTask;
 import static com.urrecliner.andriod.saynotitext.Vars.Booted;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.andriod.saynotitext.Vars.mActivity;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity{
     private TextView mPitchView;
     private TextView mSpeedView;
     private String nowFileName;
-    private View nowView;
+    String logId = "Main";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +49,8 @@ public class MainActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_main);
         utils = new Utils();
-        mActivity = this;
         mContext = this;
-        Log.w("onCreate","Started");
+        utils.log(logId,"Started");
 
         verifyPermission();
 
@@ -81,20 +79,24 @@ public class MainActivity extends AppCompatActivity{
 
         utils.readyAudioManager(getApplicationContext());
 
-        new Timer().schedule(new TimerTask() {
-            public void run () {
-                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
-                updateIntent.putExtra("isUpdate", true);
-                startService(updateIntent);
-            }
-            }, 100);
         if (Booted != null) {
             Booted = null;
             Intent i = new Intent(mContext, MainActivity.class);
             i.addCategory("android.intent.category.HOME");
             i.setFlags(Intent.FLAG_FROM_BACKGROUND);
             startActivity(i);
+            finish();
         }
+        else {
+            new Timer().schedule(new TimerTask() {
+                public void run () {
+                    Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
+                    updateIntent.putExtra("isUpdate", true);
+                    startService(updateIntent);
+                }
+            }, 100);
+        }
+        clearTableColor();
     }
 
     private void verifyPermission() {
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity{
                         Manifest.permission.RECEIVE_BOOT_COMPLETED) ||
                 PermissionProvider.isNotReady(getApplicationContext(), this,
                         Manifest.permission.READ_PHONE_STATE)) {
-            Log.e("Permission","NOT GRANTED");
+            utils.logE(logId,"NOT GRANTED");
             Toast.makeText(getApplicationContext(), "Check android permission",
                     Toast.LENGTH_LONG).show();
             finish();
@@ -179,19 +181,26 @@ public class MainActivity extends AppCompatActivity{
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                utils.log("save","button");
-                nowView.setAlpha(1f);
+//                utils.log(logId,"button");
+                clearTableColor();
                 if(write_textFile())
                     prepareTable();
             }
         });
-
+    }
+    void clearTableColor() {
+        TextView [] tvs = {findViewById(R.id.btn_kakaoIgnores), findViewById(R.id.btn_kakaoPersons),
+                findViewById(R.id.btn_packageIgnores), findViewById(R.id.btn_packageTables),
+                findViewById(R.id.btn_smsIgnores), findViewById(R.id.btn_systemIgnores)};
+        for (int i=0; i < 6; i++) {
+            tvs[i].setTextColor(Color.BLACK);
+        }
     }
     public void edit_table(View v) {
         int nowTableId;
-        nowView = v;
         nowTableId = v.getId();
-        v.setAlpha(0.5f);
+        TextView tv = (TextView) v;
+        tv.setTextColor(Color.CYAN);
         switch (nowTableId) {
             case R.id.btn_kakaoIgnores:
                 show_for_edit(kakaoIgnores,"kakaoIgnores");

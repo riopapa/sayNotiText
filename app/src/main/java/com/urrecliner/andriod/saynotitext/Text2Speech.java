@@ -2,14 +2,11 @@ package com.urrecliner.andriod.saynotitext;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.urrecliner.andriod.saynotitext.Vars.mActivity;
 import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
 import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
@@ -37,12 +34,10 @@ class Text2Speech {
                     int result = mTTS.setLanguage(Locale.KOREA);
                     if (result == TextToSpeech.LANG_MISSING_DATA
                             || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Log.e("TTS", "Language not supported");
-                        Toast.makeText(mActivity, "Language not supported",
-                                Toast.LENGTH_LONG).show();
+                        utils.logE(logID, "Language not supported");
                     }
                 } else {
-                    Log.e("TTS", "Initialization failed");
+                    utils.logE(logID, "Initialization failed");
                 }
             }
         });
@@ -65,11 +60,14 @@ class Text2Speech {
 
         String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z./,\\s]"; // 한글, 영문, 숫자만 OK
 //        String match = "[`~!@#$%^&*()'/+;<>\\_▶★]"; // 특수문자 읽기 방지
-        text = text.replaceAll(match, " ");
+        text = text.replace("ㅎ","흐.")
+                .replace("ㅋ","크.")
+                .replace("ㅠ","유.")
+                .replaceAll(match, " ");
         try {
             mAudioManager.requestAudioFocus(mFocusGain);
         } catch (Exception e) {
-            utils.log(logID, "mAudioManager requestAudioFocus Error");
+            utils.logE(logID, "requestAudioFocus");
         }
         ttsSpeak(text);
         long delayTime = (long) ((float) (text.length() * 240) / ttsSpeed);
@@ -81,8 +79,8 @@ class Text2Speech {
     }
 
     private void ttsSpeak(String text) {
+        readyAudioTTS();
         try {
-            readyAudioTTS();
             mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         } catch (Exception e) {
             utils.logE(logID, "justSpeak:" + e.toString());

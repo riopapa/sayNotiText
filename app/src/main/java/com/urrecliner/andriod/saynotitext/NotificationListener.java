@@ -30,7 +30,7 @@ public class NotificationListener extends NotificationListenerService {
     int speechCount = 0;
     int listCount  = 0;
     long lastTime = 0;
-    final String logID = "notiListener";
+    final String logId = "Listener";
 
     @Override
     public void onCreate() {
@@ -54,7 +54,7 @@ public class NotificationListener extends NotificationListenerService {
 
         if (utils == null) {
             utils = new Utils();
-//            utils.log(logID, "$$ UTIL IS NULL AND RELOADED " + ++utilsCount);
+//            utils.log(logId, "$$ UTIL IS NULL AND RELOADED " + ++utilsCount);
         }
         long nowTime = System.currentTimeMillis();
         if (lastTime == nowTime)
@@ -62,7 +62,7 @@ public class NotificationListener extends NotificationListenerService {
         lastTime = nowTime;
 
         if (text2Speech == null) {
-            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
+            utils.log(logId, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
         }
@@ -70,7 +70,7 @@ public class NotificationListener extends NotificationListenerService {
         if (packageIgnores == null) {
             prepareLists = new PrepareLists();
             prepareLists.read();
-            utils.log(logID,"$$ PREPARE IS NULL " + ++listCount);
+            utils.log(logId,"$$ PREPARE IS NULL " + ++listCount);
         }
 //        Log.w("then","last time 2 "+lastTime);
 
@@ -101,7 +101,12 @@ public class NotificationListener extends NotificationListenerService {
         }
 
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
-        String msgText = extras.getString(Notification.EXTRA_MESSAGES);
+        String msgText;
+        try {
+            msgText = extras.getString(Notification.EXTRA_MESSAGES);
+        } catch (Exception e) {
+            msgText = null;
+        }
 
 //        dumpExtras(eTitle, eSubT, eText, msgText);
 
@@ -110,11 +115,16 @@ public class NotificationListener extends NotificationListenerService {
                 if (eText != null) {
                     sayKakao(packageNickName, eTitle, eSubT, eText);
                 }
+                else {
+                    utils.logE(logId,"packageNickName:"+packageNickName+", tit:"+eTitle+", sub:"+eSubT+", txt:none");
+                    sayKakao(packageNickName, eTitle, eSubT, "텍스트 없음");
+                }
                 break;
             case TO_TEXT_ONLY :
                 speakANDLog(packageNickName,  packageNickName + " (메세지입니다) " + eText);
                 break;
             case SM_SMS :
+                utils.log(logId,"tit"+eTitle+", txt"+eText);
                 saySMS(packageNickName, eTitle, eText);
                 break;
             case TT_TITLE_TEXT :
@@ -129,7 +139,6 @@ public class NotificationListener extends NotificationListenerService {
                 }
                 else
                     dumpExtras(eTitle, eSubT, eText, msgText);
-
                 break;
         }
     }
@@ -179,7 +188,7 @@ public class NotificationListener extends NotificationListenerService {
             eText = eText.replaceAll("\n", "|");
         }
         String dumpText = "TIT:" + eTitle + ", SUBT:" + eSubT + ", TEXT:" + eText + ", MESSAGE:" + msgText;
-        utils.log(logID, dumpText);
+        utils.log(logId, dumpText);
     }
 
     @Override
@@ -211,11 +220,11 @@ public class NotificationListener extends NotificationListenerService {
     private void speakANDLog(String tag, String text) {
         if (isHeadphonesPlugged() || isRingerON()) {
             if (text2Speech == null) {
-                utils.log(logID, "tts is null, reCreated");
+                utils.log(logId, "tts is null, reCreated");
                 text2Speech = new Text2Speech();
                 text2Speech.initiateTTS(getApplicationContext());
             }
-            text2Speech.speak("잠시만요 " + text);
+            text2Speech.speak("잠시만요. " + text);
         }
         String filename = tag + ".txt";
         utils.append2file(filename, text);
