@@ -2,6 +2,7 @@ package com.urrecliner.andriod.saynotitext;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 
@@ -16,6 +17,9 @@ class Vars {
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
     static String Booted = null;
+
+    static SharedPreferences sharePrefer;
+    static SharedPreferences.Editor editor;
 
     @SuppressLint("StaticFieldLeak")
     static Context mContext = null;

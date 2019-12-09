@@ -2,6 +2,7 @@ package com.urrecliner.andriod.saynotitext;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.mContext;
 import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
 import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
+import static com.urrecliner.andriod.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
@@ -60,14 +62,24 @@ public class MainActivity extends AppCompatActivity{
             startActivity(intent);
         }
 
+        sharePrefer = getApplicationContext().getSharedPreferences("sayText", MODE_PRIVATE);
+
+        DecimalFormat df=new DecimalFormat("0.0");
+        int pitch = sharePrefer.getInt("pitch", 70);
         mSeekBarPitch = findViewById(R.id.seek_bar_pitch);
-        mSeekBarSpeed = findViewById(R.id.seek_bar_speed);
-
+        mSeekBarPitch.setProgress(pitch);
         mPitchView = findViewById(R.id.bar_pitch);
-        mSpeedView = findViewById(R.id.bar_speed);
-
+        mPitchView.setText(df.format((float) pitch / 50));
         setSeekBarPitch();
+
+        mSpeedView = findViewById(R.id.bar_speed);
+        int speed = sharePrefer.getInt("speed", 70);
+        mSeekBarSpeed = findViewById(R.id.seek_bar_speed);
+        mSeekBarSpeed.setProgress(speed);
+        mSpeedView = findViewById(R.id.bar_speed);
+        mSpeedView.setText(df.format((float) speed / 50));
         setSeekBarSpeed();
+
         prepareLists = new PrepareLists();
         prepareTable();
         set_Save_Table();
@@ -132,10 +144,15 @@ public class MainActivity extends AppCompatActivity{
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                float mPitch = (float) mSeekBarPitch.getProgress() / 50;
+                int pitch = mSeekBarPitch.getProgress();
+                float mPitch = (float) pitch / 50;
                 DecimalFormat df=new DecimalFormat("0.0");
                 mPitchView.setText(df.format(mPitch));
                 text2Speech.setPitch(mPitch);
+                SharedPreferences.Editor editor = sharePrefer.edit();
+                editor.putInt("pitch", pitch);
+                editor.apply();
+                editor.commit();
             }
         });
 
@@ -156,10 +173,15 @@ public class MainActivity extends AppCompatActivity{
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                float mSpeed = (float) mSeekBarSpeed.getProgress() / 50;
+                int speed = mSeekBarSpeed.getProgress();
+                float mSpeed = (float) speed / 50;
                 DecimalFormat df=new DecimalFormat("0.0");
                 mSpeedView.setText(df.format(mSpeed));
                 text2Speech.setSpeed(mSpeed);
+                SharedPreferences.Editor editor = sharePrefer.edit();
+                editor.putInt("speed", speed);
+                editor.apply();
+                editor.commit();
             }
         });
     }

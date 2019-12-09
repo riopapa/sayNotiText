@@ -57,7 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="1.4"
+            android:text="1.2"
             android:textSize="16sp" />
 
         <SeekBar
@@ -198,6 +198,3 @@
         android:textSize="16sp" />
 
 </LinearLayout>
-    <!--android:scrollIndicators="right"-->
-    <!--android:scrollbarAlwaysDrawHorizontalTrack="true"-->
-    <!--android:scrollbars="vertical"-->
