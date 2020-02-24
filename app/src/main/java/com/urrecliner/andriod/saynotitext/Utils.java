@@ -30,8 +30,8 @@ import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
 
 class Utils {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss", Locale.KOREA);
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd", Locale.KOREA);
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yy-MM-dd HH.mm.ss sss", Locale.KOREA);
     private final String logFile = "log.txt";
 
     String[] readLines(String filename) throws IOException {
@@ -71,7 +71,7 @@ class Utils {
             }
             StackTraceElement[] traces;
             traces = Thread.currentThread().getStackTrace();
-            String outText = "\n" + getTimeStamp() + " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " " + textLine + "\n";
+            String outText = "\n" + getTimeStamp() + " "  + textLine + "\n";
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
@@ -143,10 +143,10 @@ class Utils {
 
     private String traceName (String s) {
         String [] omits = { "performResume", "performCreate", "callActivityOnResume", "access$",
-                "onCreate", "onNotificationPosted", "NotificationListener",
+                "onCreate", "onNotificationPosted", "NotificationListener", "performCreate", "log",
                 "handleReceiver", "handleMessage", "dispatchKeyEvent"};
         for (String o : omits) {
-            if (s.contains(o)) return "";
+            if (s.contains(o)) return ". ";
         }
         return s + "> ";
     }
@@ -174,7 +174,7 @@ class Utils {
 
     /* delete old packageDirectory / files if storage is less than x days */
     private void deleteOldFiles() {
-        String weekAgo = dateFormat.format(System.currentTimeMillis() - 4*24*60*60*1000L);
+        String weekAgo = dateFormat.format(System.currentTimeMillis() - 3*24*60*60*1000L);
         File[] files = packageDirectory.listFiles();
         Collator myCollator = Collator.getInstance();
         for (File file : files) {

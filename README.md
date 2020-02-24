@@ -12,8 +12,7 @@
 - Notification icon and notification bar is settled
 - Notification bar is for refresh(reload) above files and stop speaking temporary and immediately
 - Speaking pitch and speed can be adjusted.
-- When tables are updated, press \[reload] button to apply
-- Speaking will be executed when (1) no silent mode or (2) bluetooth or earphone is connected regardless of silent mode. 
+- Speaking will be executed when (1) no silent mode or (2) bluetooth or earphone is connected regardless of silent mode.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <img src="./screenshots/mainActivity1.jpg" width=400 height=800>
@@ -50,7 +49,7 @@
 
 
 - multiple types can be specified in multiple lines
-- package based log file is created under */sdcard/sayNotiText/yyyy-mm-dd* folder, <br>for example <br>kakaoTalk.txt, telegram.txt<br>where file name is defined in keyword
+- package based log file is created under */sdcard/sayNotiText/yy-mm-dd* folder, <br>for example <br>kakaoTalk.txt, telegram.txt<br>where file name is defined in keyword
 - You may update above table by reviewing these log files especially when you install new application with notifications.
  
 <H3>Table Edit</H3>
@@ -63,7 +62,7 @@
  
 <H3>Notification Bar</H3>
  
-- Press <img src="./app/src/main/res/mipmap-xxhdpi/ic_reloading.png" width=32 height=32> will reload tables if you had changed some
+- Press <img src="./app/src/main/res/mipmap-xxhdpi/ic_reloading.png" width=32 height=32> will reload tables if you had changed some (Not needed if updated within this app)
 - Press <img src="./app/src/main/res/mipmap-xxhdpi/ic_stop_say.png" width=32 height=32> to stop immediately while it says notification
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./screenshots/notificationBar.png" width=320 height=60>
 

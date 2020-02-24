@@ -26,11 +26,11 @@ import static com.urrecliner.andriod.saynotitext.Vars.utils;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class NotificationListener extends NotificationListenerService {
 
-//    int utilsCount = 0;
     int speechCount = 0;
     int listCount  = 0;
+    final String logID = "Listener";
     long lastTime = 0;
-    final String logId = "Listener";
+    String lastTitle, lastText, lastPackage;
 
     @Override
     public void onCreate() {
@@ -52,17 +52,10 @@ public class NotificationListener extends NotificationListenerService {
         final String AN_ANDROID = "an";
         final String TO_TEXT_ONLY = "to";
 
-        if (utils == null) {
-            utils = new Utils();
-//            utils.log(logId, "$$ UTIL IS NULL AND RELOADED " + ++utilsCount);
-        }
-        long nowTime = System.currentTimeMillis();
-        if (lastTime == nowTime)
-            return;
-        lastTime = nowTime;
+        if (utils == null) utils = new Utils();
 
         if (text2Speech == null) {
-            utils.log(logId, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
+            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
         }
@@ -70,13 +63,10 @@ public class NotificationListener extends NotificationListenerService {
         if (packageIgnores == null) {
             prepareLists = new PrepareLists();
             prepareLists.read();
-            utils.log(logId,"$$ PREPARE IS NULL " + ++listCount);
+            utils.log(logID,"$$ PREPARE IS NULL " + ++listCount);
         }
-//        Log.w("then","last time 2 "+lastTime);
 
         String packageFullName = sbn.getPackageName().toLowerCase();
-//        if (packageFullName.contains("adguard"))
-//            return;
         if (packageFullName.equals("")) {
             return;
         }
@@ -93,22 +83,44 @@ public class NotificationListener extends NotificationListenerService {
         String eText = extras.getString(Notification.EXTRA_TEXT);
         if (eTitle == null && eText == null)
             return;
-        if (eText != null) {
-            if (eText.length() > 200) {
-                eText = eText.substring(0, 200) + ". 등등등";
-            }
-            eText = eText.replaceAll("\n\n","|").replaceAll("\n","|");
+        if (System.currentTimeMillis() - lastTime < 500) {
+            if (eTitle.contains("메세지"))
+                eTitle = "[["+eTitle+"]]";
+            utils.logE("sameTime", lastPackage+" vs "+packageFullName+" "+lastTitle+" / "+lastText+" <> "+eTitle+" / "+eText);
+            return;
         }
+        lastTime = System.currentTimeMillis();
+        lastTitle = eTitle;
+        lastText = eText;
+        lastPackage = packageFullName;
 
-        String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
-        String msgText;
-        try {
-            msgText = extras.getString(Notification.EXTRA_MESSAGES);
-        } catch (Exception e) {
-            msgText = null;
+        if (eTitle.contains("메세지")) {
+            utils.log("msg","title ignored");
+            return;
         }
+        if (eText != null) {
+            if (eText.contains("메세지 보기")) {
+                utils.log("msg","eText ignored");
+                return;
+            }
+            eText = eText.replaceAll("\n\n", "|").replaceAll("\n", "|");
+            if (eText.length() > 200)
+                eText = eText.substring(0, 200) + ". 등등등";
+        }
+        String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
+//        String msgText;
+//        try {
+//            msgText = extras.getString(Notification.EXTRA_MESSAGES);
+//        } catch (Exception e) {
+//            msgText = null;
+//        }
 
 //        dumpExtras(eTitle, eSubT, eText, msgText);
+
+//        long nowTime = System.currentTimeMillis();
+//        if (lastTime == nowTime)
+//            return;
+//        lastTime = nowTime;
 
         switch (packageType) {
             case KK_KAKAO :
@@ -116,7 +128,7 @@ public class NotificationListener extends NotificationListenerService {
                     sayKakao(packageNickName, eTitle, eSubT, eText);
                 }
                 else {
-                    utils.logE(logId,"packageNickName:"+packageNickName+", tit:"+eTitle+", sub:"+eSubT+", txt:none");
+                    utils.logE(logID,"KAKAO "+packageNickName+", tit: "+eTitle+", sub: "+eSubT+", txt: none");
                     sayKakao(packageNickName, eTitle, eSubT, "텍스트 없음");
                 }
                 break;
@@ -124,7 +136,11 @@ public class NotificationListener extends NotificationListenerService {
                 speakANDLog(packageNickName,  packageNickName + " (메세지입니다) " + eText);
                 break;
             case SM_SMS :
-                utils.log(logId,"tit"+eTitle+", txt"+eText);
+                utils.log(logID,"tit: "+eTitle+", txt: "+eText);
+                if (eTitle.contains("메세지")) {
+                    utils.log("msg", "title SMS ignored");
+                    return;
+                }
                 saySMS(packageNickName, eTitle, eText);
                 break;
             case TT_TITLE_TEXT :
@@ -134,11 +150,11 @@ public class NotificationListener extends NotificationListenerService {
                 sayAndroid(packageFullName, eTitle, eText);
                 break;
             default :
-                if (eTitle != null && !eTitle.contains("Vaccine")) {
+                if (!eTitle.contains("Vaccine")) {
                     speakANDLog("unknown " + packageFullName, "title:" + eTitle + "_text:" + eText);
                 }
-                else
-                    dumpExtras(eTitle, eSubT, eText, msgText);
+//                else
+//                    dumpExtras(eTitle, eSubT, eText, msgText);
                 break;
         }
     }
@@ -188,7 +204,7 @@ public class NotificationListener extends NotificationListenerService {
             eText = eText.replaceAll("\n", "|");
         }
         String dumpText = "TIT:" + eTitle + ", SUBT:" + eSubT + ", TEXT:" + eText + ", MESSAGE:" + msgText;
-        utils.log(logId, dumpText);
+        utils.log(logID, dumpText);
     }
 
     @Override
@@ -220,7 +236,7 @@ public class NotificationListener extends NotificationListenerService {
     private void speakANDLog(String tag, String text) {
         if (isHeadphonesPlugged() || isRingerON()) {
             if (text2Speech == null) {
-                utils.log(logId, "tts is null, reCreated");
+                utils.log(logID, "tts is null, reCreated");
                 text2Speech = new Text2Speech();
                 text2Speech.initiateTTS(getApplicationContext());
             }

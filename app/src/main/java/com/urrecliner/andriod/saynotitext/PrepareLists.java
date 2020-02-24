@@ -17,11 +17,11 @@ import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 class PrepareLists {
-    String logId = "prepareLists";
+    String logID = "prepareLists";
 
     void read () {
 
-        utils.log(logId, "read()");
+        utils.log(logID, "read()");
         File storage = Environment.getExternalStorageDirectory();
         String directory = storage.toString() + "/sayNotiText/tables/";
         packageIgnores =  readParameterFile(directory + "packageIgnores.txt");
@@ -43,7 +43,7 @@ class PrepareLists {
             }
             else {
                 if (packageTables[idx].length() > 2) {
-                    utils.logE(logId, "packageTable " + packageTables[idx]);
+                    utils.logE(logID, "packageTable " + packageTables[idx]);
                     packageTypes[idx] = "";
                     packageNickNames[idx] = "";
                     packageIncludeNames[idx] = "";
@@ -61,7 +61,7 @@ class PrepareLists {
         }
         catch(IOException e)
         {
-            Vars.utils.logE(logId, "Unable to create "+filename+": "+e.getMessage());
+            Vars.utils.logE(logID, "Unable to create "+filename+": "+e.getMessage());
         }
         return lines;
     }

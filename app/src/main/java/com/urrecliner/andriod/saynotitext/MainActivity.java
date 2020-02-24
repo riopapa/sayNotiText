@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity{
     private TextView mPitchView;
     private TextView mSpeedView;
     private String nowFileName;
-    String logId = "Main";
+    String logID = "Main";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         utils = new Utils();
         mContext = this;
-        utils.log(logId,"Started");
+        utils.log(logID,"Started");
 
         verifyPermission();
 
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity{
                         Manifest.permission.RECEIVE_BOOT_COMPLETED) ||
                 PermissionProvider.isNotReady(getApplicationContext(), this,
                         Manifest.permission.READ_PHONE_STATE)) {
-            utils.logE(logId,"NOT GRANTED");
+            utils.logE(logID,"NOT GRANTED");
             Toast.makeText(getApplicationContext(), "Check android permission",
                     Toast.LENGTH_LONG).show();
             finish();
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void prepareTable() {
-        utils.append2file("timestamp.txt", "prepare");
+//        utils.log(logID, "prepared");
         prepareLists.read();
         TextView tV = findViewById(R.id.text_table);
         tV.setText("");
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity{
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                utils.log(logId,"button");
+//                utils.log(logID,"button");
                 clearTableColor();
                 if(write_textFile())
                     prepareTable();
