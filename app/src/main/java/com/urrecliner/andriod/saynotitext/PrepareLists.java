@@ -17,19 +17,18 @@ import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 class PrepareLists {
-    String logID = "prepareLists";
+    private String logID = "prepareLists";
+    private File directory = new File (Environment.getExternalStorageDirectory(), "sayNotiText/tables/");
 
     void read () {
 
         utils.log(logID, "read()");
-        File storage = Environment.getExternalStorageDirectory();
-        String directory = storage.toString() + "/sayNotiText/tables/";
-        packageIgnores =  readParameterFile(directory + "packageIgnores.txt");
-        packageTables =  readParameterFile(directory + "packageTables.txt");
-        kakaoIgnores =  readParameterFile(directory + "kakaoIgnores.txt");
-        kakaoPersons =  readParameterFile(directory + "kakaoPersons.txt");
-        smsIgnores =  readParameterFile(directory + "smsIgnores.txt");
-        systemIgnores =  readParameterFile(directory + "systemIgnores.txt");
+        packageIgnores =  readParameterFile("packageIgnores.txt");
+        packageTables =  readParameterFile("packageTables.txt");
+        kakaoIgnores =  readParameterFile("kakaoIgnores.txt");
+        kakaoPersons =  readParameterFile("kakaoPersons.txt");
+        smsIgnores =  readParameterFile("smsIgnores.txt");
+        systemIgnores =  readParameterFile("systemIgnores.txt");
 
         packageNickNames = new String[packageTables.length];
         packageTypes = new String[packageTables.length];
@@ -53,14 +52,12 @@ class PrepareLists {
     }
 
     private String[] readParameterFile(String filename) {
-        Utils utils = new Utils();
         String[] lines = {""};
         try {
-            lines = utils.readLines(filename);
+            lines = utils.readLines(new File(directory, filename));
             return lines;
         }
-        catch(IOException e)
-        {
+        catch(IOException e) {
             Vars.utils.logE(logID, "Unable to create "+filename+": "+e.getMessage());
         }
         return lines;

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity{
     private TextView mPitchView;
     private TextView mSpeedView;
     private String nowFileName;
-    String logID = "Main";
+    private String logID = "Main";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity{
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
-
         sharePrefer = getApplicationContext().getSharedPreferences("sayText", MODE_PRIVATE);
 
         DecimalFormat df=new DecimalFormat("0.0");
@@ -79,11 +78,9 @@ public class MainActivity extends AppCompatActivity{
         mSpeedView = findViewById(R.id.bar_speed);
         mSpeedView.setText(df.format((float) speed / 50));
         setSeekBarSpeed();
-
         prepareLists = new PrepareLists();
         prepareTable();
         set_Save_Table();
-
         text2Speech = new Text2Speech();
         text2Speech.initiateTTS(getApplicationContext());
         text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
@@ -130,7 +127,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void setSeekBarPitch() {
-
         mSeekBarPitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -155,11 +151,9 @@ public class MainActivity extends AppCompatActivity{
                 editor.commit();
             }
         });
-
     }
 
     private void setSeekBarSpeed() {
-
         mSeekBarSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -278,8 +272,7 @@ public class MainActivity extends AppCompatActivity{
             // Always close files.
             bufferedWriter.close();
         }
-        catch(IOException ex)
-        {
+        catch(IOException ex) {
             utils.logE("editor",nowFileName + "'\n"+ex.toString());
             return false;
         }
