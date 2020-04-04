@@ -80,7 +80,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         if (eTitle == null) {
-            utils.logE(logID, packageFullName + " Title null text:" + eText);
+            utils.log(logID, packageFullName + " Title ```null text``` :" + eText);
             return;
         }
         if (eText != null)
@@ -93,12 +93,12 @@ public class NotificationListener extends NotificationListenerService {
 //            msgText = null;
 //        }
 
-        if (lastTime > (thisTime-1000)) {
-            utils.log(logID, "Too SHORT TIME difference "+packageFullName+" with "+eTitle+" & "+eText);
-            return;
-        }
-        else
-            lastTime = thisTime;
+//        if ((thisTime-lastTime) <500 && (packageType.equals(AN_ANDROID) || packageType.equals(KK_KAKAO))) {
+//            utils.log(logID, packageType+" Too SHORT TIME "+packageFullName+" with "+eTitle+" -_- "+eText);
+//            return;
+//        }
+//        else
+//            lastTime = thisTime;
 
 
 //        dumpExtras(eTitle, eSubT, eText, msgText);
@@ -120,7 +120,8 @@ public class NotificationListener extends NotificationListenerService {
                 sayTitleText(packageNickName, eTitle, eText);
                 break;
             case AN_ANDROID :
-                sayAndroid(packageFullName, eTitle, eText);
+                if (!eTitle.contains("모아키") && !eTitle.contains("USB"))
+                    sayAndroid(packageFullName, eTitle, eText);
                 break;
             default :
                 if (!eTitle.contains("Vaccine")) {
@@ -166,7 +167,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
 //        if (System.currentTimeMillis() - lastTime < 500 && eTitle.contains("메세지"))
 //            return;
-        if (eTitle.contains("메세지") || eText.length() < 5) {
+        if (eTitle.contains("메세지") || eText.length() < 10) {
             utils.log("msg", "메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
             return;
         }
