@@ -102,7 +102,7 @@ public class NotificationListener extends NotificationListenerService {
 
 
 //        dumpExtras(eTitle, eSubT, eText, msgText);
-
+        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+", 제목 "+eTitle+", 내용 "+eText);
         switch (packageType) {
             case KK_KAKAO :
                 if (eText != null) {
@@ -120,13 +120,12 @@ public class NotificationListener extends NotificationListenerService {
                 sayTitleText(packageNickName, eTitle, eText);
                 break;
             case AN_ANDROID :
-                if (!eTitle.contains("모아키") && !eTitle.contains("USB"))
-                    sayAndroid(packageFullName, eTitle, eText);
+                sayAndroid(packageFullName, eTitle, eText);
                 break;
             default :
-                if (!eTitle.contains("Vaccine")) {
-                    speakANDLog("unknown " + packageFullName, "title:" + eTitle + "_text:" + eText);
-                }
+                if (canBeIgnored(eTitle, systemIgnores))
+                    return;
+                speakANDLog("unknown " + packageFullName, "unknown title " + eTitle + "_text:" + eText);
 //                else
 //                    dumpExtras(eTitle, eSubT, eText, msgText);
                 break;
@@ -167,8 +166,8 @@ public class NotificationListener extends NotificationListenerService {
             return;
 //        if (System.currentTimeMillis() - lastTime < 500 && eTitle.contains("메세지"))
 //            return;
-        if (eTitle.contains("메세지") || eText.length() < 10) {
-            utils.log("msg", "메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
+        if (eTitle.contains("메세지")) {
+            utils.log("msg", "/// 메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
             return;
         }
 

@@ -60,15 +60,20 @@ class Text2Speech {
 
         String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z./,\\s]"; // 한글, 영문, 숫자만 OK
 //        String match = "[`~!@#$%^&*()'/+;<>\\_▶★]"; // 특수문자 읽기 방지
-        text = text.replace("ㅎ","흐.")
-                .replace("ㅋ","크.")
-                .replace("ㅠ","유.")
+        text = text
+                .replace("ㅇㅋ","오케이")
+                .replace("ㅎ","흐")
+                .replace("ㅋ","크")
+                .replace("ㅠ","흑")
                 .replaceAll(match, " ");
         try {
             mAudioManager.requestAudioFocus(mFocusGain);
         } catch (Exception e) {
             utils.logE(logID, "requestAudioFocus");
         }
+        int idx = text.indexOf("http");
+        if (idx > 0)
+            text = text.substring(0,idx)+" url 있음";
         ttsSpeak(text);
         long delayTime = (long) ((float) (text.length() * 240) / ttsSpeed);
         new Timer().schedule(new TimerTask() {
