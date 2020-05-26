@@ -17,9 +17,7 @@ class Vars {
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
     static String Booted = null;
-
     static SharedPreferences sharePrefer;
-    static SharedPreferences.Editor editor;
 
     @SuppressLint("StaticFieldLeak")
     static Context mContext = null;

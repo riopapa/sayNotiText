@@ -23,10 +23,9 @@ import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
 public class NotificationListener extends NotificationListenerService {
 
+    final String logID = "Listener";
     private int speechCount = 0;
     private int listCount  = 0;
-    final String logID = "Listener";
-    private long lastTime = 0, thisTime;
 
     @Override
     public void onCreate() {
@@ -86,34 +85,20 @@ public class NotificationListener extends NotificationListenerService {
         if (eText != null)
             eText = eText.replaceAll("\n\n", "|").replaceAll("\n", "|");
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
-//        String msgText;
-//        try {
-//            msgText = extras.getString(Notification.EXTRA_MESSAGES);
-//        } catch (Exception e) {
-//            msgText = null;
-//        }
-
-//        if ((thisTime-lastTime) <500 && (packageType.equals(AN_ANDROID) || packageType.equals(KK_KAKAO))) {
-//            utils.log(logID, packageType+" Too SHORT TIME "+packageFullName+" with "+eTitle+" -_- "+eText);
-//            return;
-//        }
-//        else
-//            lastTime = thisTime;
 
 
 //        dumpExtras(eTitle, eSubT, eText, msgText);
-        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+", 제목 "+eTitle+", 내용 "+eText);
+//        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+", 제목 "+eTitle+", 내용 "+eText);
         switch (packageType) {
             case KK_KAKAO :
-                if (eText != null) {
+                if (eText != null)
                     sayKakao(packageNickName, eTitle, eSubT, eText);
-                }
                 break;
             case TO_TEXT_ONLY :
-                speakANDLog(packageNickName,  packageNickName + " (메세지입니다) " + eText);
+                speakANDLog(packageNickName,  packageNickName + " (메시지입니다) " + eText);
                 break;
             case SM_SMS :
-                utils.log(logID,"SMS tit: "+eTitle+", txt: "+eText);
+//                utils.log(logID,"SMS tit: "+eTitle+", txt: "+eText);
                 saySMS(packageNickName, eTitle, eText);
                 break;
             case TT_TITLE_TEXT :
@@ -135,13 +120,13 @@ public class NotificationListener extends NotificationListenerService {
     private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
         if (eSubT != null) {
             if (!canBeIgnored(eSubT, kakaoIgnores)) { // eSub: 채팅방
-                speakANDLog(packageShortName, "카카오톡 " + eSubT + "_단톡방 " + eTitle + "_님으로부터." + eText);
+                speakANDLog(packageShortName, "카톡 " + eSubT + "_단톡방 " + eTitle + "_님으로부터." + eText);
             }
         }
         else {
             if(!canBeIgnored(eTitle, kakaoPersons)) {  // eTitle: 개인 이름
                 if (!eText.contains("페이스톡 해요"))
-                    speakANDLog(packageShortName, "카카오톡." + eTitle + "_님으로 부터._" + eText);
+                    speakANDLog(packageShortName, "카톡." + eTitle + "_님으로 부터._" + eText);
             }
         }
     }
@@ -158,7 +143,7 @@ public class NotificationListener extends NotificationListenerService {
         if (packageShortName.equals("씨티은행") && eTitle.contains("Vaccine"))
             return;
         if (eText != null)
-            speakANDLog(packageShortName,packageShortName + " 메세지입니다. " + eTitle + "_로 부터. " + eText);
+            speakANDLog(packageShortName,packageShortName + " 메시지입니다. " + eTitle + "_로 부터. " + eText);
     }
 
     private void saySMS(String packageShortName, String eTitle, String eText) {
@@ -166,13 +151,13 @@ public class NotificationListener extends NotificationListenerService {
             return;
 //        if (System.currentTimeMillis() - lastTime < 500 && eTitle.contains("메세지"))
 //            return;
-        if (eTitle.contains("메세지")) {
-            utils.log("msg", "/// 메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
-            return;
-        }
+//        if (eTitle.contains("메세지")) {
+//            utils.log("msg", "/// 메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
+//            return;
+//        }
 
         eText = eText.replace("[Web발신]","");
-        speakANDLog(packageShortName, eTitle + " 로부터 SMS 메세지가 왔어요 " + eText);
+        speakANDLog(packageShortName, eTitle + " 로부터 SMS 메시지가 왔어요 " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String eSubT, String eText, String msgText){

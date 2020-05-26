@@ -2,8 +2,11 @@ package com.urrecliner.andriod.saynotitext;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,7 +17,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.ttsPitch;
 import static com.urrecliner.andriod.saynotitext.Vars.ttsSpeed;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
-class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
+class Text2Speech {
 
     private String logID = "TTS";
     private TextToSpeech mTTS;
@@ -75,18 +78,21 @@ class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
         if (idx > 0)
             text = text.substring(0,idx)+" url 있음";
         ttsSpeak(text);
-        long delayTime = (long) ((float) (text.length() * 240) / ttsSpeed);
-        new Timer().schedule(new TimerTask() {
-            public void run() {
-                mAudioManager.abandonAudioFocusRequest(mFocusGain);
-            }
-        }, delayTime);
+//        long delayTime = (long) ((float) (text.length() * 240) / ttsSpeed);
+//        new Timer().schedule(new TimerTask() {
+//            public void run() {
+//                mAudioManager.abandonAudioFocusRequest(mFocusGain);
+//            }
+//        }, delayTime);
     }
 
     private void ttsSpeak(String text) {
         readyAudioTTS();
         try {
-            mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+            mostRecentUtteranceID = (""+System.currentTimeMillis()).substring(5);
+//            utils.log(logID,"mostRecentUtteranceID is "+mostRecentUtteranceID);
+            mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, mostRecentUtteranceID);
+//            mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         } catch (Exception e) {
             utils.logE(logID, "justSpeak:" + e.toString());
         }
@@ -102,6 +108,7 @@ class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
         }
     }
 
+    String mostRecentUtteranceID;
     void readyAudioTTS() {
         utils.readyAudioManager(mContext);
         if (ttsPitch == 0f) {
@@ -114,10 +121,25 @@ class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
         }
         mTTS.setPitch(ttsPitch);
         mTTS.setSpeechRate(ttsSpeed);
-    }
 
-    @Override
-    public void onUtteranceCompleted(String utteranceId) {
+        mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) { }
+
+            @Override
+            // this method will always called from a background thread.
+            public void onDone(String utteranceId) {
+                if (utteranceId.equals(mostRecentUtteranceID)) {
+//                boolean wasCalledFromBackgroundThread = (Thread.currentThread().getId() != 1);
+//                utils.log("XXX", "was onDone() called on a background thread? : " + wasCalledFromBackgroundThread);
+                    mAudioManager.abandonAudioFocusRequest(mFocusGain);
+                }
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+            }
+        });
 
     }
 }
