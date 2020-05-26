@@ -14,7 +14,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.ttsPitch;
 import static com.urrecliner.andriod.saynotitext.Vars.ttsSpeed;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
-class Text2Speech {
+class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
 
     private String logID = "TTS";
     private TextToSpeech mTTS;
@@ -116,4 +116,8 @@ class Text2Speech {
         mTTS.setSpeechRate(ttsSpeed);
     }
 
+    @Override
+    public void onUtteranceCompleted(String utteranceId) {
+
+    }
 }
