@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.os.Environment;
+
+import androidx.appcompat.app.ActionBar;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
@@ -62,6 +64,11 @@ public class MainActivity extends AppCompatActivity{
             startActivity(intent);
         }
         sharePrefer = getApplicationContext().getSharedPreferences("sayText", MODE_PRIVATE);
+        ActionBar ab = getSupportActionBar() ;
+
+        ab.setIcon(R.mipmap.icon_launcher) ;
+        ab.setDisplayUseLogoEnabled(true) ;
+        ab.setDisplayShowHomeEnabled(true) ;
 
         DecimalFormat df=new DecimalFormat("0.0");
         int pitch = sharePrefer.getInt("pitch", 70);

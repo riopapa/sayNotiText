@@ -77,7 +77,7 @@ public class NotificationService extends Service {
         }
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")
-                    .setSmallIcon(R.mipmap.ic_saynotitext_foreground)
+                    .setSmallIcon(R.mipmap.icon_launcher)
                     .setContent(mRemoteViews)
                     .setOnlyAlertOnce(true)
                     .setAutoCancel(false)

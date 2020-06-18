@@ -110,7 +110,7 @@ public class NotificationListener extends NotificationListenerService {
             default :
                 if (canBeIgnored(eTitle, systemIgnores))
                     return;
-                speakANDLog("unknown " + packageFullName, "unknown title " + eTitle + "_text:" + eText);
+                speakANDLog("unknown " + packageFullName+" ", "unknown title " + eTitle + "_text:" + eText);
 //                else
 //                    dumpExtras(eTitle, eSubT, eText, msgText);
                 break;
