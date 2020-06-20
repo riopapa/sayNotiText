@@ -2,11 +2,13 @@ package com.urrecliner.andriod.saynotitext;
 
 import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
@@ -46,19 +48,28 @@ public class NotificationListener extends NotificationListenerService {
         final String AN_ANDROID = "an";
         final String TO_TEXT_ONLY = "to";
 
-        if (utils == null) utils = new Utils();
-
-        if (text2Speech == null) {
-            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
-            text2Speech = new Text2Speech();
-            text2Speech.initiateTTS(getApplicationContext());
-            text2Speech.readyAudioTTS();
-        }
-        if (packageIgnores == null) {
-            prepareLists = new PrepareLists();
-            prepareLists.read();
-            utils.log(logID, "$$ PREPARE IS NULL " + ++listCount);
-        }
+//        if (utils == null || text2Speech == null) {
+//            Log.e("NULL found", "restart from first");
+//            Intent i = new Intent(this, MainActivity.class);
+//            i.setAction(Intent.ACTION_MAIN);
+//            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            i.addCategory(Intent.CATEGORY_LAUNCHER);
+//            startActivity(i);
+//            return;
+//        }
+//        if (utils == null) utils = new Utils();
+//
+//        if (text2Speech == null) {
+//            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
+//            text2Speech = new Text2Speech();
+//            text2Speech.initiateTTS(getApplicationContext());
+//            text2Speech.readyAudioTTS();
+//        }
+//        if (packageIgnores == null) {
+//            prepareLists = new PrepareLists();
+//            prepareLists.read();
+//            utils.log(logID, "$$ PREPARE IS NULL " + ++listCount);
+//        }
 
         String packageFullName = sbn.getPackageName().toLowerCase();
         if (packageFullName.equals("")) {

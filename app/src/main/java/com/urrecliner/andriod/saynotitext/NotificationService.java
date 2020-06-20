@@ -69,11 +69,9 @@ public class NotificationService extends Service {
     private void createNotification() {
 
         if (null == mNotificationChannel) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                mNotificationChannel = new NotificationChannel("default","default", NotificationManager.IMPORTANCE_DEFAULT);
-                mNotificationManager.createNotificationChannel(mNotificationChannel);
-            }
+            mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotificationChannel = new NotificationChannel("default","default", NotificationManager.IMPORTANCE_DEFAULT);
+            mNotificationManager.createNotificationChannel(mNotificationChannel);
         }
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")
@@ -87,13 +85,6 @@ public class NotificationService extends Service {
         Intent mainIntent = new Intent(mContext, MainActivity.class);
         mRemoteViews.setOnClickPendingIntent(R.id.ll_customNotification, PendingIntent.getActivity(mContext, 0, mainIntent, 0));
 
-        Intent reloadIntent = new Intent(this, NotificationService.class);
-        reloadIntent.putExtra("operation", RE_LOAD);
-        reloadIntent.putExtra("isFromNotification", true);
-        PendingIntent reloadPi = PendingIntent.getService(mContext, 1, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(reloadPi);
-        mRemoteViews.setOnClickPendingIntent(R.id.reLoad, reloadPi);
-
         Intent stopSayIntent = new Intent(this, NotificationService.class);
         stopSayIntent.putExtra("operation", STOP_SAY);
         stopSayIntent.putExtra("isFromNotification", true);
@@ -104,7 +95,6 @@ public class NotificationService extends Service {
     }
 
     private void updateRemoteViews() {
-        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
         mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.ic_stop_say);
     }
 

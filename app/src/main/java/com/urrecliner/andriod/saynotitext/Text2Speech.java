@@ -17,7 +17,7 @@ import static com.urrecliner.andriod.saynotitext.Vars.ttsPitch;
 import static com.urrecliner.andriod.saynotitext.Vars.ttsSpeed;
 import static com.urrecliner.andriod.saynotitext.Vars.utils;
 
-class Text2Speech {
+class Text2Speech  implements TextToSpeech.OnInitListener {
 
     private String logID = "TTS";
     private TextToSpeech mTTS;
@@ -47,7 +47,14 @@ class Text2Speech {
         if (ttsPitch == 0f) {
             ttsPitch = 1.2f;
             ttsSpeed = 1.4f;
-//            utils.append2file(logFile, "pitch, speed ZERO ");
+        }
+    }
+
+    @Override
+    public void onInit(int i) {
+        if (i == TextToSpeech.SUCCESS) {
+            mTTS.setLanguage(Locale.KOREA);
+//            mTTS.setPitch(1);
         }
     }
 
