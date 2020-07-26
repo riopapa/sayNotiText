@@ -176,7 +176,7 @@ class Utils {
         TextView toastMessage = toastView.findViewById(android.R.id.message);
         toastMessage.setTextSize(12);
         toastMessage.setTextColor(Color.GREEN);
-        toastMessage.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_launcher, 0, 0, 0);
+        toastMessage.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.app_icon, 0, 0, 0);
         toastMessage.setGravity(Gravity.CENTER_VERTICAL);
         toastMessage.setCompoundDrawablePadding(8);
         toastMessage.setPadding(4,4,24,4);

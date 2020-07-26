@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity{
         sharePrefer = getApplicationContext().getSharedPreferences("sayText", MODE_PRIVATE);
         ActionBar ab = getSupportActionBar() ;
 
-        ab.setIcon(R.mipmap.icon_launcher) ;
+        ab.setIcon(R.mipmap.app_icon) ;
         ab.setDisplayUseLogoEnabled(true) ;
         ab.setDisplayShowHomeEnabled(true) ;
 

@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import android.widget.RemoteViews;
@@ -75,7 +74,7 @@ public class NotificationService extends Service {
         }
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")
-                    .setSmallIcon(R.mipmap.icon_launcher_mini)  // for notification bar
+                    .setSmallIcon(R.mipmap.app_icon_mini)  // for notification bar
                     .setContent(mRemoteViews)
                     .setOnlyAlertOnce(true)
                     .setAutoCancel(false)
