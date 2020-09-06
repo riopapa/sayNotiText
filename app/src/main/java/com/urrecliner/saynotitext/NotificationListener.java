@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.saynotitext;
+package com.urrecliner.saynotitext;
 
 import android.app.Notification;
 import android.content.Context;
@@ -10,17 +10,17 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.packageIncludeNames;
-import static com.urrecliner.andriod.saynotitext.Vars.packageNickNames;
-import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
-import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
-import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
-import static com.urrecliner.andriod.saynotitext.Vars.utils;
+import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
+import static com.urrecliner.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.saynotitext.Vars.packageIgnores;
+import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
+import static com.urrecliner.saynotitext.Vars.packageNickNames;
+import static com.urrecliner.saynotitext.Vars.packageTypes;
+import static com.urrecliner.saynotitext.Vars.prepareLists;
+import static com.urrecliner.saynotitext.Vars.smsIgnores;
+import static com.urrecliner.saynotitext.Vars.systemIgnores;
+import static com.urrecliner.saynotitext.Vars.text2Speech;
+import static com.urrecliner.saynotitext.Vars.utils;
 
 
 public class NotificationListener extends NotificationListenerService {
@@ -57,19 +57,19 @@ public class NotificationListener extends NotificationListenerService {
 //            startActivity(i);
 //            return;
 //        }
-//        if (utils == null) utils = new Utils();
-//
-//        if (text2Speech == null) {
-//            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
-//            text2Speech = new Text2Speech();
-//            text2Speech.initiateTTS(getApplicationContext());
-//            text2Speech.readyAudioTTS();
-//        }
-//        if (packageIgnores == null) {
-//            prepareLists = new PrepareLists();
-//            prepareLists.read();
-//            utils.log(logID, "$$ PREPARE IS NULL " + ++listCount);
-//        }
+        if (utils == null) utils = new Utils();
+
+        if (text2Speech == null) {
+            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
+            text2Speech = new Text2Speech();
+            text2Speech.initiateTTS(getApplicationContext());
+            text2Speech.readyAudioTTS();
+        }
+        if (packageIgnores == null) {
+            prepareLists = new PrepareLists();
+            prepareLists.read();
+            utils.log(logID, "$$ PREPARE IS NULL " + ++listCount);
+        }
 
         String packageFullName = sbn.getPackageName().toLowerCase();
         if (packageFullName.equals("")) {

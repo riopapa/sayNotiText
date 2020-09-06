@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.saynotitext;
+package com.urrecliner.saynotitext;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

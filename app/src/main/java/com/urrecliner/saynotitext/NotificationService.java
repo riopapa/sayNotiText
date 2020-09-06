@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.saynotitext;
+package com.urrecliner.saynotitext;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,8 +10,8 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
-import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
+import static com.urrecliner.saynotitext.Vars.prepareLists;
+import static com.urrecliner.saynotitext.Vars.text2Speech;
 
 public class NotificationService extends Service {
 

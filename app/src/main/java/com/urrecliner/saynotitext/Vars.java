@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.saynotitext;
+package com.urrecliner.saynotitext;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,7 +16,7 @@ class Vars {
     static String[] kakaoPersons = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
-    static String Booted = null;
+    static boolean Booted = false;
     static SharedPreferences sharePrefer;
 
     @SuppressLint("StaticFieldLeak")

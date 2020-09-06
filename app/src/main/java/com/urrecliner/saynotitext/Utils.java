@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.saynotitext;
+package com.urrecliner.saynotitext;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -24,9 +24,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
-import static com.urrecliner.andriod.saynotitext.Vars.mContext;
-import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
+import static com.urrecliner.saynotitext.Vars.mAudioManager;
+import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saynotitext.Vars.mFocusGain;
 
 class Utils {
 

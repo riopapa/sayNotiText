@@ -1,8 +1,12 @@
-package com.urrecliner.andriod.saynotitext;
+package com.urrecliner.saynotitext;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
@@ -11,6 +15,8 @@ import android.os.Environment;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -21,22 +27,23 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.urrecliner.andriod.saynotitext.Vars.Booted;
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.andriod.saynotitext.Vars.mContext;
-import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
-import static com.urrecliner.andriod.saynotitext.Vars.prepareLists;
-import static com.urrecliner.andriod.saynotitext.Vars.sharePrefer;
-import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.text2Speech;
-import static com.urrecliner.andriod.saynotitext.Vars.utils;
+import static com.urrecliner.saynotitext.Vars.Booted;
+import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
+import static com.urrecliner.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saynotitext.Vars.packageIgnores;
+import static com.urrecliner.saynotitext.Vars.packageTables;
+import static com.urrecliner.saynotitext.Vars.prepareLists;
+import static com.urrecliner.saynotitext.Vars.sharePrefer;
+import static com.urrecliner.saynotitext.Vars.smsIgnores;
+import static com.urrecliner.saynotitext.Vars.systemIgnores;
+import static com.urrecliner.saynotitext.Vars.text2Speech;
+import static com.urrecliner.saynotitext.Vars.utils;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -50,19 +57,21 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        askPermission();
         utils = new Utils();
         mContext = this;
         utils.log(logID,"Started");
-
-        verifyPermission();
 
         if (!isNotificationAllowed()) {
             utils.customToast("안드로이드 알림에서 sayNotiText 를 허가해 주세요.");
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
+        Intent intent = getIntent();
+        Booted = intent.hasExtra("boot");
+
         sharePrefer = getApplicationContext().getSharedPreferences("sayText", MODE_PRIVATE);
         ActionBar ab = getSupportActionBar() ;
 
@@ -95,15 +104,15 @@ public class MainActivity extends AppCompatActivity{
 
         utils.readyAudioManager(getApplicationContext());
 
-        if (Booted != null) {
-            Booted = null;
-            Intent i = new Intent(mContext, MainActivity.class);
-            i.addCategory("android.intent.category.HOME");
-            i.setFlags(Intent.FLAG_FROM_BACKGROUND);
-            startActivity(i);
-            finish();
-        }
-        else {
+//        if (Booted) {
+//            Booted = false;
+//            Intent i = new Intent(mContext, MainActivity.class);
+//            i.addCategory("android.intent.category.HOME");
+//            i.setFlags(Intent.FLAG_FROM_BACKGROUND);
+//            startActivity(i);
+//            finish();
+//        }
+//        else {
             new Timer().schedule(new TimerTask() {
                 public void run () {
                     Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
@@ -111,26 +120,8 @@ public class MainActivity extends AppCompatActivity{
                     startService(updateIntent);
                 }
             }, 100);
-        }
+//        }
         clearTableColor();
-    }
-
-    private void verifyPermission() {
-        if (PermissionProvider.isNotReady(getApplicationContext(), this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                PermissionProvider.isNotReady(getApplicationContext(), this,
-                        Manifest.permission.READ_CONTACTS) ||
-                PermissionProvider.isNotReady(getApplicationContext(), this,
-                        Manifest.permission.RECEIVE_BOOT_COMPLETED) ||
-                PermissionProvider.isNotReady(getApplicationContext(), this,
-                        Manifest.permission.READ_PHONE_STATE)) {
-            utils.logE(logID,"NOT GRANTED");
-            Toast.makeText(getApplicationContext(), "Check android permission",
-                    Toast.LENGTH_LONG).show();
-            finish();
-            System.exit(0);
-            android.os.Process.killProcess(android.os.Process.myPid());
-        }
     }
 
     private void setSeekBarPitch() {
@@ -310,5 +301,75 @@ public class MainActivity extends AppCompatActivity{
         super.onBackPressed();
         // to ignore back key
     }
+
+    // ↓ ↓ ↓ P E R M I S S I O N   RELATED /////// ↓ ↓ ↓ ↓  with no lambda
+    private final static int ALL_PERMISSIONS_RESULT = 101;
+    ArrayList permissionsToRequest;
+    ArrayList<String> permissionsRejected = new ArrayList<>();
+    String [] permissions;
+
+    private void askPermission() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);
+            permissions = info.requestedPermissions;//This array contain
+        } catch (Exception e) {
+            Log.e("Permission", "No Permission "+e.toString());
+        }
+
+        permissionsToRequest = findUnAskedPermissions();
+        if (permissionsToRequest.size() != 0) {
+            requestPermissions((String[]) permissionsToRequest.toArray(new String[0]),
+//            requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]),
+                    ALL_PERMISSIONS_RESULT);
+        }
+    }
+
+    private ArrayList findUnAskedPermissions() {
+        ArrayList <String> result = new ArrayList<String>();
+        for (String perm : permissions) if (hasPermission(perm)) result.add(perm);
+        return result;
+    }
+    private boolean hasPermission(String permission) {
+        return (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == ALL_PERMISSIONS_RESULT) {
+            for (Object perms : permissionsToRequest) {
+                if (hasPermission((String) perms)) {
+                    permissionsRejected.add((String) perms);
+                }
+            }
+            if (permissionsRejected.size() > 0) {
+                if (shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
+                    String msg = "These permissions are mandatory for the application. Please allow access.";
+                    showDialog(msg);
+                }
+            }
+            else
+                Toast.makeText(mContext, "Permissions not granted.", Toast.LENGTH_LONG).show();
+        }
+    }
+    private void showDialog(String msg) {
+        showMessageOKCancel(msg,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.this.requestPermissions(permissionsRejected.toArray(
+                                new String[0]), ALL_PERMISSIONS_RESULT);
+                    }
+                });
+    }
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+// ↑ ↑ ↑ ↑ P E R M I S S I O N    RELATED /////// ↑ ↑ ↑
 
 }

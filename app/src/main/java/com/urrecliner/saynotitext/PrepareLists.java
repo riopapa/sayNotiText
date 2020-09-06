@@ -1,20 +1,20 @@
-package com.urrecliner.andriod.saynotitext;
+package com.urrecliner.saynotitext;
 
 import android.os.Environment;
 
 import java.io.File;
 import java.io.IOException;
 
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.andriod.saynotitext.Vars.packageIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.packageIncludeNames;
-import static com.urrecliner.andriod.saynotitext.Vars.packageNickNames;
-import static com.urrecliner.andriod.saynotitext.Vars.packageTables;
-import static com.urrecliner.andriod.saynotitext.Vars.packageTypes;
-import static com.urrecliner.andriod.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.systemIgnores;
-import static com.urrecliner.andriod.saynotitext.Vars.utils;
+import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
+import static com.urrecliner.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.saynotitext.Vars.packageIgnores;
+import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
+import static com.urrecliner.saynotitext.Vars.packageNickNames;
+import static com.urrecliner.saynotitext.Vars.packageTables;
+import static com.urrecliner.saynotitext.Vars.packageTypes;
+import static com.urrecliner.saynotitext.Vars.smsIgnores;
+import static com.urrecliner.saynotitext.Vars.systemIgnores;
+import static com.urrecliner.saynotitext.Vars.utils;
 
 class PrepareLists {
     private String logID = "prepareLists";

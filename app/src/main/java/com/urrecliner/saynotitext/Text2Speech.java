@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.saynotitext;
+package com.urrecliner.saynotitext;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
@@ -10,12 +10,12 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.urrecliner.andriod.saynotitext.Vars.mAudioManager;
-import static com.urrecliner.andriod.saynotitext.Vars.mContext;
-import static com.urrecliner.andriod.saynotitext.Vars.mFocusGain;
-import static com.urrecliner.andriod.saynotitext.Vars.ttsPitch;
-import static com.urrecliner.andriod.saynotitext.Vars.ttsSpeed;
-import static com.urrecliner.andriod.saynotitext.Vars.utils;
+import static com.urrecliner.saynotitext.Vars.mAudioManager;
+import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saynotitext.Vars.mFocusGain;
+import static com.urrecliner.saynotitext.Vars.ttsPitch;
+import static com.urrecliner.saynotitext.Vars.ttsSpeed;
+import static com.urrecliner.saynotitext.Vars.utils;
 
 class Text2Speech  implements TextToSpeech.OnInitListener {
 
