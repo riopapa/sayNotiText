@@ -26,8 +26,9 @@ import static com.urrecliner.saynotitext.Vars.utils;
 public class NotificationListener extends NotificationListenerService {
 
     final String logID = "Listener";
-    private int speechCount = 0;
-    private int listCount  = 0;
+    private int speechCount = 0, listCount  = 0;
+    private String svTitle = "", svApp = "";
+    private long svTimeStamp = 0;
 
     @Override
     public void onCreate() {
@@ -60,10 +61,10 @@ public class NotificationListener extends NotificationListenerService {
         if (utils == null) utils = new Utils();
 
         if (text2Speech == null) {
-            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
             text2Speech.readyAudioTTS();
+            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
         }
         if (packageIgnores == null) {
             prepareLists = new PrepareLists();
@@ -93,11 +94,15 @@ public class NotificationListener extends NotificationListenerService {
             utils.log(logID, packageFullName + " Title ```null text``` :" + eText);
             return;
         }
+        long nowTimeStamp = System.currentTimeMillis();
+        if (eTitle.equals(svTitle) && nowTimeStamp < (svTimeStamp+2000)) {
+            utils.log(logID, packageNickName + " Title Duplicated :" + eText);
+            return;
+        }
+        svTimeStamp = nowTimeStamp;
         if (eText != null)
             eText = eText.replaceAll("\n\n", "|").replaceAll("\n", "|");
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
-
-
 //        dumpExtras(eTitle, eSubT, eText, msgText);
 //        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+", 제목 "+eTitle+", 내용 "+eText);
         switch (packageType) {

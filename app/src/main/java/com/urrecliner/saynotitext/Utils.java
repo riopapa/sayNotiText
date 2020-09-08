@@ -115,8 +115,8 @@ class Utils {
         try {
             if (!directoryDate.exists()) {
                 if (directoryDate.mkdirs()) {
-                    deleteOldFiles();
                     log("Directory", directoryDate.toString() + " created ");
+                    deleteOldFiles();
                 }
             }
         } catch (Exception e) {

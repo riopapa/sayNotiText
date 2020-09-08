@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity{
     public void edit_table(View v) {
         int nowTableId;
         nowTableId = v.getId();
+        clearTableColor();
         TextView tv = (TextView) v;
         tv.setTextColor(Color.CYAN);
         switch (nowTableId) {
