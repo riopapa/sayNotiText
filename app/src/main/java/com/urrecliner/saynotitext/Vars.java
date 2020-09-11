@@ -28,6 +28,6 @@ class Vars {
     static float ttsPitch = 1.2f;
     static float ttsSpeed = 1.4f;
 
-    static PrepareLists prepareLists = null;
+    static readOptionTables readOptionTables = null;
     static Utils utils = null;
 }

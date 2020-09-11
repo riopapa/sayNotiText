@@ -2,13 +2,11 @@ package com.urrecliner.saynotitext;
 
 import android.app.Notification;
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
@@ -16,7 +14,7 @@ import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
-import static com.urrecliner.saynotitext.Vars.prepareLists;
+import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
@@ -27,7 +25,7 @@ public class NotificationListener extends NotificationListenerService {
 
     final String logID = "Listener";
     private int speechCount = 0, listCount  = 0;
-    private String svTitle = "", svApp = "";
+    private String svTitle = "sv";
     private long svTimeStamp = 0;
 
     @Override
@@ -38,10 +36,10 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         if (sbn != null)
-            addNotification(sbn);
+            parseMessage(sbn);
     }
 
-    public void addNotification(StatusBarNotification sbn) {
+    public void parseMessage(StatusBarNotification sbn) {
 
         final String TT_TITLE_TEXT = "tt";
         final String SM_SMS = "sm";
@@ -59,7 +57,6 @@ public class NotificationListener extends NotificationListenerService {
 //            return;
 //        }
         if (utils == null) utils = new Utils();
-
         if (text2Speech == null) {
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
@@ -67,8 +64,8 @@ public class NotificationListener extends NotificationListenerService {
             utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
         }
         if (packageIgnores == null) {
-            prepareLists = new PrepareLists();
-            prepareLists.read();
+            readOptionTables = new readOptionTables();
+            readOptionTables.read();
             utils.log(logID, "$$ PREPARE IS NULL " + ++listCount);
         }
 
@@ -95,10 +92,12 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         long nowTimeStamp = System.currentTimeMillis();
-        if (eTitle.equals(svTitle) && nowTimeStamp < (svTimeStamp+2000)) {
-            utils.log(logID, packageNickName + " Title Duplicated :" + eText);
-            return;
+        if (eTitle.equals(svTitle) && ( nowTimeStamp < (svTimeStamp+2000))) {
+                utils.log(logID, packageNickName + " Title Duplicated :");
+                svTimeStamp = nowTimeStamp;
+                return;
         }
+        svTitle = eTitle;
         svTimeStamp = nowTimeStamp;
         if (eText != null)
             eText = eText.replaceAll("\n\n", "|").replaceAll("\n", "|");
@@ -111,7 +110,7 @@ public class NotificationListener extends NotificationListenerService {
                     sayKakao(packageNickName, eTitle, eSubT, eText);
                 break;
             case TO_TEXT_ONLY :
-                speakANDLog(packageNickName,  packageNickName + " (메시지입니다) " + eText);
+                speakANDLog(packageNickName,  packageNickName + " 메시지입니다 " + eText);
                 break;
             case SM_SMS :
 //                utils.log(logID,"SMS tit: "+eTitle+", txt: "+eText);
@@ -135,7 +134,7 @@ public class NotificationListener extends NotificationListenerService {
 
     private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
         if (eSubT != null) {
-            if (!canBeIgnored(eSubT, kakaoIgnores)) { // eSub: 채팅방
+            if (!canBeIgnored(eSubT, kakaoIgnores)  && !canBeIgnored(eTitle, kakaoPersons)) { // eSub: 채팅방
                 speakANDLog(packageShortName, "카톡 " + eSubT + "_단톡방 " + eTitle + "_님으로부터." + eText);
             }
         }

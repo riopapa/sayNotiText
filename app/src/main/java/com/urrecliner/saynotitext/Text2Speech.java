@@ -68,7 +68,7 @@ class Text2Speech  implements TextToSpeech.OnInitListener {
 
     void speak(String text) {
 
-        String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z./,\\s]"; // 한글, 영문, 숫자만 OK
+        String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z_./,\\s]"; // 한글, 영문, 숫자 및 몇 특수문자만 OK
 //        String match = "[`~!@#$%^&*()'/+;<>\\_▶★]"; // 특수문자 읽기 방지
         text = text
                 .replace("ㅇㅋ","오케이")

@@ -10,7 +10,7 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import static com.urrecliner.saynotitext.Vars.prepareLists;
+import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 
 public class NotificationService extends Service {
@@ -56,7 +56,7 @@ public class NotificationService extends Service {
                 text2Speech.ttsStop();
                 break;
             case RE_LOAD:
-                prepareLists.read();
+                readOptionTables.read();
                 break;
             default:
                 break;
