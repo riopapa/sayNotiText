@@ -16,7 +16,7 @@ import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.utils;
 
-class readOptionTables {
+class ReadOptionTables {
     private String logID = "prepareLists";
     private File directory = new File (Environment.getExternalStorageDirectory(), "sayNotiText/tables/");
 

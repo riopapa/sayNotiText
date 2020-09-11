@@ -16,7 +16,7 @@ class Vars {
     static String[] kakaoPersons = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
-    static String Booted = null;
+    static boolean Booted = false;
 
     static SharedPreferences sharePrefer;
     static SharedPreferences.Editor editor;
@@ -30,6 +30,6 @@ class Vars {
     static float ttsPitch = 1.2f;
     static float ttsSpeed = 1.4f;
 
-    static PrepareLists prepareLists = null;
+    static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
 }

@@ -63,7 +63,7 @@
 <H3>Notification Bar</H3>
  
 - Press <img src="./app/src/main/res/mipmap-xxhdpi/ic_reloading.png" width=32 height=32> will reload tables if you had changed some (Not needed if updated within this app)
-- Press <img src="./app/src/main/res/mipmap-xxhdpi/ic_stop_say.png" width=32 height=32> to stop immediately while it says notification
+- Press <img src="./app/src/main/res/mipmap-xxhdpi/icon_stop_talking.png" width=32 height=32> to stop immediately while it says notification
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./screenshots/notificationBar.png" width=320 height=60>
 
 <H1>Comments</H1>

@@ -8,10 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import static com.urrecliner.saynotitext.Vars.prepareLists;
+import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 
 public class NotificationService extends Service {
@@ -57,7 +57,7 @@ public class NotificationService extends Service {
                 text2Speech.ttsStop();
                 break;
             case RE_LOAD:
-                prepareLists.read();
+                readOptionTables.read();
                 break;
             default:
                 break;
@@ -77,7 +77,7 @@ public class NotificationService extends Service {
         }
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")
-                    .setSmallIcon(R.mipmap.ic_saynotitext_foreground)
+                    .setSmallIcon(R.mipmap.icon_launcher)
                     .setContent(mRemoteViews)
                     .setOnlyAlertOnce(true)
                     .setAutoCancel(false)
@@ -105,7 +105,7 @@ public class NotificationService extends Service {
 
     private void updateRemoteViews() {
         mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
-        mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.ic_stop_say);
+        mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.icon_stop_talking);
     }
 
     @Override

@@ -14,7 +14,7 @@ import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
-import static com.urrecliner.saynotitext.Vars.prepareLists;
+import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
@@ -26,7 +26,6 @@ public class NotificationListener extends NotificationListenerService {
     private int speechCount = 0;
     private int listCount  = 0;
     final String logID = "Listener";
-    private long lastTime = 0, thisTime;
 
     @Override
     public void onCreate() {
@@ -56,8 +55,8 @@ public class NotificationListener extends NotificationListenerService {
             text2Speech.readyAudioTTS();
         }
         if (packageIgnores == null) {
-            prepareLists = new PrepareLists();
-            prepareLists.read();
+            readOptionTables = new ReadOptionTables();
+            readOptionTables.read();
             utils.log(logID, "$$ PREPARE IS NULL " + ++listCount);
         }
 
@@ -100,9 +99,8 @@ public class NotificationListener extends NotificationListenerService {
 //        else
 //            lastTime = thisTime;
 
-
 //        dumpExtras(eTitle, eSubT, eText, msgText);
-        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+", 제목 "+eTitle+", 내용 "+eText);
+//        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+", 제목 "+eTitle+", 내용 "+eText);
         switch (packageType) {
             case KK_KAKAO :
                 if (eText != null) {
@@ -147,7 +145,9 @@ public class NotificationListener extends NotificationListenerService {
     }
     private void sayAndroid(String packageFullName, String eTitle, String eText) {
 
-        if (eTitle == null || eText == null || eText.equals("") || canBeIgnored(eTitle, systemIgnores) || canBeIgnored(eText, systemIgnores))
+        if (eTitle == null || eText == null || eText.equals(""))
+            return;
+        if (canBeIgnored(eTitle, systemIgnores) || canBeIgnored(eText, systemIgnores))
             return;
         speakANDLog(packageFullName, " Android Title ~" + eTitle + " Text~" + eText);
     }

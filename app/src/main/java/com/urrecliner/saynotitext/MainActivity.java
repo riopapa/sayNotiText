@@ -1,6 +1,5 @@
 package com.urrecliner.saynotitext;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,16 +11,16 @@ import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.os.Environment;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -45,7 +44,7 @@ import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.utils;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private SeekBar mSeekBarPitch;
     private SeekBar mSeekBarSpeed;
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity{
         sharePrefer = getApplicationContext().getSharedPreferences("sayText", MODE_PRIVATE);
         ActionBar ab = getSupportActionBar() ;
 
-        ab.setIcon(R.mipmap.app_icon) ;
+        ab.setIcon(R.mipmap.icon_launcher) ;
         ab.setDisplayUseLogoEnabled(true) ;
         ab.setDisplayShowHomeEnabled(true) ;
 
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity{
         mSpeedView = findViewById(R.id.bar_speed);
         mSpeedView.setText(df.format((float) speed / 50));
         setSeekBarSpeed();
-        prepareLists = new PrepareLists();
+        readOptionTables = new ReadOptionTables();
         prepareTable();
         set_Save_Table();
         text2Speech = new Text2Speech();
@@ -180,7 +179,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void prepareTable() {
 //        utils.log(logID, "prepared");
-        prepareLists.read();
+        readOptionTables.read();
         TextView tV = findViewById(R.id.text_table);
         tV.setText("");
         Toast.makeText(getApplicationContext(),"Reading param files\n" + "\npackageTables: " + packageTables.length +

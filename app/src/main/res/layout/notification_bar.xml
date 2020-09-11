@@ -11,7 +11,7 @@
         <ImageView
             android:layout_width="64sp"
             android:layout_height="64sp"
-            android:src="@mipmap/ic_launcher_foreground" />
+            android:src="@mipmap/icon_launcher" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,6 +31,6 @@
             android:layout_width="64sp"
             android:layout_height="64sp"
             android:layout_marginLeft="16sp"
-            android:src="@mipmap/ic_stop_say" />
+            android:src="@mipmap/icon_stop_talking" />
 
 </LinearLayout>
