@@ -26,6 +26,8 @@ public class NotificationListener extends NotificationListenerService {
     private int speechCount = 0;
     private int listCount  = 0;
     final String logID = "Listener";
+    private long lastTime = 0;
+    private String lastApp = "last";
 
     @Override
     public void onCreate() {
@@ -85,6 +87,17 @@ public class NotificationListener extends NotificationListenerService {
         if (eText != null)
             eText = eText.replaceAll("\n\n", "|").replaceAll("\n", "|");
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
+
+        long nowTime = System.currentTimeMillis();
+        if (lastApp.equals(packageFullName)) {
+            if ((lastTime + 2000) > nowTime) {
+                lastTime = nowTime;
+                return;
+            }
+        }
+        lastTime = nowTime;
+        lastApp = packageFullName;
+
 //        String msgText;
 //        try {
 //            msgText = extras.getString(Notification.EXTRA_MESSAGES);
@@ -132,7 +145,7 @@ public class NotificationListener extends NotificationListenerService {
 
     private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
         if (eSubT != null) {
-            if (!canBeIgnored(eSubT, kakaoIgnores)) { // eSub: 채팅방
+            if (!canBeIgnored(eSubT, kakaoIgnores) && !canBeIgnored(eSubT, kakaoPersons)) { // eSub: 채팅방
                 speakANDLog(packageShortName, "카카오톡 " + eSubT + "_단톡방 " + eTitle + "_님으로부터." + eText);
             }
         }
@@ -166,7 +179,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
 //        if (System.currentTimeMillis() - lastTime < 500 && eTitle.contains("메세지"))
 //            return;
-        if (eTitle.contains("메세지")) {
+        if (eTitle.contains("메시지") || eTitle.contains("메세지")) {
             utils.log("msg", "/// 메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
             return;
         }

@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         utils.log(logID,"Started");
 
         if (!isNotificationAllowed()) {
-            utils.customToast("안드로이드 알림에서 sayNotiText 를 허가해 주세요.");
+            utils.customToast("Allow permission on Android notification");
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
