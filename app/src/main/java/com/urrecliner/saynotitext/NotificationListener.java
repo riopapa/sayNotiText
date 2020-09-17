@@ -124,7 +124,7 @@ public class NotificationListener extends NotificationListenerService {
                 speakANDLog(packageNickName,  packageNickName + " (메세지입니다) " + eText);
                 break;
             case SM_SMS :
-                utils.log(logID,"SMS tit: "+eTitle+", txt: "+eText);
+//                utils.log(logID,"SMS tit: "+eTitle+", txt: "+eText);
                 saySMS(packageNickName, eTitle, eText);
                 break;
             case TT_TITLE_TEXT :
@@ -144,17 +144,15 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
-        if (eSubT != null) {
+        if(canBeIgnored(eTitle, kakaoIgnores) || canBeIgnored(eText, kakaoPersons))
+            return;
+        if (eSubT != null) {    // 단톡방이란 의미
             if (!canBeIgnored(eSubT, kakaoIgnores) && !canBeIgnored(eSubT, kakaoPersons)) { // eSub: 채팅방
-                speakANDLog(packageShortName, "카카오톡 " + eSubT + "_단톡방 " + eTitle + "_님으로부터." + eText);
+                speakANDLog(packageShortName, "카카오톡[" + eSubT + "] 단톡방 [" + eTitle + "]님으로부터." + eText);
             }
         }
-        else {
-            if(!canBeIgnored(eTitle, kakaoPersons)) {  // eTitle: 개인 이름
-                if (!eText.contains("페이스톡 해요"))
-                    speakANDLog(packageShortName, "카카오톡." + eTitle + "_님으로 부터._" + eText);
-            }
-        }
+        else
+            speakANDLog(packageShortName, "카카오톡[" + eTitle + "]님으로 부터." + eText);
     }
     private void sayAndroid(String packageFullName, String eTitle, String eText) {
 
@@ -166,12 +164,13 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayTitleText(String packageShortName, String eTitle, String eText) {
+        if (eText == null)
+            return;
         if (packageShortName.equals("밴드") && eTitle.contains("읽지 않은"))
             return;
         if (packageShortName.equals("씨티은행") && eTitle.contains("Vaccine"))
             return;
-        if (eText != null)
-            speakANDLog(packageShortName,packageShortName + " 메세지입니다. " + eTitle + "_로 부터. " + eText);
+        speakANDLog(packageShortName,packageShortName + " 메세지입니다. " + eTitle + "_로 부터. " + eText);
     }
 
     private void saySMS(String packageShortName, String eTitle, String eText) {
