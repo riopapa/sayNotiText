@@ -9,28 +9,28 @@
     tools:ignore="ContentDescription"
     android:orientation="horizontal">
         <ImageView
-            android:layout_width="64sp"
-            android:layout_height="64sp"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:src="@mipmap/icon_launcher" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="6"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center"
             android:text="@string/app_name"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:id="@+id/reLoad"
-            android:layout_width="64sp"
-            android:layout_height="64sp"
-            android:src="@mipmap/ic_reloading" />
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/stopSay"
-            android:layout_width="64sp"
-            android:layout_height="64sp"
-            android:layout_marginLeft="16sp"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:src="@mipmap/icon_stop_talking" />
 
 </LinearLayout>

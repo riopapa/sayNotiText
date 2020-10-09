@@ -90,9 +90,9 @@ public class NotificationService extends Service {
         Intent reloadIntent = new Intent(this, NotificationService.class);
         reloadIntent.putExtra("operation", RE_LOAD);
         reloadIntent.putExtra("isFromNotification", true);
-        PendingIntent reloadPi = PendingIntent.getService(mContext, 1, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(reloadPi);
-        mRemoteViews.setOnClickPendingIntent(R.id.reLoad, reloadPi);
+//        PendingIntent reloadPi = PendingIntent.getService(mContext, 1, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        mBuilder.setContentIntent(reloadPi);
+//        mRemoteViews.setOnClickPendingIntent(R.id.reLoad, reloadPi);
 
         Intent stopSayIntent = new Intent(this, NotificationService.class);
         stopSayIntent.putExtra("operation", STOP_SAY);
@@ -104,7 +104,7 @@ public class NotificationService extends Service {
     }
 
     private void updateRemoteViews() {
-        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
+//        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
         mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.icon_stop_talking);
     }
 

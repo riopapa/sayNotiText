@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:padding="4dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
@@ -43,7 +43,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:padding="4dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
@@ -176,6 +176,41 @@
             android:text="System Ignores" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_textIgnores"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="Text Ignores" />
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_textSpeak"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="Text Speak" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/button_save"
         android:layout_marginTop="4dp"
@@ -184,6 +219,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:textSize="20sp"
         android:text="Save Table" />
 
     <EditText
@@ -191,10 +227,11 @@
         android:layout_width="match_parent"
         android:focusable="false"
         android:layout_height="400sp"
+        android:scrollbars="horizontal"
         android:gravity="center_horizontal"
         android:inputType="text|textMultiLine"
         android:text="Active say Table List"
         android:textAlignment="center"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
 </LinearLayout>

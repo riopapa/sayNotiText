@@ -14,6 +14,8 @@ import static com.urrecliner.saynotitext.Vars.packageTables;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
+import static com.urrecliner.saynotitext.Vars.textIgnores;
+import static com.urrecliner.saynotitext.Vars.textSpeaks;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 class ReadOptionTables {
@@ -29,10 +31,13 @@ class ReadOptionTables {
         kakaoPersons =  readOptionFile("kakaoPersons.txt");
         smsIgnores =  readOptionFile("smsIgnores.txt");
         systemIgnores =  readOptionFile("systemIgnores.txt");
+        textIgnores =  readOptionFile("textIgnores.txt");
+        textSpeaks =  readOptionFile("textSpeaks.txt");
 
         packageNickNames = new String[packageTables.length];
         packageTypes = new String[packageTables.length];
         packageIncludeNames = new String[packageTables.length];
+
         for (int idx = 0; idx < packageTables.length; idx++) {
             if (packageTables[idx].indexOf(";")>1) {    // line should contain ";"
                 String []strings = packageTables[idx].split(";");
@@ -49,6 +54,35 @@ class ReadOptionTables {
                 }
             }
         }
+
+        for (int idx = 0; idx < textIgnores.length; idx++) {
+            if (textIgnores[idx].indexOf(";")>1) {    // line should contain ";"
+                String []strings = textIgnores[idx].split(";");
+                textIgnores[idx] = strings[0].trim();  // ignore from ;
+            }
+        }
+
+        for (int idx = 0; idx < smsIgnores.length; idx++) {
+            if (smsIgnores[idx].indexOf(";")>1) {    // line should contain ";"
+                String []strings = smsIgnores[idx].split(";");
+                smsIgnores[idx] = strings[0].trim();  // ignore from ;
+            }
+        }
+
+        for (int idx = 0; idx < packageIgnores.length; idx++) {
+            if (packageIgnores[idx].indexOf(";")>1) {    // line should contain ";"
+                String []strings = packageIgnores[idx].split(";");
+                packageIgnores[idx] = strings[0].trim();  // ignore from ;
+            }
+        }
+
+        for (int idx = 0; idx < textSpeaks.length; idx++) {
+            if (textSpeaks[idx].indexOf(";")>1) {    // line should contain ";"
+                String []strings = textSpeaks[idx].split(";");
+                textSpeaks[idx] = strings[0].trim();  // ignore from ;
+            }
+        }
+
     }
 
     private String[] readOptionFile(String filename) {

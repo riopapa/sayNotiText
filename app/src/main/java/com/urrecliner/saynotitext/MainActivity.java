@@ -42,6 +42,8 @@ import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
+import static com.urrecliner.saynotitext.Vars.textIgnores;
+import static com.urrecliner.saynotitext.Vars.textSpeaks;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSpeedView;
     private String nowFileName;
     private String logID = "Main";
-
+    private TextView [] tableViews = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, 100);
 //        }
+        tableViews = new TextView [] {findViewById(R.id.btn_kakaoIgnores), findViewById(R.id.btn_kakaoPersons),
+                findViewById(R.id.btn_packageIgnores), findViewById(R.id.btn_packageTables),
+                findViewById(R.id.btn_smsIgnores), findViewById(R.id.btn_systemIgnores),
+                findViewById(R.id.btn_textIgnores), findViewById(R.id.btn_textSpeak)};
+
         clearTableColor();
     }
 
@@ -184,7 +191,8 @@ public class MainActivity extends AppCompatActivity {
         tV.setText("");
         Toast.makeText(getApplicationContext(),"Reading param files\n" + "\npackageTables: " + packageTables.length +
                         "\npackageIgnores: " + packageIgnores.length + "\nkakaoIgnores: " + kakaoIgnores.length +
-                        "\nkakaoPersons: " + kakaoPersons.length + "\nsmsIgnores: " + smsIgnores.length +
+                        "\nkakaoPersons: " + kakaoPersons.length + "\ntextIgnores: " + textIgnores.length +
+                        "\ntextSpeaks: " + textSpeaks.length + "\nsmsIgnores: " + smsIgnores.length +
                         "\nsystemIgnores: " + systemIgnores.length
                 ,Toast.LENGTH_LONG).show();
     }
@@ -201,20 +209,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    void clearTableColor() {
-        TextView [] tvs = {findViewById(R.id.btn_kakaoIgnores), findViewById(R.id.btn_kakaoPersons),
-                findViewById(R.id.btn_packageIgnores), findViewById(R.id.btn_packageTables),
-                findViewById(R.id.btn_smsIgnores), findViewById(R.id.btn_systemIgnores)};
-        for (int i=0; i < 6; i++) {
-            tvs[i].setTextColor(Color.BLACK);
+
+    void grayTableColor() {
+        for (TextView tableView : tableViews) {
+            tableView.setTextColor(Color.GRAY);
         }
     }
+
+    void clearTableColor() {
+        for (TextView tableView : tableViews) {
+            tableView.setTextColor(Color.BLACK);
+        }
+    }
+
     public void edit_table(View v) {
         int nowTableId;
+        grayTableColor();
         nowTableId = v.getId();
-        clearTableColor();
         TextView tv = (TextView) v;
-        tv.setTextColor(Color.CYAN);
+        tv.setTextColor(Color.BLUE);
         switch (nowTableId) {
             case R.id.btn_kakaoIgnores:
                 show_for_edit(kakaoIgnores,"kakaoIgnores");
@@ -233,6 +246,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btn_systemIgnores:
                 show_for_edit(systemIgnores,"systemIgnores");
+                break;
+            case R.id.btn_textIgnores:
+                show_for_edit(textIgnores,"textIgnores");
+                break;
+            case R.id.btn_textSpeak:
+                show_for_edit(textSpeaks,"textSpeaks");
                 break;
         }
     }
@@ -347,8 +366,6 @@ public class MainActivity extends AppCompatActivity {
                     showDialog(msg);
                 }
             }
-            else
-                Toast.makeText(mContext, "Permissions not granted.", Toast.LENGTH_LONG).show();
         }
     }
     private void showDialog(String msg) {

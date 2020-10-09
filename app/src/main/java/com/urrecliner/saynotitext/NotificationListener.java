@@ -18,6 +18,8 @@ import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
+import static com.urrecliner.saynotitext.Vars.textIgnores;
+import static com.urrecliner.saynotitext.Vars.textSpeaks;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 
@@ -27,7 +29,7 @@ public class NotificationListener extends NotificationListenerService {
     private int listCount  = 0;
     final String logID = "Listener";
     private long lastTime = 0;
-    private String lastApp = "last";
+    private String lastAppName = "last";
 
     @Override
     public void onCreate() {
@@ -88,15 +90,18 @@ public class NotificationListener extends NotificationListenerService {
             eText = eText.replaceAll("\n\n", "|").replaceAll("\n", "|");
         String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
 
+        if (eText != null && canBeIgnored(eText, textIgnores))
+            return;
+
         long nowTime = System.currentTimeMillis();
-        if (lastApp.equals(packageFullName)) {
+        if (lastAppName.equals(packageFullName)) {
             if ((lastTime + 2000) > nowTime) {
                 lastTime = nowTime;
                 return;
             }
         }
         lastTime = nowTime;
-        lastApp = packageFullName;
+        lastAppName = packageFullName;
 
 //        String msgText;
 //        try {
@@ -136,6 +141,8 @@ public class NotificationListener extends NotificationListenerService {
             default :
                 if (canBeIgnored(eTitle, systemIgnores))
                     return;
+                if (canBeIgnored(eText, textIgnores))
+                    return;
                 speakANDLog("unknown " + packageFullName, "unknown title " + eTitle + "_text:" + eText);
 //                else
 //                    dumpExtras(eTitle, eSubT, eText, msgText);
@@ -144,47 +151,50 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
-        if(canBeIgnored(eTitle, kakaoIgnores) || canBeIgnored(eText, kakaoPersons))
+        if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eTitle, textSpeaks) || shouldSpeak(eSubT, textSpeaks))
+            ;
+        else if(canBeIgnored(eTitle, kakaoIgnores) || canBeIgnored(eText, kakaoPersons))
             return;
         if (eSubT != null) {    // 단톡방이란 의미
             if (!canBeIgnored(eSubT, kakaoIgnores) && !canBeIgnored(eSubT, kakaoPersons)) { // eSub: 채팅방
-                speakANDLog(packageShortName, "카카오톡[" + eSubT + "] 단톡방 [" + eTitle + "]님으로부터." + eText);
+                speakANDLog(packageShortName, "카톡[" + eSubT + "] 단톡방 [" + eTitle + "]님으로부터." + eText);
             }
         }
         else
-            speakANDLog(packageShortName, "카카오톡[" + eTitle + "]님으로 부터." + eText);
+            speakANDLog(packageShortName, "카톡[" + eTitle + "]님이." + eText);
     }
+
     private void sayAndroid(String packageFullName, String eTitle, String eText) {
 
         if (eTitle == null || eText == null || eText.equals(""))
             return;
         if (canBeIgnored(eTitle, systemIgnores) || canBeIgnored(eText, systemIgnores))
             return;
-        speakANDLog(packageFullName, " Android Title ~" + eTitle + " Text~" + eText);
+        speakANDLog(packageFullName, " Android Title [" + eTitle + "], Text =" + eText);
     }
 
     private void sayTitleText(String packageShortName, String eTitle, String eText) {
-        if (eText == null)
+        if (eText == null || canBeIgnored(eTitle,systemIgnores) || canBeIgnored(eText, textIgnores))
             return;
-        if (packageShortName.equals("밴드") && eTitle.contains("읽지 않은"))
-            return;
-        if (packageShortName.equals("씨티은행") && eTitle.contains("Vaccine"))
-            return;
-        speakANDLog(packageShortName,packageShortName + " 메세지입니다. " + eTitle + "_로 부터. " + eText);
+//        if (packageShortName.equals("밴드") && eTitle.contains("읽지 않은"))
+//            return;
+//        if (packageShortName.equals("씨티은행") && eTitle.contains("Vaccine"))
+//            return;
+        speakANDLog(packageShortName,packageShortName + " 메세지입니다. [" + eTitle + "]_로 부터. " + eText);
     }
 
     private void saySMS(String packageShortName, String eTitle, String eText) {
-        if (isPhoneNumber(eTitle) || canBeIgnored(eTitle, smsIgnores))
+        if (isOnlyPhoneNumber(eTitle) || canBeIgnored(eTitle, smsIgnores) || canBeIgnored(eText, textIgnores))
             return;
 //        if (System.currentTimeMillis() - lastTime < 500 && eTitle.contains("메세지"))
 //            return;
-        if (eTitle.contains("메시지") || eTitle.contains("메세지")) {
-            utils.log("msg", "/// 메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
-            return;
-        }
+//        if (eTitle.contains("메시지") || eTitle.contains("메세지")) {
+//            utils.log("msg", "/// 메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
+//            return;
+//        }
 
         eText = eText.replace("[Web발신]","");
-        speakANDLog(packageShortName, eTitle + " 로부터 SMS 메세지가 왔어요 " + eText);
+        speakANDLog(packageShortName, eTitle + " 로부터 SMS 메세지 왔슈 " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String eSubT, String eText, String msgText){
@@ -216,9 +226,16 @@ public class NotificationListener extends NotificationListenerService {
         return "noNickName";
     }
 
-    private boolean canBeIgnored(String notiText, String [] Ignores) {
+    private boolean canBeIgnored(String text, String [] Ignores) {
         for (String s : Ignores) {
-            if (notiText.contains(s)) return true;
+            if (text.contains(s)) return true;
+        }
+        return false;
+    }
+
+    private boolean shouldSpeak(String text, String [] speaks) {
+        for (String s : speaks) {
+            if (text.contains(s)) return true;
         }
         return false;
     }
@@ -259,7 +276,7 @@ public class NotificationListener extends NotificationListenerService {
         return false;
     }
 
-    private boolean isPhoneNumber(String who) {
+    private boolean isOnlyPhoneNumber(String who) {
         String temp = who.replaceAll(getString(R.string.number_only),"");
         return temp.length() <= 2;
     }

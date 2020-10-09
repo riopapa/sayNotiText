@@ -1,7 +1,9 @@
 package com.urrecliner.saynotitext;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -75,17 +77,34 @@ class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
         if (idx > 0)
             text = text.substring(0,idx)+" url 있음";
         ttsSpeak(text);
-        long delayTime = (long) ((float) (text.length() * 240) / ttsSpeed);
-        new Timer().schedule(new TimerTask() {
-            public void run() {
-                mAudioManager.abandonAudioFocusRequest(mFocusGain);
-            }
-        }, delayTime);
-    }
+//        long delayTime = (long) ((float) (text.length() * 230) / ttsSpeed);
+//        new Timer().schedule(new TimerTask() {
+//            public void run() {
+//                mAudioManager.abandonAudioFocusRequest(mFocusGain);
+//            }
+//        }, delayTime);
 
+        mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) { }
+
+            @Override
+            // this method will always called from a background thread.
+            public void onDone(String utteranceId) {
+                nowTTSCount--;
+                if (nowTTSCount < 1)
+                    mAudioManager.abandonAudioFocusRequest(mFocusGain);
+            }
+
+            @Override
+            public void onError(String utteranceId) { }
+        });
+    }
+    int nowTTSCount = 0;
     private void ttsSpeak(String text) {
         readyAudioTTS();
         try {
+            nowTTSCount++;
             mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         } catch (Exception e) {
             utils.logE(logID, "justSpeak:" + e.toString());
