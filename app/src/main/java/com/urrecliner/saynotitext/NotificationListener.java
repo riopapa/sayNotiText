@@ -53,7 +53,7 @@ public class NotificationListener extends NotificationListenerService {
         if (utils == null) utils = new Utils();
 
         if (text2Speech == null) {
-            utils.log(logID, "$$ TS TEXT2SPEECH IS NULL " + ++speechCount);
+            utils.log(logID, "$$ TTS is NULL " + ++speechCount);
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
             text2Speech.readyAudioTTS();
@@ -61,16 +61,14 @@ public class NotificationListener extends NotificationListenerService {
         if (packageIgnores == null) {
             readOptionTables = new ReadOptionTables();
             readOptionTables.read();
-            utils.log(logID, "$$ PREPARE IS NULL " + ++listCount);
+            utils.log(logID, "$$ Table reloaded " + ++listCount);
         }
 
         String packageFullName = sbn.getPackageName().toLowerCase();
-        if (packageFullName.equals("")) {
+        if (packageFullName.equals(""))
             return;
-        }
-        if (canBeIgnored(packageFullName, packageIgnores)) {
+        if (canBeIgnored(packageFullName, packageIgnores))
             return;
-    }
         String packageNickName, packageType;
         packageType = getPackageType(packageFullName);
         packageNickName = getPackageNickName(packageFullName);
@@ -86,13 +84,13 @@ public class NotificationListener extends NotificationListenerService {
             utils.log(logID, packageFullName + " Title ```null text``` :" + eText);
             return;
         }
-        if (eText != null)
-            eText = eText.replaceAll("\n\n", "|").replaceAll("\n", "|");
-        String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
 
         if (eText != null && canBeIgnored(eText, textIgnores))
             return;
+        if (eText != null)
+            eText = eText.replaceAll("\n", "|");
 
+        String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
         long nowTime = System.currentTimeMillis();
         if (lastAppName.equals(packageFullName)) {
             if ((lastTime + 2000) > nowTime) {
@@ -151,17 +149,17 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
-        if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eTitle, textSpeaks) || shouldSpeak(eSubT, textSpeaks))
-            ;
-        else if(canBeIgnored(eTitle, kakaoIgnores) || canBeIgnored(eText, kakaoPersons))
-            return;
-        if (eSubT != null) {    // 단톡방이란 의미
-            if (!canBeIgnored(eSubT, kakaoIgnores) && !canBeIgnored(eSubT, kakaoPersons)) { // eSub: 채팅방
-                speakANDLog(packageShortName, "카톡[" + eSubT + "] 단톡방 [" + eTitle + "]님으로부터." + eText);
+        if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eTitle, textSpeaks) || shouldSpeak(eSubT, textSpeaks)) {
+        }
+        else if (canBeIgnored(eTitle, kakaoIgnores) || canBeIgnored(eText, kakaoPersons))
+                return;
+        if (eSubT != null) {    // eSubT : 단톡방
+            if (!canBeIgnored(eSubT, kakaoIgnores) && !canBeIgnored(eTitle, kakaoPersons)) {
+                speakANDLog(packageShortName, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
             }
         }
         else
-            speakANDLog(packageShortName, "카톡[" + eTitle + "]님이." + eText);
+            speakANDLog(packageShortName, "카톡[" + eTitle + "] 님이." + eText);
     }
 
     private void sayAndroid(String packageFullName, String eTitle, String eText) {
@@ -180,7 +178,7 @@ public class NotificationListener extends NotificationListenerService {
 //            return;
 //        if (packageShortName.equals("씨티은행") && eTitle.contains("Vaccine"))
 //            return;
-        speakANDLog(packageShortName,packageShortName + " 메세지입니다. [" + eTitle + "]_로 부터. " + eText);
+        speakANDLog(packageShortName,packageShortName + " 에서  [" + eTitle + "]_로 부터. " + eText);
     }
 
     private void saySMS(String packageShortName, String eTitle, String eText) {
@@ -194,7 +192,7 @@ public class NotificationListener extends NotificationListenerService {
 //        }
 
         eText = eText.replace("[Web발신]","");
-        speakANDLog(packageShortName, eTitle + " 로부터 SMS 메세지 왔슈 " + eText);
+        speakANDLog(packageShortName, eTitle + " 로부터 SMS 왔슈 " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String eSubT, String eText, String msgText){
@@ -234,6 +232,8 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean shouldSpeak(String text, String [] speaks) {
+        if (text == null)
+            return false;
         for (String s : speaks) {
             if (text.contains(s)) return true;
         }
