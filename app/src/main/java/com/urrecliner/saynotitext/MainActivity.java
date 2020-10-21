@@ -26,7 +26,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -189,12 +191,7 @@ public class MainActivity extends AppCompatActivity {
         readOptionTables.read();
         TextView tV = findViewById(R.id.text_table);
         tV.setText("");
-        Toast.makeText(getApplicationContext(),"Reading param files\n" + "\npackageTables: " + packageTables.length +
-                        "\npackageIgnores: " + packageIgnores.length + "\nkakaoIgnores: " + kakaoIgnores.length +
-                        "\nkakaoPersons: " + kakaoPersons.length + "\ntextIgnores: " + textIgnores.length +
-                        "\ntextSpeaks: " + textSpeaks.length + "\nsmsIgnores: " + smsIgnores.length +
-                        "\nsystemIgnores: " + systemIgnores.length
-                ,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Reading param files",Toast.LENGTH_SHORT).show();
     }
 
     void set_Save_Table() {
@@ -277,6 +274,8 @@ public class MainActivity extends AppCompatActivity {
     boolean write_textFile() {
         TextView tv = findViewById(R.id.text_table);
         String outText = tv.getText().toString();
+        outText = sortText(outText);
+
         try {
             // Assume default encoding.
             File targetFile = new File(Environment.getExternalStorageDirectory(), "sayNotiText/tables/" + nowFileName +".txt");
@@ -298,6 +297,16 @@ public class MainActivity extends AppCompatActivity {
         tv = findViewById(R.id.button_save);
         tv.setVisibility(View.GONE);
         return true;
+    }
+
+    String sortText(String txt) {
+        String [] arrText = txt.split("\n");
+        Arrays.sort(arrText);
+        String sortedText = "";
+        for (String t: arrText) {
+            sortedText += t + "\n";
+        }
+        return sortedText;
     }
 
     private boolean isNotificationAllowed() {

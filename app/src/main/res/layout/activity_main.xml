@@ -71,8 +71,43 @@
             android:min="20"
             android:progress="70"
             android:scrollbarStyle="outsideOverlay" />
-
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_textIgnores"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="Text Ignores" />
+        <TextView
+            android:clickable="true"
+            android:onClick="edit_table"
+            android:id="@+id/btn_textSpeak"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_border"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="Text Speak" />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -174,41 +209,6 @@
             android:padding="8dp"
             android:textSize="16sp"
             android:text="System Ignores" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <TextView
-            android:clickable="true"
-            android:onClick="edit_table"
-            android:id="@+id/btn_textIgnores"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/back_border"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:padding="8dp"
-            android:textSize="16sp"
-            android:text="Text Ignores" />
-        <TextView
-            android:clickable="true"
-            android:onClick="edit_table"
-            android:id="@+id/btn_textSpeak"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/back_border"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:padding="8dp"
-            android:textSize="16sp"
-            android:text="Text Speak" />
     </LinearLayout>
 
     <Button

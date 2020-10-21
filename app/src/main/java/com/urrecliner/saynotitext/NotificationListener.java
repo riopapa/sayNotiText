@@ -65,9 +65,7 @@ public class NotificationListener extends NotificationListenerService {
         }
 
         String packageFullName = sbn.getPackageName().toLowerCase();
-        if (packageFullName.equals(""))
-            return;
-        if (canBeIgnored(packageFullName, packageIgnores))
+        if (packageFullName.equals("") || canBeIgnored(packageFullName, packageIgnores))
             return;
         String packageNickName, packageType;
         packageType = getPackageType(packageFullName);
@@ -121,13 +119,14 @@ public class NotificationListener extends NotificationListenerService {
             case KK_KAKAO :
                 if (eText != null) {
                     sayKakao(packageNickName, eTitle, eSubT, eText);
+                } else {
+                    speakANDLog(packageNickName+" noText",  packageNickName + " (카카오) " + eSubT);
                 }
                 break;
             case TO_TEXT_ONLY :
-                speakANDLog(packageNickName,  packageNickName + " (메세지입니다) " + eText);
+                speakANDLog(packageNickName,  packageNickName + " (메시지입니다) " + eText);
                 break;
             case SM_SMS :
-//                utils.log(logID,"SMS tit: "+eTitle+", txt: "+eText);
                 saySMS(packageNickName, eTitle, eText);
                 break;
             case TT_TITLE_TEXT :
@@ -172,27 +171,17 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayTitleText(String packageShortName, String eTitle, String eText) {
-        if (eText == null || canBeIgnored(eTitle,systemIgnores) || canBeIgnored(eText, textIgnores))
+        if (eText == null || canBeIgnored(eTitle,systemIgnores) || canBeIgnored(eText, textIgnores) || canBeIgnored(eTitle, textIgnores))
             return;
-//        if (packageShortName.equals("밴드") && eTitle.contains("읽지 않은"))
-//            return;
-//        if (packageShortName.equals("씨티은행") && eTitle.contains("Vaccine"))
-//            return;
         speakANDLog(packageShortName,packageShortName + " 에서  [" + eTitle + "]_로 부터. " + eText);
     }
 
     private void saySMS(String packageShortName, String eTitle, String eText) {
         if (isOnlyPhoneNumber(eTitle) || canBeIgnored(eTitle, smsIgnores) || canBeIgnored(eText, textIgnores))
             return;
-//        if (System.currentTimeMillis() - lastTime < 500 && eTitle.contains("메세지"))
-//            return;
-//        if (eTitle.contains("메시지") || eTitle.contains("메세지")) {
-//            utils.log("msg", "/// 메세지라고 온 제목은 무시 ("+eTitle.length()+":"+eTitle+") ("+eText.length()+":"+eText+")");
-//            return;
-//        }
 
         eText = eText.replace("[Web발신]","");
-        speakANDLog(packageShortName, eTitle + " 로부터 SMS 왔슈 " + eText);
+        speakANDLog(packageShortName, eTitle + " 로부터 SMS 왔음. " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String eSubT, String eText, String msgText){

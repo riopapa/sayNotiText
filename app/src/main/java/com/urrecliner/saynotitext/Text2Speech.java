@@ -1,13 +1,12 @@
 package com.urrecliner.saynotitext;
 
 import android.content.Context;
-import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
+import java.util.HashMap;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.urrecliner.saynotitext.Vars.mAudioManager;
 import static com.urrecliner.saynotitext.Vars.mContext;
@@ -16,7 +15,7 @@ import static com.urrecliner.saynotitext.Vars.ttsPitch;
 import static com.urrecliner.saynotitext.Vars.ttsSpeed;
 import static com.urrecliner.saynotitext.Vars.utils;
 
-class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
+class Text2Speech {
 
     private String logID = "TTS";
     private TextToSpeech mTTS;
@@ -91,21 +90,20 @@ class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
             @Override
             // this method will always called from a background thread.
             public void onDone(String utteranceId) {
-                nowTTSCount--;
-                if (nowTTSCount < 1)
-                    mAudioManager.abandonAudioFocusRequest(mFocusGain);
+                mAudioManager.abandonAudioFocusRequest(mFocusGain);
             }
 
             @Override
             public void onError(String utteranceId) { }
         });
     }
-    int nowTTSCount = 0;
+
     private void ttsSpeak(String text) {
         readyAudioTTS();
+        Bundle params = new Bundle();
+        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 1f); // change the 0.5f to any value from 0f-1f (1f is default)
         try {
-            nowTTSCount++;
-            mTTS.speak(text, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+            mTTS.speak(text, TextToSpeech.QUEUE_ADD, params, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
         } catch (Exception e) {
             utils.logE(logID, "justSpeak:" + e.toString());
         }
@@ -135,8 +133,4 @@ class Text2Speech implements TextToSpeech.OnUtteranceCompletedListener {
         mTTS.setSpeechRate(ttsSpeed);
     }
 
-    @Override
-    public void onUtteranceCompleted(String utteranceId) {
-
-    }
 }
