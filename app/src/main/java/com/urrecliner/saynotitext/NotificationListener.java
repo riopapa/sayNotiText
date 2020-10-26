@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
+import static com.urrecliner.saynotitext.Vars.kakaoAlert1;
+import static com.urrecliner.saynotitext.Vars.kakaoAlert2;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
@@ -65,7 +67,7 @@ public class NotificationListener extends NotificationListenerService {
         }
 
         String packageFullName = sbn.getPackageName().toLowerCase();
-        if (packageFullName.equals("") || canBeIgnored(packageFullName, packageIgnores))
+        if (packageFullName.equals("") || isInTheList(packageFullName, packageIgnores))
             return;
         String packageNickName, packageType;
         packageType = getPackageType(packageFullName);
@@ -83,7 +85,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
 
-        if (eText != null && canBeIgnored(eText, textIgnores))
+        if (eText != null && isInTheList(eText, textIgnores))
             return;
         if (eText != null)
             eText = eText.replaceAll("\n", "|");
@@ -136,9 +138,9 @@ public class NotificationListener extends NotificationListenerService {
                 sayAndroid(packageFullName, eTitle, eText);
                 break;
             default :
-                if (canBeIgnored(eTitle, systemIgnores))
+                if (isInTheList(eTitle, systemIgnores))
                     return;
-                if (canBeIgnored(eText, textIgnores))
+                if (isInTheList(eText, textIgnores))
                     return;
                 speakANDLog("unknown " + packageFullName, "unknown title " + eTitle + "_text:" + eText);
 //                else
@@ -150,38 +152,40 @@ public class NotificationListener extends NotificationListenerService {
     private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
         if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eTitle, textSpeaks) || shouldSpeak(eSubT, textSpeaks)) {
         }
-        else if (canBeIgnored(eTitle, kakaoIgnores) || canBeIgnored(eText, kakaoPersons))
+        else if (isInTheList(eTitle, kakaoIgnores) || isInTheList(eText, kakaoPersons))
                 return;
         if (eSubT != null) {    // eSubT : 단톡방
-            if (!canBeIgnored(eSubT, kakaoIgnores) && !canBeIgnored(eTitle, kakaoPersons)) {
-                speakANDLog(packageShortName, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
+            if (isInTheList(eSubT, kakaoAlert1) && isInTheList(eText, kakaoAlert2))
+                speakANDLog(packageShortName+" "+eSubT, "[" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
+            else if (!isInTheList(eSubT, kakaoIgnores) && !isInTheList(eTitle, kakaoPersons)) {
+                speakANDLog(packageShortName+" "+eSubT, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
             }
         }
         else
-            speakANDLog(packageShortName, "카톡[" + eTitle + "] 님이." + eText);
+            speakANDLog(packageShortName+" "+eTitle, "카톡[" + eTitle + "] 님이." + eText);
     }
 
     private void sayAndroid(String packageFullName, String eTitle, String eText) {
 
         if (eTitle == null || eText == null || eText.equals(""))
             return;
-        if (canBeIgnored(eTitle, systemIgnores) || canBeIgnored(eText, systemIgnores))
+        if (isInTheList(eTitle, systemIgnores) || isInTheList(eText, systemIgnores))
             return;
         speakANDLog(packageFullName, " Android Title [" + eTitle + "], Text =" + eText);
     }
 
     private void sayTitleText(String packageShortName, String eTitle, String eText) {
-        if (eText == null || canBeIgnored(eTitle,systemIgnores) || canBeIgnored(eText, textIgnores) || canBeIgnored(eTitle, textIgnores))
+        if (isInTheList(eTitle,systemIgnores) || isInTheList(eText, textIgnores) || isInTheList(eTitle, textIgnores))
             return;
-        speakANDLog(packageShortName,packageShortName + " 에서  [" + eTitle + "]_로 부터. " + eText);
+        speakANDLog(packageShortName+" "+eTitle,packageShortName + " 에서  [" + eTitle + "]_로 부터. " + eText);
     }
 
     private void saySMS(String packageShortName, String eTitle, String eText) {
-        if (isOnlyPhoneNumber(eTitle) || canBeIgnored(eTitle, smsIgnores) || canBeIgnored(eText, textIgnores))
+        if (isOnlyPhoneNumber(eTitle) || isInTheList(eTitle, smsIgnores) || isInTheList(eText, textIgnores))
             return;
 
         eText = eText.replace("[Web발신]","");
-        speakANDLog(packageShortName, eTitle + " 로부터 SMS 왔음. " + eText);
+        speakANDLog(packageShortName+" "+eTitle, eTitle + " 로부터 SMS 왔음. " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String eSubT, String eText, String msgText){
@@ -213,7 +217,9 @@ public class NotificationListener extends NotificationListenerService {
         return "noNickName";
     }
 
-    private boolean canBeIgnored(String text, String [] Ignores) {
+    private boolean isInTheList(String text, String [] Ignores) {
+        if (text == null)
+            return false;
         for (String s : Ignores) {
             if (text.contains(s)) return true;
         }

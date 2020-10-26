@@ -5,6 +5,7 @@ import android.os.Environment;
 import java.io.File;
 import java.io.IOException;
 
+import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
@@ -29,6 +30,7 @@ class ReadOptionTables {
         packageTables =  readOptionFile("packageTables.txt");
         kakaoIgnores =  readOptionFile("kakaoIgnores.txt");
         kakaoPersons =  readOptionFile("kakaoPersons.txt");
+        kakaoAlerts =  readOptionFile("kakaoAlerts.txt");
         smsIgnores =  readOptionFile("smsIgnores.txt");
         systemIgnores =  readOptionFile("systemIgnores.txt");
         textIgnores =  readOptionFile("textIgnores.txt");

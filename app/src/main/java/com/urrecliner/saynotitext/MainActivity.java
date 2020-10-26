@@ -34,6 +34,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.urrecliner.saynotitext.Vars.Booted;
+import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.mContext;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private String nowFileName;
     private String logID = "Main";
     private TextView [] tableViews = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             }, 100);
 //        }
         tableViews = new TextView [] {findViewById(R.id.btn_kakaoIgnores), findViewById(R.id.btn_kakaoPersons),
-                findViewById(R.id.btn_packageIgnores), findViewById(R.id.btn_packageTables),
+                findViewById(R.id.btn_packageIgnores), findViewById(R.id.btn_packageTables),  findViewById(R.id.btn_kakaoAlert),
                 findViewById(R.id.btn_smsIgnores), findViewById(R.id.btn_systemIgnores),
                 findViewById(R.id.btn_textIgnores), findViewById(R.id.btn_textSpeak)};
 
@@ -231,6 +233,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btn_kakaoPersons:
                 show_for_edit(kakaoPersons,"kakaoPersons");
+                break;
+            case R.id.btn_kakaoAlert:
+                show_for_edit(kakaoAlerts,"kakaoAlerts");
                 break;
             case R.id.btn_packageIgnores:
                 show_for_edit(packageIgnores,"packageIgnores");

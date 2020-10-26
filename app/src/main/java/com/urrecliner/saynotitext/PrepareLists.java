@@ -5,6 +5,9 @@ import android.os.Environment;
 import java.io.File;
 import java.io.IOException;
 
+import static com.urrecliner.saynotitext.Vars.kakaoAlert1;
+import static com.urrecliner.saynotitext.Vars.kakaoAlert2;
+import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
@@ -27,6 +30,7 @@ class PrepareLists {
         packageTables =  readParameterFile("packageTables.txt");
         kakaoIgnores =  readParameterFile("kakaoIgnores.txt");
         kakaoPersons =  readParameterFile("kakaoPersons.txt");
+        kakaoAlerts =  readParameterFile("kakaoAlerts.txt");
         smsIgnores =  readParameterFile("smsIgnores.txt");
         systemIgnores =  readParameterFile("systemIgnores.txt");
 
@@ -48,6 +52,14 @@ class PrepareLists {
                     packageIncludeNames[idx] = "";
                 }
             }
+        }
+
+        kakaoAlert1 = new String[kakaoAlerts.length];
+        kakaoAlert2 = new String[kakaoAlerts.length];
+        for (int idx = 0; idx < kakaoAlerts.length; idx++) {
+            String []strings = packageTables[idx].split("\\+");
+            kakaoAlert1[idx] = strings[0].trim();
+            kakaoAlert2[idx] = strings[1].trim();
         }
     }
 

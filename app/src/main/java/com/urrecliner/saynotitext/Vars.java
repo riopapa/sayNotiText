@@ -14,6 +14,9 @@ class Vars {
     static String[] packageTables = null;
     static String[] kakaoIgnores = null;
     static String[] kakaoPersons = null;
+    static String[] kakaoAlerts = null;
+    static String[] kakaoAlert1 = null;
+    static String[] kakaoAlert2 = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
     static String[] textIgnores = null;
