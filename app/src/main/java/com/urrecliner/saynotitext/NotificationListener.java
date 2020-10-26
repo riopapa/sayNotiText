@@ -8,8 +8,9 @@ import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
-import static com.urrecliner.saynotitext.Vars.kakaoAlert1;
-import static com.urrecliner.saynotitext.Vars.kakaoAlert2;
+import static com.urrecliner.saynotitext.Vars.kakaoAlertGroup;
+import static com.urrecliner.saynotitext.Vars.kakaoAlertWho;
+import static com.urrecliner.saynotitext.Vars.kakaoAlertText;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
@@ -155,8 +156,12 @@ public class NotificationListener extends NotificationListenerService {
         else if (isInTheList(eTitle, kakaoIgnores) || isInTheList(eText, kakaoPersons))
                 return;
         if (eSubT != null) {    // eSubT : 단톡방
-            if (isInTheList(eSubT, kakaoAlert1) && isInTheList(eText, kakaoAlert2))
-                speakANDLog(packageShortName+" "+eSubT, "[" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
+            if (isInTheList(eSubT, kakaoAlertGroup)) {   // 특정 단톡방에서는
+                if (isInTheList(eTitle, kakaoAlertWho) && isInTheList(eText, kakaoAlertText))
+                    speakANDLog(packageShortName+" "+eSubT, "[" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
+                // 아니면 해당 단톡방 무시
+                // Group, 대화자, 인식문자 는 서로 연결 안 됨 ㅠ.ㅠ
+            }
             else if (!isInTheList(eSubT, kakaoIgnores) && !isInTheList(eTitle, kakaoPersons)) {
                 speakANDLog(packageShortName+" "+eSubT, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
             }

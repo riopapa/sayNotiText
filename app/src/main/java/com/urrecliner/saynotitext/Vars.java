@@ -15,8 +15,9 @@ class Vars {
     static String[] kakaoIgnores = null;
     static String[] kakaoPersons = null;
     static String[] kakaoAlerts = null;
-    static String[] kakaoAlert1 = null;
-    static String[] kakaoAlert2 = null;
+    static String[] kakaoAlertGroup = null;
+    static String[] kakaoAlertWho = null;
+    static String[] kakaoAlertText = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
     static String[] textIgnores = null;
@@ -24,7 +25,6 @@ class Vars {
     static boolean Booted = false;
 
     static SharedPreferences sharePrefer;
-    static SharedPreferences.Editor editor;
 
     @SuppressLint("StaticFieldLeak")
     static Context mContext = null;

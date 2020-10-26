@@ -5,6 +5,9 @@ import android.os.Environment;
 import java.io.File;
 import java.io.IOException;
 
+import static com.urrecliner.saynotitext.Vars.kakaoAlertGroup;
+import static com.urrecliner.saynotitext.Vars.kakaoAlertWho;
+import static com.urrecliner.saynotitext.Vars.kakaoAlertText;
 import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
@@ -85,6 +88,16 @@ class ReadOptionTables {
             }
         }
 
+        // 카카오 단톡방에서 특별히 얘기 되는 자만
+        kakaoAlertGroup = new String[kakaoAlerts.length];   // 단톡방 명
+        kakaoAlertWho = new String[kakaoAlerts.length];   // 누가
+        kakaoAlertText = new String[kakaoAlerts.length];   // 인식 문자
+        for (int idx = 0; idx < kakaoAlerts.length; idx++) {
+            String []strings = kakaoAlerts[idx].split("\\+");
+            kakaoAlertGroup[idx] = strings[0].trim();
+            kakaoAlertWho[idx] = strings[1].trim();
+            kakaoAlertText[idx] = strings[2].trim();
+        }
     }
 
     private String[] readOptionFile(String filename) {
