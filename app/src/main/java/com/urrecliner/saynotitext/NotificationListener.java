@@ -28,7 +28,7 @@ import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.saynotitext.Vars.stockSay;
+import static com.urrecliner.saynotitext.Vars.sayStockOnOff;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
@@ -188,7 +188,7 @@ public class NotificationListener extends NotificationListenerService {
             if (isInTheList(eSubT, kakaoAlertGroup)) {   // 특정 단톡방에서는
                 utils.log("특정 단톡방 "+eSubT, "["+eSubT+eTitle+"]"+" with "+eText);
                 if (isInTheList(eSubT + eTitle, KakaoAlertGWho) && isInTheList(eText, kakaoAlertText)) {
-                    if (stockSay)
+                    if (sayStockOnOff)
                         speakThenLog(packageNickName + " " + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
                     append2App("_Stock.txt", eSubT+" ; "+eTitle+" => "+((eText.length()>30) ? eText.substring(0, 30): eText));
                 }
