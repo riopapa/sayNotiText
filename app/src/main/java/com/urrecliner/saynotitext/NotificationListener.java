@@ -5,11 +5,20 @@ import android.content.Context;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import static com.urrecliner.saynotitext.Vars.KakaoAlertGWho;
 import static com.urrecliner.saynotitext.Vars.kakaoAlertGroup;
-import static com.urrecliner.saynotitext.Vars.kakaoAlertWho;
 import static com.urrecliner.saynotitext.Vars.kakaoAlertText;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
@@ -19,6 +28,7 @@ import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
+import static com.urrecliner.saynotitext.Vars.stockSay;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
@@ -33,6 +43,8 @@ public class NotificationListener extends NotificationListenerService {
     final String logID = "Listener";
     private long lastTime = 0;
     private String lastAppName = "last";
+    String eTitle, eText, eSubT;
+    String packageFullName, packageNickName, packageType;
 
     @Override
     public void onCreate() {
@@ -48,7 +60,8 @@ public class NotificationListener extends NotificationListenerService {
     public void addNotification(StatusBarNotification sbn) {
 
         final String TT_TITLE_TEXT = "tt";
-        final String SM_SMS = "sm";
+        final String TT_SUBTITLE_TEXT = "ts";
+        final String SM_SMS = "sms";
         final String KK_KAKAO = "kk";
         final String AN_ANDROID = "an";
         final String TO_TEXT_ONLY = "to";
@@ -67,31 +80,40 @@ public class NotificationListener extends NotificationListenerService {
             utils.log(logID, "$$ Table reloaded " + ++listCount);
         }
 
-        String packageFullName = sbn.getPackageName().toLowerCase();
+        packageFullName = sbn.getPackageName().toLowerCase();
         if (packageFullName.equals("") || isInTheList(packageFullName, packageIgnores))
             return;
-        String packageNickName, packageType;
         packageType = getPackageType(packageFullName);
         packageNickName = getPackageNickName(packageFullName);
 
         Notification mNotification=sbn.getNotification();
         Bundle extras = mNotification.extras;
-        String eTitle = extras.getString(Notification.EXTRA_TITLE);
-        String eText = extras.getString(Notification.EXTRA_TEXT);
+        eTitle = extras.getString(Notification.EXTRA_TITLE);
+        eText = extras.getString(Notification.EXTRA_TEXT);
         if (eTitle == null && eText == null) {
             return;
         }
-        if (eTitle == null) {
-            utils.log(logID, packageFullName + " Title ```null text``` :" + eText);
-            return;
-        }
-
-        if (eText != null && isInTheList(eText, textIgnores))
-            return;
         if (eText != null)
             eText = eText.replaceAll("\n", "|");
 
-        String eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
+        if (eTitle == null) {
+            utils.log(logID+" Title null", packageFullName + " Title IS NULL $$$ `null text``` :" + eText);
+            return;
+        }
+        try {
+            eSubT = extras.getString(Notification.EXTRA_SUB_TEXT);
+        } catch (Exception e) {
+            utils.log("eSubt","is SpannableString "+eText+" with "+eText);
+            eSubT = null;
+        }
+
+        if (eText != null) {
+            String txt = (eText.length() > 40) ? eText.substring(0, 39)+" ... " : eText;
+            utils.append2file("log [" + eSubT + "].txt", packageFullName + ", tit:" + eTitle + ", Text:" + txt);
+        }
+        if (isInTheList(eText, textIgnores))
+            return;
+
         long nowTime = System.currentTimeMillis();
         if (lastAppName.equals(packageFullName)) {
             if ((lastTime + 2000) > nowTime) {
@@ -120,77 +142,99 @@ public class NotificationListener extends NotificationListenerService {
 //        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+", 제목 "+eTitle+", 내용 "+eText);
         switch (packageType) {
             case KK_KAKAO :
+//                utils.append2file("kakao "+eSubT+".txt", "tit:"+eTitle+", Text:"+eText);
                 if (eText != null) {
-                    sayKakao(packageNickName, eTitle, eSubT, eText);
+                    sayKakao();
                 } else {
-                    speakANDLog(packageNickName+" noText",  packageNickName + " (카카오) " + eSubT);
+                    speakThenLog(packageNickName+" noText",  packageNickName + " (카카오) " + eSubT);
                 }
                 break;
-            case TO_TEXT_ONLY :
-                speakANDLog(packageNickName,  packageNickName + " (메시지입니다) " + eText);
-                break;
             case SM_SMS :
-                saySMS(packageNickName, eTitle, eText);
+                saySMS();
                 break;
             case TT_TITLE_TEXT :
-                sayTitleText(packageNickName, eTitle, eText);
+                sayTitleText();
+                break;
+            case TO_TEXT_ONLY :
+                speakThenLog("to "+packageNickName,  packageNickName + " (로 부터) " + eText);
+                break;
+            case TT_SUBTITLE_TEXT :
+                saySubTitleText();
                 break;
             case AN_ANDROID :
-                sayAndroid(packageFullName, eTitle, eText);
+                sayAndroid();
                 break;
             default :
                 if (isInTheList(eTitle, systemIgnores))
                     return;
                 if (isInTheList(eText, textIgnores))
                     return;
-                speakANDLog("unknown " + packageFullName, "unknown title " + eTitle + "_text:" + eText);
+                speakThenLog("unknown " + packageFullName, "unknown title " + eTitle + "_text:" + eText);
 //                else
 //                    dumpExtras(eTitle, eSubT, eText, msgText);
                 break;
         }
     }
 
-    private void sayKakao (String packageShortName, String eTitle, String eSubT, String eText) {
+    private void sayKakao () {
+        utils.log("sayKakao "+eSubT, eTitle+" , "+eText);
         if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eTitle, textSpeaks) || shouldSpeak(eSubT, textSpeaks)) {
+            speakThenLog(packageNickName+" "+eSubT, "주의 [" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
         }
         else if (isInTheList(eTitle, kakaoIgnores) || isInTheList(eText, kakaoPersons))
                 return;
+
         if (eSubT != null) {    // eSubT : 단톡방
             if (isInTheList(eSubT, kakaoAlertGroup)) {   // 특정 단톡방에서는
-                if (isInTheList(eTitle, kakaoAlertWho) && isInTheList(eText, kakaoAlertText))
-                    speakANDLog(packageShortName+" "+eSubT, "[" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
+                utils.log("특정 단톡방 "+eSubT, "["+eSubT+eTitle+"]"+" with "+eText);
+                if (isInTheList(eSubT + eTitle, KakaoAlertGWho) && isInTheList(eText, kakaoAlertText)) {
+                    if (stockSay)
+                        speakThenLog(packageNickName + " " + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
+                    append2App("_Stock.txt", eSubT+" ; "+eTitle+" => "+((eText.length()>30) ? eText.substring(0, 30): eText));
+                }
                 // 아니면 해당 단톡방 무시
                 // Group, 대화자, 인식문자 는 서로 연결 안 됨 ㅠ.ㅠ
+                else
+                    utils.log("단톡방 무시 대상", eTitle+" , "+eSubT+" , "+eText);
             }
             else if (!isInTheList(eSubT, kakaoIgnores) && !isInTheList(eTitle, kakaoPersons)) {
-                speakANDLog(packageShortName+" "+eSubT, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
+                speakThenLog(packageNickName+" "+eSubT, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
+            }
+            else {
+                utils.log("katalk ignored", eTitle+" , "+eSubT+" , "+eTitle);
             }
         }
         else
-            speakANDLog(packageShortName+" "+eTitle, "카톡[" + eTitle + "] 님이." + eText);
+            speakThenLog(packageNickName+" "+eTitle, "카톡 [" + eTitle + "] 님이." + eText);
     }
 
-    private void sayAndroid(String packageFullName, String eTitle, String eText) {
+    private void sayAndroid() {
 
         if (eTitle == null || eText == null || eText.equals(""))
             return;
         if (isInTheList(eTitle, systemIgnores) || isInTheList(eText, systemIgnores))
             return;
-        speakANDLog(packageFullName, " Android Title [" + eTitle + "], Text =" + eText);
+        speakThenLog(packageFullName, " Android Title [" + eTitle + "], Text =" + eText);
     }
 
-    private void sayTitleText(String packageShortName, String eTitle, String eText) {
+    private void sayTitleText() {
         if (isInTheList(eTitle,systemIgnores) || isInTheList(eText, textIgnores) || isInTheList(eTitle, textIgnores))
             return;
-        speakANDLog(packageShortName+" "+eTitle,packageShortName + " 에서  [" + eTitle + "]_로 부터. " + eText);
+        speakThenLog(packageNickName+" "+eTitle,packageNickName + " 에서  [" + eTitle + "]_로 부터. " + eText);
     }
 
-    private void saySMS(String packageShortName, String eTitle, String eText) {
+    private void saySubTitleText() {
+        if (isInTheList(eSubT,systemIgnores) || isInTheList(eText, textIgnores) || isInTheList(eSubT, textIgnores))
+            return;
+        speakThenLog(packageNickName,packageNickName + " 에서  [" + eSubT + "]내용으로 . " + eText);
+    }
+
+    private void saySMS() {
         if (isOnlyPhoneNumber(eTitle) || isInTheList(eTitle, smsIgnores) || isInTheList(eText, textIgnores))
             return;
 
         eText = eText.replace("[Web발신]","");
-        speakANDLog(packageShortName+" "+eTitle, eTitle + " 로부터 SMS 왔음. " + eText);
+        speakThenLog(packageNickName+" "+eTitle, eTitle + " 로부터 문자메시지 왔음. " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String eSubT, String eText, String msgText){
@@ -222,10 +266,10 @@ public class NotificationListener extends NotificationListenerService {
         return "noNickName";
     }
 
-    private boolean isInTheList(String text, String [] Ignores) {
+    private boolean isInTheList(String text, String [] lists) {
         if (text == null)
             return false;
-        for (String s : Ignores) {
+        for (String s : lists) {
             if (text.contains(s)) return true;
         }
         return false;
@@ -240,7 +284,7 @@ public class NotificationListener extends NotificationListenerService {
         return false;
     }
 
-    private void speakANDLog(String tag, String text) {
+    private void speakThenLog(String tag, String text) {
         String filename = tag + ".txt";
         utils.append2file(filename, text);
         if (isHeadphonesPlugged() || isRingerON()) {
@@ -279,5 +323,35 @@ public class NotificationListener extends NotificationListenerService {
     private boolean isOnlyPhoneNumber(String who) {
         String temp = who.replaceAll(getString(R.string.number_only),"");
         return temp.length() <= 2;
+    }
+
+    private final File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
+    private final SimpleDateFormat timeFormat = new SimpleDateFormat("yy-MM-dd HH.mm.ss sss", Locale.KOREA);
+
+    private void append2App(String filename, String textLine) {
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try {
+            File file = new File(packageDirectory, filename);
+            if (!file.exists()) {
+                if (!file.createNewFile()) {
+
+                }
+            }
+            String outText = "\n" + timeFormat.format(new Date()) + " "  + textLine + "\n";
+            // true = append file
+            fw = new FileWriter(file.getAbsoluteFile(), true);
+            bw = new BufferedWriter(fw);
+            bw.write(outText);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) bw.close();
+                if (fw != null) fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

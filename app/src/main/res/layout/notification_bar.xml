@@ -26,11 +26,19 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/stopSay"
+            android:id="@+id/stock_OnOff"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@mipmap/icon_stop_talking" />
+            android:src="@mipmap/say_stock_off" />
+
+        <ImageView
+            android:id="@+id/Stop_Now"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/mute_right_now" />
 
 </LinearLayout>

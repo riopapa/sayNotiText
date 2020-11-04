@@ -17,6 +17,7 @@ class Vars {
     static String[] kakaoAlerts = null;
     static String[] kakaoAlertGroup = null;
     static String[] kakaoAlertWho = null;
+    static String[] KakaoAlertGWho = null;
     static String[] kakaoAlertText = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
@@ -34,7 +35,7 @@ class Vars {
     static Text2Speech text2Speech = null;
     static float ttsPitch = 1.2f;
     static float ttsSpeed = 1.4f;
-
+    static boolean stockSay = true;
     static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
 }

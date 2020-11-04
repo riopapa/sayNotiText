@@ -11,7 +11,7 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import static com.urrecliner.saynotitext.Vars.readOptionTables;
+import static com.urrecliner.saynotitext.Vars.stockSay;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 
 public class NotificationService extends Service {
@@ -22,7 +22,7 @@ public class NotificationService extends Service {
     NotificationManager mNotificationManager;
     private RemoteViews mRemoteViews;
     private static final int STOP_SAY = 10011;
-    private static final int RE_LOAD = 10022;
+    private static final int STOCK_ON_OFF = 10022;
 
     @Override
     public void onCreate() {
@@ -56,8 +56,10 @@ public class NotificationService extends Service {
             case STOP_SAY:
                 text2Speech.ttsStop();
                 break;
-            case RE_LOAD:
-                readOptionTables.read();
+            case STOCK_ON_OFF:
+                stockSay = !stockSay;
+                mBuilder.setSmallIcon(R.mipmap.icon_launcher);
+                mRemoteViews.setImageViewResource(R.id.stock_OnOff, (stockSay)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
                 break;
             default:
                 break;
@@ -87,25 +89,27 @@ public class NotificationService extends Service {
         Intent mainIntent = new Intent(mContext, MainActivity.class);
         mRemoteViews.setOnClickPendingIntent(R.id.ll_customNotification, PendingIntent.getActivity(mContext, 0, mainIntent, 0));
 
-        Intent reloadIntent = new Intent(this, NotificationService.class);
-        reloadIntent.putExtra("operation", RE_LOAD);
-        reloadIntent.putExtra("isFromNotification", true);
-//        PendingIntent reloadPi = PendingIntent.getService(mContext, 1, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        mBuilder.setContentIntent(reloadPi);
-//        mRemoteViews.setOnClickPendingIntent(R.id.reLoad, reloadPi);
-
         Intent stopSayIntent = new Intent(this, NotificationService.class);
         stopSayIntent.putExtra("operation", STOP_SAY);
-        stopSayIntent.putExtra("isFromNotification", true);
+//        stopSayIntent.putExtra("isFromNotification", true);
         PendingIntent stopSayPi = PendingIntent.getService(mContext, 2, stopSayIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(stopSayPi);
-        mRemoteViews.setOnClickPendingIntent(R.id.stopSay, stopSayPi);
+        mRemoteViews.setOnClickPendingIntent(R.id.Stop_Now, stopSayPi);
+
+        Intent onOffIntent = new Intent(this, NotificationService.class);
+        onOffIntent.putExtra("operation", STOCK_ON_OFF);
+//        onOffIntent.putExtra("isFromNotification", true);
+        PendingIntent onOffPi = PendingIntent.getService(mContext, 1, onOffIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (stockSay)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
+        mBuilder.setContentIntent(onOffPi);
+        mRemoteViews.setOnClickPendingIntent(R.id.stock_OnOff, onOffPi);
 
     }
 
     private void updateRemoteViews() {
 //        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
-        mRemoteViews.setImageViewResource(R.id.stopSay, R.mipmap.icon_stop_talking);
+        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (stockSay)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
+        mRemoteViews.setImageViewResource(R.id.Stop_Now, R.mipmap.mute_right_now);
     }
 
     @Override
