@@ -5,8 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.os.Environment;
+
+import java.io.File;
 
 class Vars {
+    static File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
     static String[] packageIgnores = null;  // ignore some package messages
     static String[] packageTypes = null;    // tt: text with title, to: text only, sm: sms ...
     static String[] packageNickNames = null;

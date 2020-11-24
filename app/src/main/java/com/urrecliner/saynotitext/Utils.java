@@ -27,6 +27,7 @@ import java.util.Locale;
 import static com.urrecliner.saynotitext.Vars.mAudioManager;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.mFocusGain;
+import static com.urrecliner.saynotitext.Vars.packageDirectory;
 
 class Utils {
 
@@ -101,7 +102,7 @@ class Utils {
             }
         }
     }
-    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
+//    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
     private File getTodayFolder() {
         if (!packageDirectory.exists()) {
             try {

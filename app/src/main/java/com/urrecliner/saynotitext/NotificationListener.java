@@ -22,6 +22,7 @@ import static com.urrecliner.saynotitext.Vars.kakaoAlertGroup;
 import static com.urrecliner.saynotitext.Vars.kakaoAlertText;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.saynotitext.Vars.packageDirectory;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
@@ -45,6 +46,7 @@ public class NotificationListener extends NotificationListenerService {
     private String lastAppName = "last";
     String eTitle, eText, eSubT;
     String packageFullName, packageNickName, packageType;
+
 
     @Override
     public void onCreate() {
@@ -107,10 +109,10 @@ public class NotificationListener extends NotificationListenerService {
             eSubT = null;
         }
 
-        if (eText != null) {
-            String txt = (eText.length() > 40) ? eText.substring(0, 39)+" ... " : eText;
-            utils.append2file("log [" + eSubT + "].txt", packageFullName + ", tit:" + eTitle + ", Text:" + txt);
-        }
+//        if (eText != null) {
+//            String txt = (eText.length() > 40) ? eText.substring(0, 39)+" ... " : eText;
+//            utils.append2file("log [" + eSubT + "].txt", packageFullName + ", tit:" + eTitle + ", Text:" + txt);
+//        }
         if (isInTheList(eText, textIgnores))
             return;
 
@@ -146,7 +148,7 @@ public class NotificationListener extends NotificationListenerService {
                 if (eText != null) {
                     sayKakao();
                 } else {
-                    speakThenLog(packageNickName+" noText",  packageNickName + " (카카오) " + eSubT);
+//                    speakThenLog(packageNickName+" noText",  packageNickName + " (카카오) " + eSubT);
                 }
                 break;
             case SM_SMS :
@@ -177,7 +179,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayKakao () {
-        utils.log("sayKakao "+eSubT, eTitle+" , "+eText);
+//        utils.log("sayKakao "+eSubT, eTitle+" , "+eText);
         if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eTitle, textSpeaks) || shouldSpeak(eSubT, textSpeaks)) {
             speakThenLog(packageNickName+" "+eSubT, "주의 [" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
         }
@@ -190,7 +192,7 @@ public class NotificationListener extends NotificationListenerService {
                 if (isInTheList(eSubT + eTitle, KakaoAlertGWho) && isInTheList(eText, kakaoAlertText)) {
                     if (sayStockOnOff)
                         speakThenLog(packageNickName + " " + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
-                    append2App("_Stock.txt", eSubT+" ; "+eTitle+" => "+((eText.length()>30) ? eText.substring(0, 30): eText));
+                    append2App("Stock "+dateFormat.format(new Date()) + ".txt", eSubT+" ; "+eTitle+" => "+((eText.length()>60) ? eText.substring(0, 60): eText));
                 }
                 // 아니면 해당 단톡방 무시
                 // Group, 대화자, 인식문자 는 서로 연결 안 됨 ㅠ.ㅠ
@@ -325,8 +327,8 @@ public class NotificationListener extends NotificationListenerService {
         return temp.length() <= 2;
     }
 
-    private final File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
-    private final SimpleDateFormat timeFormat = new SimpleDateFormat("yy-MM-dd HH.mm.ss sss", Locale.KOREA);
+    private final SimpleDateFormat hourMinFormat = new SimpleDateFormat("yy-MM-dd HH.mm", Locale.KOREA);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd", Locale.KOREA);
 
     private void append2App(String filename, String textLine) {
         BufferedWriter bw = null;
@@ -338,7 +340,7 @@ public class NotificationListener extends NotificationListenerService {
 
                 }
             }
-            String outText = "\n" + timeFormat.format(new Date()) + " "  + textLine + "\n";
+            String outText = "\n" + hourMinFormat.format(new Date()) + " "  + textLine + "\n";
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
