@@ -38,6 +38,7 @@ import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saynotitext.Vars.packageDirectory;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageTables;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
@@ -229,40 +230,41 @@ public class MainActivity extends AppCompatActivity {
         tv.setTextColor(Color.BLUE);
         switch (nowTableId) {
             case R.id.btn_kakaoIgnores:
-                show_for_edit(kakaoIgnores,"kakaoIgnores");
+                show_for_edit("kakaoIgnores");
                 break;
             case R.id.btn_kakaoPersons:
-                show_for_edit(kakaoPersons,"kakaoPersons");
+                show_for_edit("kakaoPersons");
                 break;
             case R.id.btn_kakaoAlert:
-                show_for_edit(kakaoAlerts,"kakaoAlerts");
+                show_for_edit("kakaoAlerts");
                 break;
             case R.id.btn_packageIgnores:
-                show_for_edit(packageIgnores,"packageIgnores");
+                show_for_edit("packageIgnores");
                 break;
             case R.id.btn_packageTables:
-                show_for_edit(packageTables,"packageTables");
+                show_for_edit("packageTables");
                 break;
             case R.id.btn_smsIgnores:
-                show_for_edit(smsIgnores,"smsIgnores");
+                show_for_edit("smsIgnores");
                 break;
             case R.id.btn_systemIgnores:
-                show_for_edit(systemIgnores,"systemIgnores");
+                show_for_edit("systemIgnores");
                 break;
             case R.id.btn_textIgnores:
-                show_for_edit(textIgnores,"textIgnores");
+                show_for_edit("textIgnores");
                 break;
             case R.id.btn_textSpeak:
-                show_for_edit(textSpeaks,"textSpeaks");
+                show_for_edit("textSpeaks");
                 break;
         }
     }
 
-    void show_for_edit(String [] table, String fileName) {
+    void show_for_edit(String fileName) {
 
         nowFileName = fileName;
+        String [] lines = utils.readLines(new File(packageDirectory,"tables/" + fileName+".txt"));
         StringBuilder sb = new StringBuilder();
-        for (String s : table) sb.append(s).append("\n");
+        for (String s : lines) sb.append(s).append("\n");
         String text = sb.toString()+"\n";
         TextView tv = findViewById(R.id.text_table);
         tv.setText(text);
@@ -283,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             // Assume default encoding.
-            File targetFile = new File(Environment.getExternalStorageDirectory(), "sayNotiText/tables/" + nowFileName +".txt");
+            File targetFile = new File(packageDirectory, "tables/" + nowFileName +".txt");
             FileWriter fileWriter = new FileWriter(targetFile, false);
 
             // Always wrap FileWriter in BufferedWriter.

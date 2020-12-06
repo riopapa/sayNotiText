@@ -11,7 +11,7 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import static com.urrecliner.saynotitext.Vars.sayStockOnOff;
+import static com.urrecliner.saynotitext.Vars.isSayStockOn;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 
 public class NotificationService extends Service {
@@ -57,9 +57,9 @@ public class NotificationService extends Service {
                 text2Speech.ttsStop();
                 break;
             case STOCK_ON_OFF:
-                sayStockOnOff = !sayStockOnOff;
+                isSayStockOn = !isSayStockOn;
                 mBuilder.setSmallIcon(R.mipmap.icon_launcher);
-                mRemoteViews.setImageViewResource(R.id.stock_OnOff, (sayStockOnOff)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
+                mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
                 break;
             default:
                 break;
@@ -100,7 +100,7 @@ public class NotificationService extends Service {
         onOffIntent.putExtra("operation", STOCK_ON_OFF);
 //        onOffIntent.putExtra("isFromNotification", true);
         PendingIntent onOffPi = PendingIntent.getService(mContext, 1, onOffIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (sayStockOnOff)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
+        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
         mBuilder.setContentIntent(onOffPi);
         mRemoteViews.setOnClickPendingIntent(R.id.stock_OnOff, onOffPi);
 
@@ -108,7 +108,7 @@ public class NotificationService extends Service {
 
     private void updateRemoteViews() {
 //        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
-        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (sayStockOnOff)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
+        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
         mRemoteViews.setImageViewResource(R.id.Stop_Now, R.mipmap.mute_right_now);
     }
 

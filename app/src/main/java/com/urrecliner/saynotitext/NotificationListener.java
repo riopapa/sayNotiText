@@ -22,20 +22,18 @@ import static com.urrecliner.saynotitext.Vars.kakaoAlertGroup;
 import static com.urrecliner.saynotitext.Vars.kakaoAlertText;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.saynotitext.Vars.packageDirectory;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.saynotitext.Vars.sayStockOnOff;
+import static com.urrecliner.saynotitext.Vars.isSayStockOn;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
 import static com.urrecliner.saynotitext.Vars.textSpeaks;
 import static com.urrecliner.saynotitext.Vars.utils;
-
 
 public class NotificationListener extends NotificationListenerService {
 
@@ -46,7 +44,6 @@ public class NotificationListener extends NotificationListenerService {
     private String lastAppName = "last";
     String eTitle, eText, eSubT;
     String packageFullName, packageNickName, packageType;
-
 
     @Override
     public void onCreate() {
@@ -144,12 +141,7 @@ public class NotificationListener extends NotificationListenerService {
 //        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+", 제목 "+eTitle+", 내용 "+eText);
         switch (packageType) {
             case KK_KAKAO :
-//                utils.append2file("kakao "+eSubT+".txt", "tit:"+eTitle+", Text:"+eText);
-                if (eText != null) {
-                    sayKakao();
-                } else {
-//                    speakThenLog(packageNickName+" noText",  packageNickName + " (카카오) " + eSubT);
-                }
+                sayKakao();
                 break;
             case SM_SMS :
                 saySMS();
@@ -158,7 +150,7 @@ public class NotificationListener extends NotificationListenerService {
                 sayTitleText();
                 break;
             case TO_TEXT_ONLY :
-                speakThenLog("to "+packageNickName,  packageNickName + " (로 부터) " + eText);
+                speakThenLog("to_"+packageNickName,  packageNickName + " (로 부터) " + eText);
                 break;
             case TT_SUBTITLE_TEXT :
                 saySubTitleText();
@@ -179,9 +171,11 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayKakao () {
+        if (eText == null)
+            return;
 //        utils.log("sayKakao "+eSubT, eTitle+" , "+eText);
         if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eTitle, textSpeaks) || shouldSpeak(eSubT, textSpeaks)) {
-            speakThenLog(packageNickName+" "+eSubT, "주의 [" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
+            speakThenLog(packageNickName+"_"+eSubT, "주의 [" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
         }
         else if (isInTheList(eTitle, kakaoIgnores) || isInTheList(eText, kakaoPersons))
                 return;
@@ -190,28 +184,29 @@ public class NotificationListener extends NotificationListenerService {
             if (isInTheList(eSubT, kakaoAlertGroup)) {   // 특정 단톡방에서는
                 utils.log("특정 단톡방 "+eSubT, "["+eSubT+eTitle+"]"+" with "+eText);
                 if (isInTheList(eSubT + eTitle, KakaoAlertGWho) && isInTheList(eText, kakaoAlertText)) {
-                    if (sayStockOnOff)
-                        speakThenLog(packageNickName + " " + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
-                    append2App("Stock "+dateFormat.format(new Date()) + ".txt", eSubT+" ; "+eTitle+" => "+((eText.length()>60) ? eText.substring(0, 60): eText));
+                    if (isSayStockOn)
+                        speakThenLog(packageNickName + "_" + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
+                    append2App("_주식 "+dateFormat.format(new Date()) + ".txt", eSubT+" ; "+eTitle+" => "+((eText.length()>80) ? eText.substring(0, 79): eText));
                 }
                 // 아니면 해당 단톡방 무시
                 // Group, 대화자, 인식문자 는 서로 연결 안 됨 ㅠ.ㅠ
                 else
                     utils.log("단톡방 무시 대상", eTitle+" , "+eSubT+" , "+eText);
             }
-            else if (!isInTheList(eSubT, kakaoIgnores) && !isInTheList(eTitle, kakaoPersons)) {
-                speakThenLog(packageNickName+" "+eSubT, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
-            }
             else {
-                utils.log("katalk ignored", eTitle+" , "+eSubT+" , "+eTitle);
+                if (isInTheList(eSubT, kakaoIgnores))
+                        return;
+                if (isInTheList(eTitle, kakaoPersons))
+                    return;
+                speakThenLog(packageNickName+"_"+eSubT, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
             }
         }
-        else
-            speakThenLog(packageNickName+" "+eTitle, "카톡 [" + eTitle + "] 님이." + eText);
+        else {
+            speakThenLog(packageNickName + "_" + eTitle, "카톡 [" + eTitle + "] 님이." + eText);
+        }
     }
 
     private void sayAndroid() {
-
         if (eTitle == null || eText == null || eText.equals(""))
             return;
         if (isInTheList(eTitle, systemIgnores) || isInTheList(eText, systemIgnores))
@@ -222,7 +217,7 @@ public class NotificationListener extends NotificationListenerService {
     private void sayTitleText() {
         if (isInTheList(eTitle,systemIgnores) || isInTheList(eText, textIgnores) || isInTheList(eTitle, textIgnores))
             return;
-        speakThenLog(packageNickName+" "+eTitle,packageNickName + " 에서  [" + eTitle + "]_로 부터. " + eText);
+        speakThenLog(packageNickName+"_"+eTitle,packageNickName + " 에서  [" + eTitle + "]_로 부터. " + eText);
     }
 
     private void saySubTitleText() {
@@ -236,7 +231,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
 
         eText = eText.replace("[Web발신]","");
-        speakThenLog(packageNickName+" "+eTitle, eTitle + " 로부터 문자메시지 왔음. " + eText);
+        speakThenLog(packageNickName+"_"+eTitle, eTitle + " 로부터 문자메시지 왔음. " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String eSubT, String eText, String msgText){
@@ -334,12 +329,9 @@ public class NotificationListener extends NotificationListenerService {
         BufferedWriter bw = null;
         FileWriter fw = null;
         try {
-            File file = new File(packageDirectory, filename);
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-
-                }
-            }
+            File file = new File(Environment.getExternalStorageDirectory(),"download/"+filename);
+            if (!file.exists())
+                file.createNewFile();
             String outText = "\n" + hourMinFormat.format(new Date()) + " "  + textLine + "\n";
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);

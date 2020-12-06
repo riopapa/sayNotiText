@@ -14,6 +14,7 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,18 +36,32 @@ class Utils {
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yy-MM-dd HH.mm.ss sss", Locale.KOREA);
     private final String logFile = "log.txt";
 
-    String[] readLines(File filename) throws IOException {
-        FileReader fileReader = new FileReader(filename);
+    String[] readLines(File filename)  {
+        FileReader fileReader = null;
+        try {
+            fileReader = new FileReader(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         List<String> lines = new ArrayList<>();
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
+        String line = "";
+        while (true) {
+            try {
+                if (!((line = bufferedReader.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             line = line.trim();
             if (line.length() >= 2) {        // at least 3 characters for one line
                 lines.add(line);
             }
         }
-        bufferedReader.close();
+        try {
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return lines.toArray(new String[0]);
     }
 
