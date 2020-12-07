@@ -28,6 +28,15 @@
             android:textSize="20sp" />
 
         <ImageView
+            android:id="@+id/popCast_OnOff"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/popcast_on" />
+
+        <ImageView
             android:id="@+id/stock_OnOff"
             android:layout_width="0dp"
             android:layout_weight="2"

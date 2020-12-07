@@ -11,6 +11,7 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import static com.urrecliner.saynotitext.Vars.isPopCastOn;
 import static com.urrecliner.saynotitext.Vars.isSayStockOn;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 
@@ -23,6 +24,7 @@ public class NotificationService extends Service {
     private RemoteViews mRemoteViews;
     private static final int STOP_SAY = 10011;
     private static final int STOCK_ON_OFF = 10022;
+    private static final int POP_ON_OFF = 1003;
 
     @Override
     public void onCreate() {
@@ -55,6 +57,11 @@ public class NotificationService extends Service {
         switch (operation) {
             case STOP_SAY:
                 text2Speech.ttsStop();
+                break;
+            case POP_ON_OFF:
+                isPopCastOn = !isPopCastOn;
+                mBuilder.setSmallIcon(R.mipmap.icon_launcher);
+                mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
                 break;
             case STOCK_ON_OFF:
                 isSayStockOn = !isSayStockOn;
@@ -96,18 +103,26 @@ public class NotificationService extends Service {
         mBuilder.setContentIntent(stopSayPi);
         mRemoteViews.setOnClickPendingIntent(R.id.Stop_Now, stopSayPi);
 
-        Intent onOffIntent = new Intent(this, NotificationService.class);
-        onOffIntent.putExtra("operation", STOCK_ON_OFF);
+        Intent stockIntent = new Intent(this, NotificationService.class);
+        stockIntent.putExtra("operation", STOCK_ON_OFF);
 //        onOffIntent.putExtra("isFromNotification", true);
-        PendingIntent onOffPi = PendingIntent.getService(mContext, 1, onOffIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent stockPI = PendingIntent.getService(mContext, 1, stockIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
-        mBuilder.setContentIntent(onOffPi);
-        mRemoteViews.setOnClickPendingIntent(R.id.stock_OnOff, onOffPi);
+        mBuilder.setContentIntent(stockPI);
+        mRemoteViews.setOnClickPendingIntent(R.id.stock_OnOff, stockPI);
+
+        Intent popIntent = new Intent(this, NotificationService.class);
+        popIntent.putExtra("operation", POP_ON_OFF);
+        PendingIntent popPI = PendingIntent.getService(mContext, 3, popIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
+        mBuilder.setContentIntent(popPI);
+        mRemoteViews.setOnClickPendingIntent(R.id.popCast_OnOff, popPI);
 
     }
 
     private void updateRemoteViews() {
 //        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
+        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
         mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
         mRemoteViews.setImageViewResource(R.id.Stop_Now, R.mipmap.mute_right_now);
     }

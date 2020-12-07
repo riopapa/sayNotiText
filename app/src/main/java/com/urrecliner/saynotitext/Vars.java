@@ -40,6 +40,7 @@ class Vars {
     static float ttsPitch = 1.2f;
     static float ttsSpeed = 1.4f;
     static boolean isSayStockOn = true;
+    static boolean isPopCastOn = false;
     static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
 }

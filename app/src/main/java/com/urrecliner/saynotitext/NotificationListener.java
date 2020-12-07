@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.urrecliner.saynotitext.Vars.KakaoAlertGWho;
+import static com.urrecliner.saynotitext.Vars.isPopCastOn;
 import static com.urrecliner.saynotitext.Vars.kakaoAlertGroup;
 import static com.urrecliner.saynotitext.Vars.kakaoAlertText;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
@@ -80,7 +81,7 @@ public class NotificationListener extends NotificationListenerService {
         }
 
         packageFullName = sbn.getPackageName().toLowerCase();
-        if (packageFullName.equals("") || isInTheList(packageFullName, packageIgnores))
+        if (packageFullName.equals("") || isInTable(packageFullName, packageIgnores))
             return;
         packageType = getPackageType(packageFullName);
         packageNickName = getPackageNickName(packageFullName);
@@ -110,7 +111,7 @@ public class NotificationListener extends NotificationListenerService {
 //            String txt = (eText.length() > 40) ? eText.substring(0, 39)+" ... " : eText;
 //            utils.append2file("log [" + eSubT + "].txt", packageFullName + ", tit:" + eTitle + ", Text:" + txt);
 //        }
-        if (isInTheList(eText, textIgnores))
+        if (isInTable(eText, textIgnores))
             return;
 
         long nowTime = System.currentTimeMillis();
@@ -159,9 +160,9 @@ public class NotificationListener extends NotificationListenerService {
                 sayAndroid();
                 break;
             default :
-                if (isInTheList(eTitle, systemIgnores))
+                if (isInTable(eTitle, systemIgnores))
                     return;
-                if (isInTheList(eText, textIgnores))
+                if (isInTable(eText, textIgnores))
                     return;
                 speakThenLog("unknown " + packageFullName, "unknown title " + eTitle + "_text:" + eText);
 //                else
@@ -177,14 +178,14 @@ public class NotificationListener extends NotificationListenerService {
         if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eTitle, textSpeaks) || shouldSpeak(eSubT, textSpeaks)) {
             speakThenLog(packageNickName+"_"+eSubT, "주의 [" + eTitle + "] 님이. 단톡방 ["+eSubT + "]에서 " + eText);
         }
-        else if (isInTheList(eTitle, kakaoIgnores) || isInTheList(eText, kakaoPersons))
+        else if (isInTable(eTitle, kakaoIgnores) || isInTable(eText, kakaoPersons))
                 return;
 
         if (eSubT != null) {    // eSubT : 단톡방
-            if (isInTheList(eSubT, kakaoAlertGroup)) {   // 특정 단톡방에서는
-                utils.log("특정 단톡방 "+eSubT, "["+eSubT+eTitle+"]"+" with "+eText);
-                if (isInTheList(eSubT + eTitle, KakaoAlertGWho) && isInTheList(eText, kakaoAlertText)) {
-                    if (isSayStockOn)
+            if (isInTable(eSubT, kakaoAlertGroup)) {   // 특정 단톡방에서는
+                utils.log("특정 단톡방 "+eSubT, "["+eTitle+"]"+" with "+eText);
+                if (isInTable(eSubT + eTitle, KakaoAlertGWho) && isInTable(eText, kakaoAlertText)) {
+                    if (isSayStockOn && !isPopCastOn)
                         speakThenLog(packageNickName + "_" + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
                     append2App("_주식 "+dateFormat.format(new Date()) + ".txt", eSubT+" ; "+eTitle+" => "+((eText.length()>80) ? eText.substring(0, 79): eText));
                 }
@@ -194,9 +195,9 @@ public class NotificationListener extends NotificationListenerService {
                     utils.log("단톡방 무시 대상", eTitle+" , "+eSubT+" , "+eText);
             }
             else {
-                if (isInTheList(eSubT, kakaoIgnores))
+                if (isInTable(eSubT, kakaoIgnores))
                         return;
-                if (isInTheList(eTitle, kakaoPersons))
+                if (isInTable(eTitle, kakaoPersons))
                     return;
                 speakThenLog(packageNickName+"_"+eSubT, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
             }
@@ -209,25 +210,25 @@ public class NotificationListener extends NotificationListenerService {
     private void sayAndroid() {
         if (eTitle == null || eText == null || eText.equals(""))
             return;
-        if (isInTheList(eTitle, systemIgnores) || isInTheList(eText, systemIgnores))
+        if (isInTable(eTitle, systemIgnores) || isInTable(eText, systemIgnores))
             return;
         speakThenLog(packageFullName, " Android Title [" + eTitle + "], Text =" + eText);
     }
 
     private void sayTitleText() {
-        if (isInTheList(eTitle,systemIgnores) || isInTheList(eText, textIgnores) || isInTheList(eTitle, textIgnores))
+        if (isInTable(eTitle,systemIgnores) || isInTable(eText, textIgnores) || isInTable(eTitle, textIgnores))
             return;
         speakThenLog(packageNickName+"_"+eTitle,packageNickName + " 에서  [" + eTitle + "]_로 부터. " + eText);
     }
 
     private void saySubTitleText() {
-        if (isInTheList(eSubT,systemIgnores) || isInTheList(eText, textIgnores) || isInTheList(eSubT, textIgnores))
+        if (isInTable(eSubT,systemIgnores) || isInTable(eText, textIgnores) || isInTable(eSubT, textIgnores))
             return;
         speakThenLog(packageNickName,packageNickName + " 에서  [" + eSubT + "]내용으로 . " + eText);
     }
 
     private void saySMS() {
-        if (isOnlyPhoneNumber(eTitle) || isInTheList(eTitle, smsIgnores) || isInTheList(eText, textIgnores))
+        if (isOnlyPhoneNumber(eTitle) || isInTable(eTitle, smsIgnores) || isInTable(eText, textIgnores))
             return;
 
         eText = eText.replace("[Web발신]","");
@@ -263,7 +264,7 @@ public class NotificationListener extends NotificationListenerService {
         return "noNickName";
     }
 
-    private boolean isInTheList(String text, String [] lists) {
+    private boolean isInTable(String text, String [] lists) {
         if (text == null)
             return false;
         for (String s : lists) {
