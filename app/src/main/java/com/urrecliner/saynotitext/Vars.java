@@ -39,7 +39,7 @@ class Vars {
     static Text2Speech text2Speech = null;
     static float ttsPitch = 1.2f;
     static float ttsSpeed = 1.4f;
-    static boolean isSayStockOn = true;
+    static boolean isSayStockOn = false;
     static boolean isPopCastOn = false;
     static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
