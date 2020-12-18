@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import static com.urrecliner.saynotitext.Vars.speakMessage;
+import static com.urrecliner.saynotitext.Vars.sayMessage;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 
 public class NotificationService extends Service {
@@ -62,7 +62,7 @@ public class NotificationService extends Service {
                 text2Speech.ttsStop();
                 break;
             case SPEAK_ON_OFF:
-                speakMessage = !speakMessage;
+                sayMessage = !sayMessage;
                 mBuilder.setSmallIcon(R.mipmap.icon_launcher);
 //                mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
                 break;

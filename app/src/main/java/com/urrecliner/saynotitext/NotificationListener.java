@@ -28,7 +28,7 @@ import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.saynotitext.Vars.speakMessage;
+import static com.urrecliner.saynotitext.Vars.sayMessage;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
@@ -188,7 +188,7 @@ public class NotificationListener extends NotificationListenerService {
 //                    append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", "stock "+stockIndex+" <"+eSubT+eTitle+">  "+eText);
                     if (eText.contains(kakaoAText[stockIndex])) {
                         append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eSubT+" ; "+eTitle+" => "+((eText.length()>80) ? eText.substring(0, 79): eText));
-                        if (speakMessage)
+                        if (sayMessage)
                             speakThenLog(packageNickName + "_" + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
                     }
                 }
