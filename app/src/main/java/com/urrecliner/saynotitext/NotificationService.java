@@ -9,10 +9,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
+
+import android.util.Log;
 import android.widget.RemoteViews;
 
-import static com.urrecliner.saynotitext.Vars.isPopCastOn;
-import static com.urrecliner.saynotitext.Vars.isSayStockOn;
+import static com.urrecliner.saynotitext.Vars.speakMessage;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 
 public class NotificationService extends Service {
@@ -24,7 +25,8 @@ public class NotificationService extends Service {
     private RemoteViews mRemoteViews;
     private static final int STOP_SAY = 10011;
     private static final int STOCK_ON_OFF = 10022;
-    private static final int POP_ON_OFF = 1003;
+    private static final int SPEAK_ON_OFF = 1003;
+    private static final int TOGGLE_POP = 1004;
 
     @Override
     public void onCreate() {
@@ -47,26 +49,22 @@ public class NotificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         int operation = intent.getIntExtra("operation", -1);
         boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
+        Log.w("operation", " operation ="+operation);
         createNotification();
         if (isUpdate) {
             updateRemoteViews();
             startForeground(100, mBuilder.build());
             return START_STICKY;
         }
-
+        Log.w("operation 2", " operation ="+operation);
         switch (operation) {
             case STOP_SAY:
                 text2Speech.ttsStop();
                 break;
-            case POP_ON_OFF:
-                isPopCastOn = !isPopCastOn;
+            case SPEAK_ON_OFF:
+                speakMessage = !speakMessage;
                 mBuilder.setSmallIcon(R.mipmap.icon_launcher);
-                mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
-                break;
-            case STOCK_ON_OFF:
-                isSayStockOn = !isSayStockOn;
-                mBuilder.setSmallIcon(R.mipmap.icon_launcher);
-                mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
+//                mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
                 break;
             default:
                 break;
@@ -103,27 +101,18 @@ public class NotificationService extends Service {
         mBuilder.setContentIntent(stopSayPi);
         mRemoteViews.setOnClickPendingIntent(R.id.Stop_Now, stopSayPi);
 
-        Intent stockIntent = new Intent(this, NotificationService.class);
-        stockIntent.putExtra("operation", STOCK_ON_OFF);
-//        onOffIntent.putExtra("isFromNotification", true);
-        PendingIntent stockPI = PendingIntent.getService(mContext, 1, stockIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
-        mBuilder.setContentIntent(stockPI);
-        mRemoteViews.setOnClickPendingIntent(R.id.stock_OnOff, stockPI);
-
         Intent popIntent = new Intent(this, NotificationService.class);
-        popIntent.putExtra("operation", POP_ON_OFF);
+        popIntent.putExtra("operation", SPEAK_ON_OFF);
         PendingIntent popPI = PendingIntent.getService(mContext, 3, popIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
+//        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
         mBuilder.setContentIntent(popPI);
-        mRemoteViews.setOnClickPendingIntent(R.id.popCast_OnOff, popPI);
-
+        mRemoteViews.setOnClickPendingIntent(R.id.pop_Switch, popPI);
     }
 
     private void updateRemoteViews() {
 //        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
-        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
-        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
+//        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
+//        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
         mRemoteViews.setImageViewResource(R.id.Stop_Now, R.mipmap.mute_right_now);
     }
 

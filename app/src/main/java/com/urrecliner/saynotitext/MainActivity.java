@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
-import android.os.Environment;
 
 import android.util.Log;
 import android.view.View;
@@ -26,7 +25,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
@@ -34,20 +32,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.urrecliner.saynotitext.Vars.Booted;
-import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
-import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.packageDirectory;
-import static com.urrecliner.saynotitext.Vars.packageIgnores;
-import static com.urrecliner.saynotitext.Vars.packageTables;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
-import static com.urrecliner.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.saynotitext.Vars.systemIgnores;
+import static com.urrecliner.saynotitext.Vars.tableDirectory;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
-import static com.urrecliner.saynotitext.Vars.textIgnores;
-import static com.urrecliner.saynotitext.Vars.textSpeaks;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -262,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
     void show_for_edit(String fileName) {
 
         nowFileName = fileName;
-        String [] lines = utils.readLines(new File(packageDirectory,"tables/" + fileName+".txt"));
+        String [] lines = utils.readLines(new File(tableDirectory, fileName+".txt"));
         StringBuilder sb = new StringBuilder();
         for (String s : lines) sb.append(s).append("\n");
         String text = sb.toString()+"\n";
@@ -285,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             // Assume default encoding.
-            File targetFile = new File(packageDirectory, "tables/" + nowFileName +".txt");
+            File targetFile = new File(tableDirectory,  nowFileName +".txt");
             FileWriter fileWriter = new FileWriter(targetFile, false);
 
             // Always wrap FileWriter in BufferedWriter.

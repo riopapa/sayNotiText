@@ -11,6 +11,7 @@ import java.io.File;
 
 class Vars {
     static File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
+    static File tableDirectory = new File(Environment.getExternalStorageDirectory(),"download/sayNoti");
     static String[] packageIgnores = null;  // ignore some package messages
     static String[] packageTypes = null;    // tt: text with title, to: text only, sm: sms ...
     static String[] packageNickNames = null;
@@ -19,10 +20,10 @@ class Vars {
     static String[] kakaoIgnores = null;
     static String[] kakaoPersons = null;
     static String[] kakaoAlerts = null;
-    static String[] kakaoAlertGroup = null;
-    static String[] kakaoAlertWho = null;
-    static String[] KakaoAlertGWho = null;
-    static String[] kakaoAlertText = null;
+    static String[] kakaoAGroup = null;
+    static String[] kakaoAWho = null;
+    static String[] KakaoAGroupWho = null;
+    static String[] kakaoAText = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
     static String[] textIgnores = null;
@@ -39,8 +40,7 @@ class Vars {
     static Text2Speech text2Speech = null;
     static float ttsPitch = 1.2f;
     static float ttsSpeed = 1.4f;
-    static boolean isSayStockOn = false;
-    static boolean isPopCastOn = false;
+    static boolean speakMessage = true;
     static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
 }

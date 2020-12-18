@@ -17,10 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.urrecliner.saynotitext.Vars.KakaoAlertGWho;
-import static com.urrecliner.saynotitext.Vars.isPopCastOn;
-import static com.urrecliner.saynotitext.Vars.kakaoAlertGroup;
-import static com.urrecliner.saynotitext.Vars.kakaoAlertText;
+import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
+import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
+import static com.urrecliner.saynotitext.Vars.kakaoAText;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
@@ -29,7 +28,7 @@ import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.saynotitext.Vars.isSayStockOn;
+import static com.urrecliner.saynotitext.Vars.speakMessage;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
@@ -182,15 +181,17 @@ public class NotificationListener extends NotificationListenerService {
                 return;
 
         if (eSubT != null) {    // eSubT : 단톡방
-            if (isInTable(eSubT, kakaoAlertGroup)) {   // 특정 단톡방에서는
+            if (isInTable(eSubT, kakaoAGroup)) {   // 특정 단톡방에서는
                 utils.log("특정 단톡방 "+eSubT, "["+eTitle+"]"+" with "+eText);
-                if (isInTable(eSubT + eTitle, KakaoAlertGWho) && isInTable(eText, kakaoAlertText)) {
-                    if (isSayStockOn && !isPopCastOn)
-                        speakThenLog(packageNickName + "_" + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
-                    append2App("_주식 "+dateFormat.format(new Date()) + ".txt", eSubT+" ; "+eTitle+" => "+((eText.length()>80) ? eText.substring(0, 79): eText));
+                int stockIndex = getStockIndex(eSubT + eTitle);
+                if (stockIndex != -1) { // stock open chat
+//                    append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", "stock "+stockIndex+" <"+eSubT+eTitle+">  "+eText);
+                    if (eText.contains(kakaoAText[stockIndex])) {
+                        append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eSubT+" ; "+eTitle+" => "+((eText.length()>80) ? eText.substring(0, 79): eText));
+                        if (speakMessage)
+                            speakThenLog(packageNickName + "_" + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
+                    }
                 }
-                // 아니면 해당 단톡방 무시
-                // Group, 대화자, 인식문자 는 서로 연결 안 됨 ㅠ.ㅠ
                 else
                     utils.log("단톡방 무시 대상", eTitle+" , "+eSubT+" , "+eText);
             }
@@ -199,7 +200,7 @@ public class NotificationListener extends NotificationListenerService {
                         return;
                 if (isInTable(eTitle, kakaoPersons))
                     return;
-                speakThenLog(packageNickName+"_"+eSubT, "단톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
+                speakThenLog(packageNickName+"_"+eSubT, "단체카톡방 [" + eSubT + "] 에서 [" + eTitle + "] 님이." + eText);
             }
         }
         else {
@@ -273,6 +274,13 @@ public class NotificationListener extends NotificationListenerService {
         return false;
     }
 
+    private int getStockIndex(String text) {
+        for (int idx = 0; idx < KakaoAGroupWho.length; idx++) {
+            if (text.contains(KakaoAGroupWho[idx]))
+                return idx;
+        }
+        return -1;
+    }
     private boolean shouldSpeak(String text, String [] speaks) {
         if (text == null)
             return false;

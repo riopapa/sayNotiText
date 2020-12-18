@@ -1,15 +1,13 @@
 package com.urrecliner.saynotitext;
 
-import android.os.Environment;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 
-import static com.urrecliner.saynotitext.Vars.KakaoAlertGWho;
-import static com.urrecliner.saynotitext.Vars.kakaoAlertGroup;
-import static com.urrecliner.saynotitext.Vars.kakaoAlertWho;
-import static com.urrecliner.saynotitext.Vars.kakaoAlertText;
+import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
+import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
+import static com.urrecliner.saynotitext.Vars.kakaoAWho;
+import static com.urrecliner.saynotitext.Vars.kakaoAText;
 import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
@@ -21,13 +19,13 @@ import static com.urrecliner.saynotitext.Vars.packageTables;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
+import static com.urrecliner.saynotitext.Vars.tableDirectory;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
 import static com.urrecliner.saynotitext.Vars.textSpeaks;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 class ReadOptionTables {
     private String logID = "prepareLists";
-    static File directory = new File (Environment.getExternalStorageDirectory(), "sayNotiText/tables/");
 
     void read () {
 
@@ -66,22 +64,22 @@ class ReadOptionTables {
 
 
         // 카카오 단톡방에서 특별히 얘기 되는 자만
-        kakaoAlertGroup = new String[kakaoAlerts.length];   // 단톡방 명
-        kakaoAlertWho = new String[kakaoAlerts.length];   // 누가
-        kakaoAlertText = new String[kakaoAlerts.length];   // 인식 문자
-        KakaoAlertGWho = new String[kakaoAlerts.length];   // 인식 문자
+        kakaoAGroup = new String[kakaoAlerts.length];   // 단톡방 명
+        kakaoAWho = new String[kakaoAlerts.length];   // 누가
+        kakaoAText = new String[kakaoAlerts.length];   // 인식 문자
+        KakaoAGroupWho = new String[kakaoAlerts.length];   // 인식 문자
         for (int idx = 0; idx < kakaoAlerts.length; idx++) {
             String []strings = kakaoAlerts[idx].split("\\+");
-            kakaoAlertGroup[idx] = strings[0].trim();
-            kakaoAlertWho[idx] = strings[1].trim();
-            kakaoAlertText[idx] = strings[2].trim();
-            KakaoAlertGWho[idx] = kakaoAlertGroup[idx]+kakaoAlertWho[idx];
+            kakaoAGroup[idx] = strings[0].trim();
+            kakaoAWho[idx] = strings[1].trim();
+            kakaoAText[idx] = strings[2].trim();
+            KakaoAGroupWho[idx] = kakaoAGroup[idx]+ kakaoAWho[idx];
         }
     }
 
     static String[] readOptionFile(String filename, boolean removeComment) {
         String[] lines = {""};
-        lines = utils.readLines(new File(directory, filename+".txt"));
+        lines = utils.readLines(new File(tableDirectory, filename+".txt"));
         if (removeComment) {
             for (int idx = 0; idx < lines.length; idx++) {
                 if (lines[idx].indexOf(";") > 1) {    // line should contain ";"

@@ -8,7 +8,7 @@
     android:baselineAligned="false"
     tools:ignore="ContentDescription"
     android:orientation="horizontal">
-        
+
         <ImageView
             android:layout_width="0dp"
             android:layout_weight="2"
@@ -28,23 +28,32 @@
             android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 
-        <ImageView
-            android:id="@+id/popCast_OnOff"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:layout_gravity="center"
-            android:src="@mipmap/popcast_on" />
-
-        <ImageView
-            android:id="@+id/stock_OnOff"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_gravity="center"
-            android:src="@mipmap/say_stock_off" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    android:text="SayMsg"
+                    />
+                <Switch
+                    android:id="@+id/pop_Switch"
+                    android:checked="true"
+                    android:textColor="#ECECEC"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:track="@drawable/switch_on_off"
+                    android:text="" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/Stop_Now"
