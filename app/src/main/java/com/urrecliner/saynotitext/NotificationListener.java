@@ -93,7 +93,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         if (eText != null)
-            eText = eText.replaceAll("\n", "|");
+            eText = eText.replace("\n", "|");
 
         if (eTitle == null) {
             utils.log(logID+" Title null", packageFullName + " Title IS NULL $$$ `null text``` :" + eText);
@@ -188,8 +188,13 @@ public class NotificationListener extends NotificationListenerService {
 //                    append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", "stock "+stockIndex+" <"+eSubT+eTitle+">  "+eText);
                     if (eText.contains(kakaoAText[stockIndex])) {
                         append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eSubT+" ; "+eTitle+" => "+((eText.length()>80) ? eText.substring(0, 79): eText));
-                        if (sayMessage)
+                        if (sayMessage) {
+                            if (eSubT.contains("단단"))
+                                text2Speech.speak("단단멘토 얘기예요 " + eText+" 단단멘토 ");
                             speakThenLog(packageNickName + "_" + eSubT, "카톡 [" + eTitle + "] 님이. [" + eSubT + "] 단톡방에서 " + eText);
+                            if (eSubT.contains("단단"))
+                                text2Speech.speak("단단멘토 얘기예요 " + eText+" 단단멘토 ");
+                        }
                     }
                 }
                 else

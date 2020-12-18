@@ -106,7 +106,7 @@ public class NotificationService extends Service {
         PendingIntent popPI = PendingIntent.getService(mContext, 3, popIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 //        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
         mBuilder.setContentIntent(popPI);
-        mRemoteViews.setOnClickPendingIntent(R.id.pop_Switch, popPI);
+        mRemoteViews.setOnClickPendingIntent(R.id.say_Msg, popPI);
     }
 
     private void updateRemoteViews() {
