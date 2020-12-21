@@ -84,12 +84,12 @@
             android:id="@+id/btn_textIgnores"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:background="#B0B0B0"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
             android:text="Text Ignores" />
         <TextView
@@ -98,12 +98,12 @@
             android:id="@+id/btn_textSpeak"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:background="#B8B8B8"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
             android:text="Text Speak" />
     </LinearLayout>
@@ -118,27 +118,27 @@
             android:onClick="edit_table"
             android:id="@+id/btn_kakaoIgnores"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:layout_weight="2"
+            android:background="#C0C0C0"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
-            android:text="Kakao Ignores" />
+            android:text="Kakao  Ignores" />
         <TextView
             android:clickable="true"
             android:onClick="edit_table"
             android:id="@+id/btn_kakaoPersons"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:layout_weight="2"
+            android:background="#C8C8C8"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
             android:text="Kakao Persons" />
         <TextView
@@ -146,15 +146,15 @@
             android:onClick="edit_table"
             android:id="@+id/btn_kakaoAlert"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:layout_weight="2"
+            android:background="#D0D0D0"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
-            android:text="Kakao Alert" />
+            android:text="Kakao Msg Alert" />
     </LinearLayout>
 
     <LinearLayout
@@ -168,12 +168,12 @@
             android:id="@+id/btn_packageIgnores"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:background="#D8D8D8"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
             android:text="Package Ignores" />
         <TextView
@@ -182,12 +182,12 @@
             android:id="@+id/btn_packageTables"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:background="#E0E0E0"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
             android:text="Package Tables" />
     </LinearLayout>
@@ -203,12 +203,12 @@
             android:id="@+id/btn_smsIgnores"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:background="#EAEAEA"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
             android:text="SMS Ignores" />
         <TextView
@@ -217,36 +217,14 @@
             android:id="@+id/btn_systemIgnores"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/back_border"
+            android:background="#F0F0F0"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="16dp"
             android:textSize="16sp"
             android:text="System Ignores" />
     </LinearLayout>
-    <Button
-        android:id="@+id/button_save"
-        android:layout_marginTop="4dp"
-        android:visibility="gone"
-        android:textAllCaps="false"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
-        android:text="Save Table" />
-
-    <EditText
-        android:id="@+id/text_table"
-        android:layout_width="match_parent"
-        android:focusable="false"
-        android:layout_height="360sp"
-        android:scrollbars="horizontal"
-        android:gravity="center_horizontal"
-        android:inputType="text|textMultiLine"
-        android:text="Active say Table List"
-        android:textAlignment="center"
-        android:textSize="18sp" />
 
 </LinearLayout>

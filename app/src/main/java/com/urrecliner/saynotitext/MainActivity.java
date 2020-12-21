@@ -193,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                utils.log(logID,"button");
                 clearTableColor();
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                startActivity(intent);
+
                 if(write_textFile())
                     prepareTable();
             }
