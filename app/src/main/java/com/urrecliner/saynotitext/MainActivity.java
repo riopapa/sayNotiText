@@ -33,6 +33,7 @@ import java.util.TimerTask;
 
 import static com.urrecliner.saynotitext.Vars.Booted;
 import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saynotitext.Vars.nowFileName;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.tableDirectory;
@@ -45,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar mSeekBarSpeed;
     private TextView mPitchView;
     private TextView mSpeedView;
-    private String nowFileName;
     private String logID = "Main";
     private TextView [] tableViews = null;
 
@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         setSeekBarSpeed();
         readOptionTables = new ReadOptionTables();
         prepareTable();
-        set_Save_Table();
         text2Speech = new Text2Speech();
         text2Speech.initiateTTS(getApplicationContext());
         text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
@@ -121,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.btn_smsIgnores), findViewById(R.id.btn_systemIgnores),
                 findViewById(R.id.btn_textIgnores), findViewById(R.id.btn_textSpeak)};
 
-        clearTableColor();
     }
 
     private void setSeekBarPitch() {
@@ -181,45 +179,15 @@ public class MainActivity extends AppCompatActivity {
     private void prepareTable() {
 //        utils.log(logID, "prepared");
         readOptionTables.read();
-        TextView tV = findViewById(R.id.text_table);
-        tV.setText("");
+//        TextView tV = findViewById(R.id.text_table);
+//        tV.setText("");
         Toast.makeText(getApplicationContext(),"Reading param files",Toast.LENGTH_SHORT).show();
     }
 
-    void set_Save_Table() {
-        Button bt = findViewById(R.id.button_save);
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                utils.log(logID,"button");
-                clearTableColor();
-                Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                startActivity(intent);
-
-                if(write_textFile())
-                    prepareTable();
-            }
-        });
-    }
-
-    void grayTableColor() {
-        for (TextView tableView : tableViews) {
-            tableView.setTextColor(Color.GRAY);
-        }
-    }
-
-    void clearTableColor() {
-        for (TextView tableView : tableViews) {
-            tableView.setTextColor(Color.BLACK);
-        }
-    }
 
     public void edit_table(View v) {
         int nowTableId;
-        grayTableColor();
         nowTableId = v.getId();
-        TextView tv = (TextView) v;
-        tv.setTextColor(Color.BLUE);
         switch (nowTableId) {
             case R.id.btn_kakaoIgnores:
                 show_for_edit("kakaoIgnores");
@@ -254,65 +222,15 @@ public class MainActivity extends AppCompatActivity {
     void show_for_edit(String fileName) {
 
         nowFileName = fileName;
-        String [] lines = utils.readLines(new File(tableDirectory, fileName+".txt"));
-        StringBuilder sb = new StringBuilder();
-        for (String s : lines) sb.append(s).append("\n");
-        String text = sb.toString()+"\n";
-        TextView tv = findViewById(R.id.text_table);
-        tv.setText(text);
-        tv.setFocusable(true);
-        tv.setEnabled(true);
-        tv.setClickable(true);
-        tv.setFocusableInTouchMode(true);
-        tv = findViewById(R.id.button_save);
-        tv.setVisibility(View.VISIBLE);
-        text = "Save "+fileName;
-        tv.setText(text);
-    }
-
-    boolean write_textFile() {
-        TextView tv = findViewById(R.id.text_table);
-        String outText = tv.getText().toString();
-        outText = sortText(outText);
-
-        try {
-            // Assume default encoding.
-            File targetFile = new File(tableDirectory,  nowFileName +".txt");
-            FileWriter fileWriter = new FileWriter(targetFile, false);
-
-            // Always wrap FileWriter in BufferedWriter.
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(outText);
-//            bufferedWriter.newLine();
-            // Always close files.
-            bufferedWriter.close();
-        }
-        catch(IOException ex) {
-            utils.logE("editor",nowFileName + "'\n"+ex.toString());
-            return false;
-        }
-        tv.setClickable(false);
-        tv.setFocusable(false);
-        tv = findViewById(R.id.button_save);
-        tv.setVisibility(View.GONE);
-        return true;
-    }
-
-    String sortText(String txt) {
-        String [] arrText = txt.split("\n");
-        Arrays.sort(arrText);
-        String sortedText = "";
-        for (String t: arrText) {
-            sortedText += t + "\n";
-        }
-        return sortedText;
+        Intent intent = new Intent(MainActivity.this, EditActivity.class);
+        startActivity(intent);
     }
 
     private boolean isNotificationAllowed() {
-        Set<String> notiListenerSet = NotificationManagerCompat.getEnabledListenerPackages(this);
+        Set<String> listenerSet = NotificationManagerCompat.getEnabledListenerPackages(this);
         String myPackageName = getPackageName();
 
-        for(String packageName : notiListenerSet) {
+        for(String packageName : listenerSet) {
             if(packageName == null) {
                 continue;
             }

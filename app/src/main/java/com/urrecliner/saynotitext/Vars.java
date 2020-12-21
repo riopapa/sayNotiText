@@ -29,6 +29,7 @@ class Vars {
     static String[] textIgnores = null;
     static String[] textSpeaks = null;
     static boolean Booted = false;
+    static String nowFileName;
 
     static SharedPreferences sharePrefer;
 
