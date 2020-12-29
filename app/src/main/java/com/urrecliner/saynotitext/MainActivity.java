@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         text2Speech.initiateTTS(getApplicationContext());
         text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
         text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
-
         utils.readyAudioManager(getApplicationContext());
 
 //        if (Booted) {

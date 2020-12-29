@@ -15,6 +15,7 @@ import android.widget.RemoteViews;
 
 import static com.urrecliner.saynotitext.Vars.sayMessage;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
+import static com.urrecliner.saynotitext.Vars.utils;
 
 public class NotificationService extends Service {
 
@@ -24,9 +25,7 @@ public class NotificationService extends Service {
     NotificationManager mNotificationManager;
     private RemoteViews mRemoteViews;
     private static final int STOP_SAY = 10011;
-    private static final int STOCK_ON_OFF = 10022;
     private static final int SPEAK_ON_OFF = 1003;
-    private static final int TOGGLE_POP = 1004;
 
     @Override
     public void onCreate() {
@@ -47,7 +46,14 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int operation = intent.getIntExtra("operation", -1);
+        if (utils == null) utils = new Utils();
+        int operation = -1;
+        try {
+            operation = intent.getIntExtra("operation", -1);
+        } catch (Exception e) {
+            utils.logE("operation",e.toString());
+            operation = -1;
+        }
         boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
         Log.w("operation", " operation ="+operation);
         createNotification();

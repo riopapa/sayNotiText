@@ -1,13 +1,15 @@
 package com.urrecliner.saynotitext;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
 
 import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
 import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
+import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
 import static com.urrecliner.saynotitext.Vars.kakaoAWho;
-import static com.urrecliner.saynotitext.Vars.kakaoAText;
+import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
 import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
@@ -44,12 +46,6 @@ class ReadOptionTables {
             }
             else {
                 Toast.makeText(mContext, "PackageTable has no two semicolons(;) \n"+packageTables[idx], Toast.LENGTH_LONG).show();
-//                if (packageTables[idx].length() > 2) {
-//                    utils.logE(logID, "packageTable " + packageTables[idx]);
-//                    packageTypes[idx] = "";
-//                    packageNickNames[idx] = "";
-//                    packageIncludeNames[idx] = "";
-//                }
             }
         }
 
@@ -62,18 +58,23 @@ class ReadOptionTables {
         textIgnores =  readOptionFile("textIgnores", true);
         textSpeaks =  readOptionFile("textSpeaks", true);
 
-
         // 카카오 단톡방에서 특별히 얘기 되는 자만
         kakaoAGroup = new String[kakaoAlerts.length];   // 단톡방 명
         kakaoAWho = new String[kakaoAlerts.length];   // 누가
-        kakaoAText = new String[kakaoAlerts.length];   // 인식 문자
+        kakaoAKey1 = new String[kakaoAlerts.length];   // 인식 문자 1
+        kakaoAKey2 = new String[kakaoAlerts.length];   // 인식 문자 2
         KakaoAGroupWho = new String[kakaoAlerts.length];   // 인식 문자
         for (int idx = 0; idx < kakaoAlerts.length; idx++) {
             String []strings = kakaoAlerts[idx].split("\\+");
-            kakaoAGroup[idx] = strings[0].trim();
-            kakaoAWho[idx] = strings[1].trim();
-            kakaoAText[idx] = strings[2].trim();
-            KakaoAGroupWho[idx] = kakaoAGroup[idx]+ kakaoAWho[idx];
+            try {
+                kakaoAGroup[idx] = strings[0].trim();
+                kakaoAWho[idx] = strings[1].trim();
+                kakaoAKey1[idx] = strings[2].trim();
+                kakaoAKey2[idx] = strings[3].trim();
+                KakaoAGroupWho[idx] = kakaoAGroup[idx] + kakaoAWho[idx];
+            } catch (Exception e) {
+                Toast.makeText(mContext, "Alert Table Error on line "+(idx+1)+" > "+kakaoAlerts[idx],Toast.LENGTH_LONG).show();
+            }
         }
     }
 

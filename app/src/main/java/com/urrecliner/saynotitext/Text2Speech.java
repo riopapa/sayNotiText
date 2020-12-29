@@ -47,6 +47,7 @@ class Text2Speech {
             ttsSpeed = 1.4f;
 //            utils.append2file(logFile, "pitch, speed ZERO ");
         }
+        readyAudioTTS();
     }
 
     void setPitch(float p) {
