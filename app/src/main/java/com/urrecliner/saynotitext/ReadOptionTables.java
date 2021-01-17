@@ -72,6 +72,7 @@ class ReadOptionTables {
                 kakaoAKey1[idx] = strings[2].trim();
                 kakaoAKey2[idx] = strings[3].trim();
                 KakaoAGroupWho[idx] = kakaoAGroup[idx] + kakaoAWho[idx];
+//                utils.log("array "+idx,kakaoAGroup[idx]+" "+kakaoAWho[idx]+" "+kakaoAKey1[idx]+" "+kakaoAKey2[idx]+" "+KakaoAGroupWho[idx]);
             } catch (Exception e) {
                 Toast.makeText(mContext, "Alert Table Error on line "+(idx+1)+" > "+kakaoAlerts[idx],Toast.LENGTH_LONG).show();
             }

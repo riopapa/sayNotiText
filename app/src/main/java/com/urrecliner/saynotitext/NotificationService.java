@@ -47,7 +47,7 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (utils == null) utils = new Utils();
-        int operation = -1;
+        int operation;
         try {
             operation = intent.getIntExtra("operation", -1);
         } catch (Exception e) {
@@ -82,11 +82,11 @@ public class NotificationService extends Service {
     private void createNotification() {
 
         if (null == mNotificationChannel) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 mNotificationChannel = new NotificationChannel("default","default", NotificationManager.IMPORTANCE_DEFAULT);
                 mNotificationManager.createNotificationChannel(mNotificationChannel);
-            }
+//            }
         }
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")
