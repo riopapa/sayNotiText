@@ -89,7 +89,8 @@ public class NotificationListener extends NotificationListenerService {
             utils.log("Grp","is SpannableString "+eText+" with "+eText);
             eGroup = null;
         }
-        if (isInTable(eText, textIgnores))
+        if (isInTable(eText, textIgnores) || (isInTable(eWho, textIgnores)) ||
+                (eGroup != null && (isInTable(eGroup, textIgnores))))
             return;
 
         long nowTime = System.currentTimeMillis();
@@ -120,8 +121,8 @@ public class NotificationListener extends NotificationListenerService {
 //            lastTime = thisTime;
 
 //        dumpExtras(eTitle, Grp, eText, msgText);
-        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+
-                ", who "+eWho+", text "+((eText.length()> 50)? eText.substring(0,49):eText));
+//        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+
+//                ", who "+eWho+", text "+((eText.length()> 50)? eText.substring(0,49):eText));
         switch (packageType) {
             case KK_KAKAO :
                 sayKakao();
@@ -165,40 +166,37 @@ public class NotificationListener extends NotificationListenerService {
         if (eText == null)
             return;
         if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eWho, textSpeaks) || shouldSpeak(eGroup, textSpeaks)) {
-            speakThenLog(packageNickName+"_"+ eGroup, "주의 [" + eWho + "] 님이. 단톡방 ["+ eGroup + "]에서 " + eText);
+            speakThenLog(eGroup + "_" +packageNickName , "주의 주의 [" + eWho + "] 님이. 단톡방 ["+ eGroup + "]에서 " + eText);
         }
-        else if (isInTable(eWho, kakaoIgnores) || isInTable(eText, kakaoPersons))
-                return;
+        else if (isInTable(eWho, kakaoIgnores) || isInTable(eText, kakaoPersons)) {
+            return;
+        }
 
         if (eGroup != null) {    // Grp : 단톡방
             if (isInTable(eGroup, kakaoAGroup)) {   // 특정 단톡방
-//                utils.log("특정 단톡방 "+ eGroup, "["+ eWho +"]"+" with "+eText);
                 int alertIdx = getAlertIndex(eGroup + eWho);
+//                utils.log("Alert Grp "+ eGroup, "["+ eWho +"]"+" idx="+alertIdx);
                 if (alertIdx != -1) { // stock open chat
-//                    utils.log("Index "+alertIdx+" sayMsg="+sayMessage, eGroup +" keyword="+kakaoAText[alertIdx]);
-//                    append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", "stock "+alertIdx+" <"+Grp+eTitle+">  "+eText);
                     if (eText.contains(kakaoAKey1[alertIdx]) && eText.contains(kakaoAKey2[alertIdx])) {
-                        append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eGroup +" ; "+ eWho +" => "+((eText.length()>80) ? eText.substring(0, 79): eText));
+                        append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eGroup +" ; "+ eWho,
+                                ((eText.length()>60) ? eText.substring(0, 59): eText));
                         if (sayMessage) {
-                            speakThenLog(packageNickName + "_" + eGroup, "카톡 [" + eWho + "] 님이. [" + eGroup + "] 단톡방에서 " + eText);
+                            speakThenLog(eGroup + "_오챗" , "카톡 [" + eWho + "] 님이. [" + eGroup + "] 단톡방에서 "
+                                    + ((eText.length()>50) ? eText.substring(0, 49): eText));
                         }
-                    } else {
-//                        utils.log("pass", eGroup +" "+ eWho +" kwd>"+kakaoAText[alertIdx]+" pass "+eText);
                     }
                 }
-//                else
-//                    utils.log("단톡방 무시 대상", eWho +" , "+ eGroup +" , "+eText);
             }
             else {
                 if (isInTable(eGroup, kakaoIgnores))
                         return;
                 if (isInTable(eWho, kakaoPersons))
                     return;
-                speakThenLog(eGroup +" 단톡방", "단체카톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이." + eText);
+                speakThenLog(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이." + eText);
             }
         }
         else {
-            speakThenLog( eWho + "_" + packageNickName, "카톡 [" + eWho + "] 님이." + eText);
+            speakThenLog( eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
         }
     }
 
@@ -227,7 +225,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
 
         eText = eText.replace("[Web발신]","");
-        speakThenLog(packageNickName+"_"+ eWho, eWho + " 로부터 문자메시지 왔음. " + eText);
+        speakThenLog(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String Grp, String eText, String msgText){
@@ -328,7 +326,7 @@ public class NotificationListener extends NotificationListenerService {
     private final SimpleDateFormat hourMinFormat = new SimpleDateFormat("yy-MM-dd HH.mm", Locale.KOREA);
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd", Locale.KOREA);
 
-    private void append2App(String filename, String textLine) {
+    private void append2App(String filename, String groupWho, String textLine) {
         BufferedWriter bw = null;
         FileWriter fw = null;
         try {
@@ -336,7 +334,7 @@ public class NotificationListener extends NotificationListenerService {
 //            File file = new File (getAbsoluteFile("download",getApplicationContext()), filename);
             if (!file.exists())
                 file.createNewFile();
-            String outText = "\n" + hourMinFormat.format(new Date()) + " "  + textLine + "\n";
+            String outText = "\n" + groupWho+" " + hourMinFormat.format(new Date()) + " "  + textLine;
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
