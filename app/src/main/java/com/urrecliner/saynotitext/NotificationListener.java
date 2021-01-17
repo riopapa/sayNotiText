@@ -113,13 +113,6 @@ public class NotificationListener extends NotificationListenerService {
 //            msgText = null;
 //        }
 
-//        if ((thisTime-lastTime) <500 && (packageType.equals(AN_ANDROID) || packageType.equals(KK_KAKAO))) {
-//            utils.log(logID, packageType+" Too SHORT TIME "+packageFullName+" with "+eTitle+" -_- "+eText);
-//            return;
-//        }
-//        else
-//            lastTime = thisTime;
-
 //        dumpExtras(eTitle, Grp, eText, msgText);
 //        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+
 //                ", who "+eWho+", text "+((eText.length()> 50)? eText.substring(0,49):eText));
