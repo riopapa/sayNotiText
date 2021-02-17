@@ -1,6 +1,8 @@
 package com.urrecliner.saynotitext;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,18 +38,6 @@ public class EditActivity extends AppCompatActivity {
         tv.setEnabled(true);
         tv.setClickable(true);
         tv.setFocusableInTouchMode(true);
-        Button bt = findViewById(R.id.button_save);
-        text = "Save ["+nowFileName+"]";
-        bt.setText(text);
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                write_textFile();
-                Toast.makeText(getApplicationContext(),"Reading param files",Toast.LENGTH_SHORT).show();
-                readOptionTables.read();
-                finish();
-            }
-        });
     }
 
     void write_textFile() {
@@ -78,6 +68,25 @@ public class EditActivity extends AppCompatActivity {
             sortedText += t + "\n";
         }
         return sortedText;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_edit, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_save) {
+            write_textFile();
+            Toast.makeText(getApplicationContext(),"Table Saved",Toast.LENGTH_SHORT).show();
+            readOptionTables.read();
+            finish();
+        }
+        return false;
     }
 
 }

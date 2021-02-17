@@ -13,6 +13,7 @@ import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
 import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.saynotitext.Vars.kakaoSpeech;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
@@ -64,13 +65,15 @@ class ReadOptionTables {
         kakaoAKey1 = new String[kakaoAlerts.length];   // 인식 문자 1
         kakaoAKey2 = new String[kakaoAlerts.length];   // 인식 문자 2
         KakaoAGroupWho = new String[kakaoAlerts.length];   // 인식 문자
+        kakaoSpeech = new boolean[kakaoAlerts.length];   // 무조건 speech
         for (int idx = 0; idx < kakaoAlerts.length; idx++) {
-            String []strings = kakaoAlerts[idx].split("\\+");
+            String []strings = kakaoAlerts[idx].split("\\^");
             try {
                 kakaoAGroup[idx] = strings[0].trim();
                 kakaoAWho[idx] = strings[1].trim();
                 kakaoAKey1[idx] = strings[2].trim();
                 kakaoAKey2[idx] = strings[3].trim();
+                kakaoSpeech[idx] = strings.length == 5;       // if  one more +a sign then true;
                 KakaoAGroupWho[idx] = kakaoAGroup[idx] + kakaoAWho[idx];
 //                utils.log("array "+idx,kakaoAGroup[idx]+" "+kakaoAWho[idx]+" "+kakaoAKey1[idx]+" "+kakaoAKey2[idx]+" "+KakaoAGroupWho[idx]);
             } catch (Exception e) {

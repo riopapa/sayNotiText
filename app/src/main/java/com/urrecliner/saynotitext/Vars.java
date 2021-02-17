@@ -25,6 +25,7 @@ class Vars {
     static String[] KakaoAGroupWho = null;
     static String[] kakaoAKey1 = null;
     static String[] kakaoAKey2 = null;
+    static boolean[] kakaoSpeech = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
     static String[] textIgnores = null;
