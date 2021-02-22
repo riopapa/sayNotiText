@@ -28,6 +28,7 @@ import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
+import static com.urrecliner.saynotitext.Vars.isPhoneInUse;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.sayMessage;
@@ -295,7 +296,8 @@ public class NotificationListener extends NotificationListenerService {
             }
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";
-            text2Speech.speak("잠시만요. " + text);
+            if (!isPhoneInUse)
+                text2Speech.speak("잠시만요. " + text);
         }
     }
 
@@ -308,7 +310,7 @@ public class NotificationListener extends NotificationListenerService {
     private boolean isHeadphonesPlugged(){
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         assert am != null;
-        AudioDeviceInfo[] audioDevices = am.getDevices(AudioManager.GET_DEVICES_ALL);
+        AudioDeviceInfo[] audioDevices = am.getDevices(AudioManager.GET_DEVICES_INPUTS);
         for(AudioDeviceInfo deviceInfo : audioDevices){
             if(deviceInfo.getType()==AudioDeviceInfo.TYPE_WIRED_HEADPHONES
                     || deviceInfo.getType()==AudioDeviceInfo.TYPE_BLUETOOTH_A2DP

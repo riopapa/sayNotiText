@@ -1,18 +1,19 @@
 package com.urrecliner.saynotitext;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,12 +22,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,9 +30,9 @@ import java.util.TimerTask;
 import static com.urrecliner.saynotitext.Vars.Booted;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
+import static com.urrecliner.saynotitext.Vars.isPhoneInUse;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
-import static com.urrecliner.saynotitext.Vars.tableDirectory;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.utils;
 
@@ -48,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSpeedView;
     private String logID = "Main";
     private TextView [] tableViews = null;
+    TelephonyManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.btn_packageIgnores), findViewById(R.id.btn_packageTables),  findViewById(R.id.btn_kakaoAlert),
                 findViewById(R.id.btn_smsIgnores), findViewById(R.id.btn_systemIgnores),
                 findViewById(R.id.btn_textIgnores), findViewById(R.id.btn_textSpeak)};
-
+        ready_Telephony();
     }
 
     private void setSeekBarPitch() {
@@ -183,44 +180,43 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),"Reading param files",Toast.LENGTH_SHORT).show();
     }
 
-
-    public void edit_table(View v) {
-        int nowTableId;
-        nowTableId = v.getId();
-        switch (nowTableId) {
-            case R.id.btn_kakaoIgnores:
-                show_for_edit("kakaoIgnores");
-                break;
-            case R.id.btn_kakaoPersons:
-                show_for_edit("kakaoPersons");
-                break;
-            case R.id.btn_kakaoAlert:
-                show_for_edit("kakaoAlerts");
-                break;
-            case R.id.btn_packageIgnores:
-                show_for_edit("packageIgnores");
-                break;
-            case R.id.btn_packageTables:
-                show_for_edit("packageTables");
-                break;
-            case R.id.btn_smsIgnores:
-                show_for_edit("smsIgnores");
-                break;
-            case R.id.btn_systemIgnores:
-                show_for_edit("systemIgnores");
-                break;
-            case R.id.btn_textIgnores:
-                show_for_edit("textIgnores");
-                break;
-            case R.id.btn_textSpeak:
-                show_for_edit("textSpeaks");
-                break;
-        }
+    void ready_Telephony() {
+        manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        manager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
-    void show_for_edit(String fileName) {
+    public PhoneStateListener phoneStateListener = new PhoneStateListener()
+    {
+        public void onCallStateChanged(int state, String incomingNumber)
+        {
+            switch (state) {
+                case TelephonyManager.CALL_STATE_RINGING:
+                    Toast.makeText(mContext, "Phone CALL_STATE_RINGING", Toast.LENGTH_LONG).show();
+                    utils.log("phone","CALL_STATE_RINGING");
+                    isPhoneInUse = true;
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    Toast.makeText(mContext, "Phone CALL_STATE_OFFHOOK", Toast.LENGTH_LONG).show();
+                    utils.log("phone","CALL_STATE_OFFHOOK");
+                    isPhoneInUse = true;
+                    break;
+                case TelephonyManager.CALL_STATE_IDLE:
+//                    Toast.makeText(mContext, "CALL_STATE_IDLE", Toast.LENGTH_LONG).show();
+                    utils.log("phone","Phone CALL_STATE_IDLE");
+                    isPhoneInUse = false;
+                    break;
+            }
+            super.onCallStateChanged(state, incomingNumber);
+        };
+    };
 
-        nowFileName = fileName;
+    String[] editTables = {"textIgnores", "textSpeaks",
+                            "kakaoIgnores","kakaoPersons", "kakaoAlerts",
+                            "packageIgnores","packageTables",
+                            "smsIgnores", "systemIgnores"};
+    public void edit_table(View v) {
+        int tag = Integer.parseInt(v.getTag().toString());
+        nowFileName = editTables[tag];
         Intent intent = new Intent(MainActivity.this, EditActivity.class);
         startActivity(intent);
     }

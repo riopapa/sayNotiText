@@ -39,12 +39,6 @@
             android:progress="60"
             android:scrollbarStyle="outsideOverlay" />
 
-<!--    </LinearLayout>-->
-<!--    <LinearLayout-->
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
             android:layout_weight="2"
@@ -80,6 +74,7 @@
         android:orientation="horizontal">
         <TextView
             android:clickable="true"
+            android:tag="0"
             android:onClick="edit_table"
             android:id="@+id/btn_textIgnores"
             android:layout_width="0dp"
@@ -94,6 +89,7 @@
             android:text="Text Ignores" />
         <TextView
             android:clickable="true"
+            android:tag="1"
             android:onClick="edit_table"
             android:id="@+id/btn_textSpeak"
             android:layout_width="0dp"
@@ -115,6 +111,7 @@
         android:orientation="horizontal">
         <TextView
             android:clickable="true"
+            android:tag="2"
             android:onClick="edit_table"
             android:id="@+id/btn_kakaoIgnores"
             android:layout_width="0dp"
@@ -129,6 +126,7 @@
             android:text="Kakao  Ignores" />
         <TextView
             android:clickable="true"
+            android:tag="3"
             android:onClick="edit_table"
             android:id="@+id/btn_kakaoPersons"
             android:layout_width="0dp"
@@ -143,6 +141,7 @@
             android:text="Kakao Persons" />
         <TextView
             android:clickable="true"
+            android:tag="4"
             android:onClick="edit_table"
             android:id="@+id/btn_kakaoAlert"
             android:layout_width="0dp"
@@ -164,6 +163,7 @@
         android:orientation="horizontal">
         <TextView
             android:clickable="true"
+            android:tag="5"
             android:onClick="edit_table"
             android:id="@+id/btn_packageIgnores"
             android:layout_width="0dp"
@@ -178,6 +178,7 @@
             android:text="Package Ignores" />
         <TextView
             android:clickable="true"
+            android:tag="6"
             android:onClick="edit_table"
             android:id="@+id/btn_packageTables"
             android:layout_width="0dp"
@@ -199,6 +200,7 @@
         android:orientation="horizontal">
         <TextView
             android:clickable="true"
+            android:tag="7"
             android:onClick="edit_table"
             android:id="@+id/btn_smsIgnores"
             android:layout_width="0dp"
@@ -213,6 +215,7 @@
             android:text="SMS Ignores" />
         <TextView
             android:clickable="true"
+            android:tag="8"
             android:onClick="edit_table"
             android:id="@+id/btn_systemIgnores"
             android:layout_width="0dp"
