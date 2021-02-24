@@ -78,18 +78,19 @@ public class NotificationListener extends NotificationListenerService {
         eWho = extras.getString(Notification.EXTRA_TITLE);
         if (eWho == null)
             return;
-        try {
-            eText = extras.getString(Notification.EXTRA_TEXT);
-            eText = eText.replace("\n", "|");
-        } catch (Exception e) {
-            return;
-        }
 
         try {
             eGroup = extras.getString(Notification.EXTRA_SUB_TEXT);
         } catch (Exception e) {
-            utils.log("Grp","is SpannableString "+eText+" with "+eText);
+            utils.logE("Grp","is SpannableString "+eText+" with "+eText);
             eGroup = null;
+        }
+        try {
+            eText = extras.getString(Notification.EXTRA_TEXT);
+            eText = eText.replace("\n", "|");
+        } catch (Exception e) {
+            utils.logE("eText null /// ","who = "+eWho+" group ="+eGroup);
+            return;
         }
         if (isInTable(eText, textIgnores) || (isInTable(eWho, textIgnores)) ||
                 (eGroup != null && (isInTable(eGroup, textIgnores))))
@@ -166,29 +167,25 @@ public class NotificationListener extends NotificationListenerService {
         }
 
         if (eGroup != null) {    // Grp : 단톡방
-            utils.log(eGroup, eText);
+            utils.log(eGroup+eWho, eText);
             if (isInTable(eGroup, kakaoAGroup)) {   // 특정 단톡방
                 int alertIdx = getAlertIndex(eGroup + eWho);
                 if (alertIdx != -1) { // stock open chat
                     if (eText.contains(kakaoAKey1[alertIdx]) && eText.contains(kakaoAKey2[alertIdx])) {
                         append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eGroup +" ; "+ eWho,
-                                ((eText.length()>90) ? eText.substring(0, 89): eText));
+                                ((eText.length()>100) ? eText.substring(0, 99): eText));
                         if (sayMessage || kakaoSpeech[alertIdx]) {
                             logThenSpeechShort(eGroup + "_오챗" , "카톡 [" + eWho + "] 님이. [" + eGroup + "] 단톡방에서 "
                                     + eText);
                         }
                     }
                 }
-            }
-            else {
-                if (isInTable(eGroup, kakaoIgnores))
-                        return;
-                if (isInTable(eWho, kakaoPersons))
+            } else {
+                if (isInTable(eGroup, kakaoIgnores) || isInTable(eWho, kakaoPersons))
                     return;
-                logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이." + eText);
+                logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이 " + eText);
             }
-        }
-        else {
+        } else {
             logThenSpeech( eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
         }
     }
@@ -284,7 +281,7 @@ public class NotificationListener extends NotificationListenerService {
     private void logThenSpeechShort(String tag, String text) {
         String filename = tag + ".txt";
         utils.append2file(filename, text);
-        speechText(text, 40);
+        speechText(text, 60);
     }
 
     private void speechText(String text, int i) {

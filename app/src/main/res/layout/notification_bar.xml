@@ -33,33 +33,37 @@
             android:layout_weight="4"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             android:orientation="vertical" >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:text="Message"
                     />
+
                 <Switch
                     android:id="@+id/say_Msg"
                     android:checked="true"
+                    android:textSize="4sp"
                     android:textColor="#ECECEC"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:layout_gravity="center"
                     android:track="@drawable/switch_on_off"
                     android:text="" />
+
         </LinearLayout>
 
         <ImageView
             android:id="@+id/Stop_Now"
             android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="8dp"

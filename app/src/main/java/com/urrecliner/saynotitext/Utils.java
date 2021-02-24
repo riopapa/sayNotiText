@@ -33,7 +33,7 @@ import static com.urrecliner.saynotitext.Vars.packageDirectory;
 class Utils {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd", Locale.KOREA);
-    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yy-MM-dd HH.mm.ss sss", Locale.KOREA);
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yy-MM-dd HH.mm.ss", Locale.KOREA);
     private final String logFile = "log.txt";
 
     String[] readLines(File filename)  {
@@ -48,7 +48,7 @@ class Utils {
         String line = "";
         while (true) {
             try {
-                if (!((line = bufferedReader.readLine()) != null)) break;
+                if ((line = bufferedReader.readLine()) == null) break;
             } catch (IOException e) {
                 e.printStackTrace();
             }
