@@ -30,7 +30,7 @@ import java.util.TimerTask;
 import static com.urrecliner.saynotitext.Vars.Booted;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
-import static com.urrecliner.saynotitext.Vars.isPhoneInUse;
+import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
@@ -189,25 +189,26 @@ public class MainActivity extends AppCompatActivity {
     {
         public void onCallStateChanged(int state, String incomingNumber)
         {
+            super.onCallStateChanged(state, incomingNumber);
+
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING:
+                    isPhoneBusy = true;
                     Toast.makeText(mContext, "Phone CALL_STATE_RINGING", Toast.LENGTH_LONG).show();
-                    utils.log("phone","CALL_STATE_RINGING");
-                    isPhoneInUse = true;
+                    utils.log("^phone^","CALL_STATE_RINGING");
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
+                    isPhoneBusy = true;
                     Toast.makeText(mContext, "Phone CALL_STATE_OFFHOOK", Toast.LENGTH_LONG).show();
-                    utils.log("phone","CALL_STATE_OFFHOOK");
-                    isPhoneInUse = true;
+                    utils.log("^phone^","CALL_STATE_OFFHOOK");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
 //                    Toast.makeText(mContext, "CALL_STATE_IDLE", Toast.LENGTH_LONG).show();
-                    utils.log("phone","Phone CALL_STATE_IDLE");
-                    isPhoneInUse = false;
+                    utils.log("^^phone^","Phone CALL_STATE_IDLE");
+                    isPhoneBusy = false;
                     break;
             }
-            super.onCallStateChanged(state, incomingNumber);
-        };
+        }
     };
 
     String[] editTables = {"textIgnores", "textSpeaks",

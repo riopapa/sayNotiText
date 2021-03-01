@@ -46,5 +46,5 @@ class Vars {
     static boolean sayMessage = true; /* default is say */
     static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
-    static boolean isPhoneInUse = false;
+    static boolean isPhoneBusy = false;
 }

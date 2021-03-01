@@ -28,7 +28,7 @@ import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
-import static com.urrecliner.saynotitext.Vars.isPhoneInUse;
+import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.sayMessage;
@@ -89,7 +89,7 @@ public class NotificationListener extends NotificationListenerService {
             eText = extras.getString(Notification.EXTRA_TEXT);
             eText = eText.replace("\n", "|");
         } catch (Exception e) {
-            utils.logE("eText null /// ","who = "+eWho+" group ="+eGroup);
+//            utils.logE("eText null /// ","who = "+eWho+" group ="+eGroup);
             return;
         }
         if (isInTable(eText, textIgnores) || (isInTable(eWho, textIgnores)) ||
@@ -121,7 +121,7 @@ public class NotificationListener extends NotificationListenerService {
 //                ", who "+eWho+", text "+((eText.length()> 50)? eText.substring(0,49):eText));
         switch (packageType) {
             case KK_KAKAO :
-                sayKakao();
+                sayKaTalk();
                 break;
             case SM_SMS :
                 saySMS();
@@ -139,11 +139,8 @@ public class NotificationListener extends NotificationListenerService {
                 sayAndroid();
                 break;
             default :
-                if (isInTable(eWho, systemIgnores))
-                    return;
-                if (isInTable(eText, textIgnores))
-                    return;
-                logThenSpeech("unknown " + packageFullName, "unknown title " + eWho + "_text:" + eText);
+                if (!isInTable(eWho, systemIgnores))
+                    logThenSpeech("unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
                 break;
         }
     }
@@ -156,7 +153,7 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    private void sayKakao () {
+    private void sayKaTalk() {
         if (eText == null)
             return;
         if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eWho, textSpeaks) || shouldSpeak(eGroup, textSpeaks)) {
@@ -167,7 +164,7 @@ public class NotificationListener extends NotificationListenerService {
         }
 
         if (eGroup != null) {    // Grp : 단톡방
-            utils.log(eGroup+eWho, eText);
+            utils.log(eGroup+" "+eWho, eText);
             if (isInTable(eGroup, kakaoAGroup)) {   // 특정 단톡방
                 int alertIdx = getAlertIndex(eGroup + eWho);
                 if (alertIdx != -1) { // stock open chat
@@ -175,7 +172,7 @@ public class NotificationListener extends NotificationListenerService {
                         append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eGroup +" ; "+ eWho,
                                 ((eText.length()>100) ? eText.substring(0, 99): eText));
                         if (sayMessage || kakaoSpeech[alertIdx]) {
-                            logThenSpeechShort(eGroup + "_오챗" , "카톡 [" + eWho + "] 님이. [" + eGroup + "] 단톡방에서 "
+                            logThenSpeechShort(eGroup + "_오챗" , "오챗 [" + eGroup + "] 오챗방에서 " + eWho + "] 님이. ["
                                     + eText);
                         }
                     }
@@ -293,7 +290,7 @@ public class NotificationListener extends NotificationListenerService {
             }
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";
-            if (!isPhoneInUse)
+            if (!isPhoneBusy)
                 text2Speech.speak("잠시만요. " + text);
         }
     }

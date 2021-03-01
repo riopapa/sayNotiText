@@ -4,7 +4,7 @@
     android:id="@+id/ll_customNotification"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#3D6b6a6a"
+    android:background="#231414"
     android:baselineAligned="false"
     tools:ignore="ContentDescription"
     android:orientation="horizontal">
@@ -12,9 +12,9 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
+            android:layout_margin="4dp"
             android:src="@mipmap/icon_launcher" />
 
         <TextView
@@ -26,7 +26,7 @@
             android:text="@string/app_name"
             android:textStyle="bold"
             android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -49,7 +49,7 @@
                 <Switch
                     android:id="@+id/say_Msg"
                     android:checked="true"
-                    android:textSize="4sp"
+                    android:textSize="1sp"
                     android:textColor="#ECECEC"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
@@ -64,9 +64,9 @@
             android:id="@+id/Stop_Now"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
+            android:layout_margin="4dp"
             android:src="@mipmap/mute_right_now" />
 
 </LinearLayout>
