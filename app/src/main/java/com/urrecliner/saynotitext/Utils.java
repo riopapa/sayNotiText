@@ -79,7 +79,7 @@ class Utils {
                     logE("createFile", " Error");
                 }
             }
-            String outText = "\n" + getTimeStamp() + " "  + textLine + "\n";
+            String outText = String.format("%s %s\n", getTimeStamp(), textLine);
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
@@ -101,7 +101,7 @@ class Utils {
         FileWriter fw = null;
         try {
             File file = new File(packageDirectory, filename);
-            String outText = "\n" + getTimeStamp() + " "  + textLine + "\n";
+            String outText = String.format("%s %s\n", getTimeStamp(), textLine);
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);

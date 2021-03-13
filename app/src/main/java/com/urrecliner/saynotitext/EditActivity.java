@@ -3,8 +3,6 @@ package com.urrecliner.saynotitext;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +24,7 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edit_table);
+        setContentView(R.layout.activity_edit);
 
         String [] lines = utils.readLines(new File(tableDirectory, nowFileName+".txt"));
         StringBuilder sb = new StringBuilder();

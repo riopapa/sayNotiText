@@ -42,7 +42,7 @@ public class NotificationListener extends NotificationListenerService {
 
     final String logID = "Listener";
     private long lastTime = 0;
-    private String lastAppName = "last";
+    private String lastAppName = "없음";
     String eWho, eText, eGroup, lastWho;
     String packageFullName, packageNickName, packageType;
     final String TT_TITLE_TEXT = "tt";
@@ -172,7 +172,7 @@ public class NotificationListener extends NotificationListenerService {
                         append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eGroup +" ; "+ eWho,
                                 ((eText.length()>100) ? eText.substring(0, 99): eText));
                         if (sayMessage || kakaoSpeech[alertIdx]) {
-                            logThenSpeechShort(eGroup + "_오챗" , "오챗 [" + eGroup + "] 오챗방에서 " + eWho + "] 님이. ["
+                            logThenSpeechShort(eGroup + "_오톡" , "[" + eGroup + "] 오톡방에서 " + eWho + " 님이. "
                                     + eText);
                         }
                     }
@@ -188,9 +188,8 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayAndroid() {
-        if (eWho == null || eText == null || eText.equals(""))
-            return;
-        if (isInTable(eWho, systemIgnores) || isInTable(eText, systemIgnores))
+        if (eWho == null || eText == null || eText.equals("")
+                || (isInTable(eWho, systemIgnores) || isInTable(eText, systemIgnores)))
             return;
         logThenSpeech(packageFullName, " Android Title [" + eWho + "], Text =" + eText);
     }
