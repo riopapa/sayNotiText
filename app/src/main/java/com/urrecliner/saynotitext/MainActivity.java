@@ -27,10 +27,11 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.telephony.TelephonyManager.CALL_STATE_RINGING;
 import static com.urrecliner.saynotitext.Vars.Booted;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
-import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
+import static com.urrecliner.saynotitext.Vars.isPhoneIdle;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
@@ -187,27 +188,34 @@ public class MainActivity extends AppCompatActivity {
 
     public PhoneStateListener phoneStateListener = new PhoneStateListener()
     {
-        public void onCallStateChanged(int state, String incomingNumber)
+        public void onCallStateChanged(int state, String callNumber)
         {
-            super.onCallStateChanged(state, incomingNumber);
 
             switch (state) {
-                case TelephonyManager.CALL_STATE_RINGING:
-                    isPhoneBusy = true;
+                case CALL_STATE_RINGING:
+                    isPhoneIdle = false;
                     Toast.makeText(mContext, "Phone CALL_STATE_RINGING", Toast.LENGTH_LONG).show();
-                    utils.log("^phone^","CALL_STATE_RINGING");
+                    utils.logE("^phone^"+callNumber,"CALL_STATE_RINGING");
+//                    text2Speech.speak("폰 상태 변화 : 전화 울림");
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
-                    isPhoneBusy = true;
+                    isPhoneIdle = false;
                     Toast.makeText(mContext, "Phone CALL_STATE_OFFHOOK", Toast.LENGTH_LONG).show();
-                    utils.log("^phone^","CALL_STATE_OFFHOOK");
+                    utils.logE("^phone^"+callNumber,"CALL_STATE_OFFHOOK");
+//                    text2Speech.speak("폰 상태 변화 : 전화 걸기");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
 //                    Toast.makeText(mContext, "CALL_STATE_IDLE", Toast.LENGTH_LONG).show();
-                    utils.log("^^phone^","Phone CALL_STATE_IDLE");
-                    isPhoneBusy = false;
+                    utils.logE("^^phone^"+callNumber,"Phone CALL_STATE_IDLE");
+//                    text2Speech.speak("폰 상태 변화 : 사용 안함");
+                    isPhoneIdle = true;
                     break;
+                default:
+                    utils.logE("^^phone^"+callNumber,"Phone STATE UNKNOWN "+state);
+//                    text2Speech.speak("폰 상태 변화 : 상태 모름 모름 "+state);
+                    isPhoneIdle = true;
             }
+            super.onCallStateChanged(state, callNumber);
         }
     };
 

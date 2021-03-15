@@ -18,17 +18,17 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
+import static com.urrecliner.saynotitext.Vars.isPhoneIdle;
 import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
 import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
 import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
-import static com.urrecliner.saynotitext.Vars.kakaoSpeech;
+import static com.urrecliner.saynotitext.Vars.kakaoTalk;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
-import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.sayMessage;
@@ -51,6 +51,7 @@ public class NotificationListener extends NotificationListenerService {
     final String KK_KAKAO = "kk";
     final String AN_ANDROID = "an";
     final String TO_TEXT_ONLY = "to";
+    final String DELIMITER = " ~ ";
 
     @Override
     public void onCreate() {
@@ -80,16 +81,23 @@ public class NotificationListener extends NotificationListenerService {
             return;
 
         try {
-            eGroup = extras.getString(Notification.EXTRA_SUB_TEXT);
+            eGroup = ""+extras.getString(Notification.EXTRA_SUB_TEXT);
         } catch (Exception e) {
             utils.logE("Grp","is SpannableString "+eText+" with "+eText);
             eGroup = null;
         }
         try {
-            eText = extras.getString(Notification.EXTRA_TEXT);
+            eText = ""+extras.get(Notification.EXTRA_TEXT);
             eText = eText.replace("\n", "|");
         } catch (Exception e) {
-//            utils.logE("eText null /// ","who = "+eWho+" group ="+eGroup);
+//            Set<String> keys = extras.keySet();
+//            Iterator<String> it = keys.iterator();
+//            utils.logE("$$extra dump /// ","Dumping Intent start");
+//            logThenSpeech("DUMP extra","Dumping Intent start size= "+keys.size());
+//            while (it.hasNext()) {
+//                String key = it.next();
+//                logThenSpeech("DUMP extra" ,"key = ["+ extras.get(key)+"]");
+//            }
             return;
         }
         if (isInTable(eText, textIgnores) || (isInTable(eWho, textIgnores)) ||
@@ -169,11 +177,13 @@ public class NotificationListener extends NotificationListenerService {
                 int alertIdx = getAlertIndex(eGroup + eWho);
                 if (alertIdx != -1) { // stock open chat
                     if (eText.contains(kakaoAKey1[alertIdx]) && eText.contains(kakaoAKey2[alertIdx])) {
-                        append2App("_stockOpen "+dateFormat.format(new Date()) + ".txt", eGroup +" ; "+ eWho,
+                        append2App("_stockLog "+dateFormat.format(new Date()) + ".txt",
+                                eGroup +":"+ eWho,
                                 ((eText.length()>100) ? eText.substring(0, 99): eText));
-                        if (sayMessage || kakaoSpeech[alertIdx]) {
-                            logThenSpeechShort(eGroup + "_오톡" , "[" + eGroup + "] 오톡방에서 " + eWho + " 님이. "
-                                    + eText);
+                        if (sayMessage) {
+                            logThenSpeech(eGroup + "_오톡" , kakaoTalk[alertIdx]+
+                                    "[" + eGroup + "] 오톡방에서 " + kakaoTalk[alertIdx]+ " " +
+                                    eWho + " 님이. " + kakaoTalk[alertIdx]+ " "+eText, 80);
                         }
                     }
                 }
@@ -268,29 +278,22 @@ public class NotificationListener extends NotificationListenerService {
         return false;
     }
 
-    private void logThenSpeech(String tag, String text) {
+    private void logThenSpeech(String tag, String text, Integer... txtLen) {
         String filename = tag + ".txt";
         utils.append2file(filename, text);
-        speechText(text, 200);
-    }
-
-    private void logThenSpeechShort(String tag, String text) {
-        String filename = tag + ".txt";
-        utils.append2file(filename, text);
-        speechText(text, 60);
+        speechText(text, (txtLen.length > 0) ? txtLen[0] :200);
     }
 
     private void speechText(String text, int i) {
-        if (isHeadphonesPlugged() || isRingerON()) {
-            if (text2Speech == null) {
-                utils.log(logID, "tts is null, reCreated");
-                text2Speech = new Text2Speech();
-                text2Speech.initiateTTS(getApplicationContext());
-            }
+        if (text2Speech == null) {
+//                utils.log(logID, "tts is null, reCreated");
+            text2Speech = new Text2Speech();
+            text2Speech.initiateTTS(getApplicationContext());
+        }
+        if (isPhoneIdle && (isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";
-            if (!isPhoneBusy)
-                text2Speech.speak("잠시만요. " + text);
+            text2Speech.speak("잠시만요. " + text);
         }
     }
 
@@ -331,7 +334,8 @@ public class NotificationListener extends NotificationListenerService {
 //            File file = new File (getAbsoluteFile("download",getApplicationContext()), filename);
             if (!file.exists())
                 file.createNewFile();
-            String outText = "\n" + groupWho+" " + hourMinFormat.format(new Date()) + " "  + textLine;
+            String outText = "\n" + groupWho + DELIMITER + DELIMITER + hourMinFormat.format(new Date())
+                    + DELIMITER  + textLine;
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);

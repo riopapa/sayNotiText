@@ -202,7 +202,7 @@ class Utils {
 
     /* delete old packageDirectory / files if storage is less than x days */
     private void deleteOldFiles() {
-        String weekAgo = dateFormat.format(System.currentTimeMillis() - 3*24*60*60*1000L);
+        String weekAgo = dateFormat.format(System.currentTimeMillis() - 6*24*60*60*1000L);
         File[] files = packageDirectory.listFiles();
         Collator myCollator = Collator.getInstance();
         for (File file : files) {
