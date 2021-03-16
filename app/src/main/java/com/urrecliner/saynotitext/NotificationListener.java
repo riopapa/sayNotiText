@@ -180,16 +180,16 @@ public class NotificationListener extends NotificationListenerService {
     private void groupTalk() {
         utils.log(eGroup+":"+eWho, eText);
         if (isInTable(eGroup, kakaoAGroup)) {   // 특정 단톡방
-            int alertIdx = getAlertIndex(eGroup + eWho);
-            if (alertIdx != -1) { // stock open chat
-                if (eText.contains(kakaoAKey1[alertIdx]) && eText.contains(kakaoAKey2[alertIdx])) {
+            int aIdx = getAlertIndex(eGroup + eWho);
+            if (aIdx != -1) { // stock open chat
+                if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
                     append2App("_stockLog "+dateFormat.format(new Date()) + ".txt",
                             eGroup +":"+ eWho,
                             ((eText.length()>100) ? eText.substring(0, 99): eText));
-                    if (sayMessage) {
-                        logThenSpeech(eGroup + "_오톡" , kakaoTalk[alertIdx]+
-                                "[" + eGroup + "] 오톡방에서 " + kakaoTalk[alertIdx]+ " " +
-                                eWho + " 님이. " + kakaoTalk[alertIdx]+ " "+eText, 80);
+                    if (sayMessage || kakaoTalk[aIdx].length() > 1) {
+                        logThenSpeech(eGroup + "_오톡" , kakaoTalk[aIdx]+
+                                "[" + eGroup + "] 오톡방에서 " + kakaoTalk[aIdx]+ " " +
+                                eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText, 80);
                     }
                 }
             }

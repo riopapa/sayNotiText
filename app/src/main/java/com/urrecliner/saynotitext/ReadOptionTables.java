@@ -32,13 +32,13 @@ class ReadOptionTables {
     void read () {
 
         utils.log(logID, "read()");
-        packageTables =  readOptionFile("packageTables", false);
+        packageTables =  readOptionFile("packageTables");
         packageNickNames = new String[packageTables.length];
         packageTypes = new String[packageTables.length];
         packageIncludeNames = new String[packageTables.length];
 
         for (int idx = 0; idx < packageTables.length; idx++) {
-            String []strings = packageTables[idx].split(";");
+            String []strings = packageTables[idx].split("\\^");
             if (strings.length >= 3) {
                 packageTypes[idx] = strings[0].trim();
                 packageNickNames[idx] = strings[1].trim();
@@ -49,14 +49,14 @@ class ReadOptionTables {
             }
         }
 
-        packageIgnores =  readOptionFile("packageIgnores", true);
-        kakaoIgnores =  readOptionFile("kakaoIgnores", true);
-        kakaoPersons =  readOptionFile("kakaoPersons", true);
-        kakaoAlerts =  readOptionFile("kakaoAlerts", true);
-        smsIgnores =  readOptionFile("smsIgnores", true);
-        systemIgnores =  readOptionFile("systemIgnores", true);
-        textIgnores =  readOptionFile("textIgnores", true);
-        textSpeaks =  readOptionFile("textSpeaks", true);
+        packageIgnores =  readOptionFile("packageIgnores");
+        kakaoIgnores =  readOptionFile("kakaoIgnores");
+        kakaoPersons =  readOptionFile("kakaoPersons");
+        kakaoAlerts =  readOptionFile("kakaoAlerts");
+        smsIgnores =  readOptionFile("smsIgnores");
+        systemIgnores =  readOptionFile("systemIgnores");
+        textIgnores =  readOptionFile("textIgnores");
+        textSpeaks =  readOptionFile("textSpeaks");
 
         // 카카오 단톡방에서 특별히 얘기 되는 자만
         kakaoAGroup = new String[kakaoAlerts.length];   // 단톡방 명
@@ -81,16 +81,12 @@ class ReadOptionTables {
         }
     }
 
-    static String[] readOptionFile(String filename, boolean removeComment) {
-        String[] lines = {""};
-        lines = utils.readLines(new File(tableDirectory, filename+".txt"));
-        if (removeComment) {
-            for (int idx = 0; idx < lines.length; idx++) {
-                if (lines[idx].indexOf(";") > 1) {    // line should contain ";"
-                    String[] strings = lines[idx].split(";");
-                    lines[idx] = strings[0].trim();  // ignore from ;
-                }
-            }
+    static String[] readOptionFile(String filename) {
+        String[] lines = utils.readLines(new File(tableDirectory, filename+".txt"));
+        for (int idx = 0; idx < lines.length; idx++) {      // remove to end after ; characters
+            lines[idx] = lines[idx].replace("\\t","");
+            String[] strings = lines[idx].split(";");
+            lines[idx] = strings[0].trim();  // ignore from ;
         }
         return lines;
     }
