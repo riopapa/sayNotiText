@@ -183,9 +183,9 @@ public class NotificationListener extends NotificationListenerService {
             int aIdx = getAlertIndex(eGroup + eWho);
             if (aIdx != -1) { // stock open chat
                 if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
-                    append2App("_stockLog "+dateFormat.format(new Date()) + ".txt",
-                            eGroup +":"+ eWho,
-                            ((eText.length()>100) ? eText.substring(0, 99): eText));
+                    String s = (eText.length()>100) ? eText.substring(0, 99): eText;
+                    append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup +":"+ eWho, s);
+                    append2App("/stocks/"+ eGroup + ".txt",eGroup +":"+ eWho, s);
                     if (sayMessage || kakaoTalk[aIdx].length() > 1) {
                         logThenSpeech(eGroup + "_오톡" , kakaoTalk[aIdx]+
                                 "[" + eGroup + "] 오톡방에서 " + kakaoTalk[aIdx]+ " " +

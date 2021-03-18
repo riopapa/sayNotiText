@@ -174,7 +174,7 @@ class Utils {
     private String traceName (String s) {
         String [] omits = { "performResume", "performCreate", "callActivityOnResume", "access$",
                 "onCreate", "onNotificationPosted", "NotificationListener", "performCreate", "log",
-                "handleReceiver", "handleMessage", "dispatchKeyEvent"};
+                "handleReceiver", "handleMessage", "dispatchKeyEvent", "onBindViewHolder", "NotificationListener"};
         for (String o : omits) {
             if (s.contains(o)) return ". ";
         }

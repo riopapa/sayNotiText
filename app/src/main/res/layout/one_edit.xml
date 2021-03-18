@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/one_line"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="-3dp"
+    android:orientation="horizontal"
+    android:padding="1dp" >
+
+    <TextView
+        android:id="@+id/one_Select"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/font_size"
+        />
+
+    <EditText
+        android:id="@+id/one_group"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/textFore"
+        android:textSize="@dimen/font_size"
+        android:autofillHints="@string/todo"
+        android:inputType="text|textMultiLine" />
+
+    <EditText
+        android:id="@+id/one_who"
+        android:layout_width="0dp"
+        android:layout_weight="5"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/todo"
+        android:textSize="@dimen/font_size"
+        android:autofillHints="@string/todo"
+        android:inputType="text|textMultiLine" />
+
+    <EditText
+        android:id="@+id/one_key1"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/todo"
+        android:textColor="@color/textFore"
+        android:textSize="@dimen/font_size"
+        android:autofillHints="@string/todo"
+        android:inputType="text|textMultiLine" />
+
+    <EditText
+        android:id="@+id/one_key2"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/todo"
+        android:textColor="@color/textFore"
+        android:textSize="@dimen/font_size"
+        android:autofillHints="@string/todo"
+        android:inputType="text|textMultiLine" />
+
+    <EditText
+        android:id="@+id/one_talk"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/todo"
+        android:textColor="@color/textFore"
+        android:textSize="@dimen/font_size"
+        android:autofillHints="@string/todo"
+        android:inputType="text|textMultiLine" />
+
+    <EditText
+        android:id="@+id/one_comment"
+        android:layout_width="0dp"
+        android:layout_weight="8"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/todo"
+        android:textColor="@color/textFore"
+        android:textSize="@dimen/font_size"
+        android:autofillHints="@string/todo"
+        android:inputType="text|textMultiLine" />
+
+</LinearLayout>

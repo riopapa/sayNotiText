@@ -1,6 +1,7 @@
 package com.urrecliner.saynotitext;
 
 import android.annotation.SuppressLint;
+import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioFocusRequest;
@@ -8,6 +9,8 @@ import android.media.AudioManager;
 import android.os.Environment;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 class Vars {
     static File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
@@ -47,4 +50,7 @@ class Vars {
     static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
     static boolean isPhoneIdle = true;
+
+    static ArrayList<OneLine> oneLines;
+    static int linePos = 999;
 }
