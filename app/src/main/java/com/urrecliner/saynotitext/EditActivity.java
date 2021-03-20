@@ -4,9 +4,11 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -20,8 +22,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static com.urrecliner.saynotitext.Vars.nowFileName;
 import static com.urrecliner.saynotitext.Vars.oneLines;
@@ -29,6 +34,7 @@ import static com.urrecliner.saynotitext.Vars.linePos;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.tableDirectory;
 import static com.urrecliner.saynotitext.Vars.utils;
+import static java.lang.Byte.compare;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -118,18 +124,42 @@ public class EditActivity extends AppCompatActivity {
         return true;
     }
 
+    final String blank = "                         ";
+    final String del = String.copyValueOf(new char[]{(char) Byte.parseByte("7F", 16)});
+    private String strPad(String s, int size) {
+        int chars = 0;
+        for (int i = 0; i < s.length(); i++) {
+            String bite = s.substring(i,i+1);
+            chars += (bite.compareTo(del)>0)? 2:1;
+        }
+        if (chars >= size)
+            return s;
+        int padL = (size - chars) / 2;
+        int padR = size - chars - padL;
+        return blank.substring(0, padL)+ s + blank.substring(0, padR);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_save) {
             if (isAlertFile) {
+                Collections.sort(oneLines, new Comparator<OneLine>(){       // object Sort
+                    public int compare(OneLine obj1, OneLine obj2) {
+                        return (obj1.getGroup()+obj1.getWho()).compareTo((obj2.getGroup()+obj2.getWho()));
+                    }
+                });
                 String s = "";
                 for (int i = 0; i < oneLines.size(); i++) {
                     OneLine oneLine = oneLines.get(i);
-                    s += oneLine.getGroup()+"\t^\t"+oneLine.getWho()+"\t^\t"+oneLine.getKey1()+"\t^\t";
-                    s += oneLine.getKey2()+"\t^\t"+oneLine.getTalk()+"\t^\t;"+oneLine.getComment()+"\n";
+                    s += strPad(oneLine.getGroup(), 18)+"^";
+                    s += strPad(oneLine.getWho(), 32)+"^";
+                    s += strPad(oneLine.getKey1(), 12)+"^";
+                    s += strPad(oneLine.getKey2(), 12)+"^";
+                    s += strPad(oneLine.getTalk(), 12)+";";
+                    s += oneLine.getComment()+"\n";
                 }
-                write_textFile(sortText(s));
+                write_textFile(s);
             } else {
                 TextView tv = findViewById(R.id.text_table);
                 String s = tv.getText().toString();
@@ -154,7 +184,11 @@ public class EditActivity extends AppCompatActivity {
                 textInsert_tab();
         } else if (item.getItemId() == R.id.action_remove) {
             if (isAlertFile) {
-                oneLines.remove(linePos);
+                OneLine oneLine = oneLines.get(linePos-1);
+                if (oneLine.isSelect())
+                    oneLines.remove(linePos-1);
+                else
+                    oneLines.remove(linePos);
                 alertAdapter.notifyDataSetChanged();
             } else
                 textRemove_line();

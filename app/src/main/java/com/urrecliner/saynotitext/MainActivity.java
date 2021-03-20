@@ -36,6 +36,7 @@ import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.utils;
+import static java.nio.charset.StandardCharsets.*;
 
 public class MainActivity extends AppCompatActivity {
 
