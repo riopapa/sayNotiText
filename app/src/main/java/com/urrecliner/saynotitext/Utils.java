@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -158,7 +157,7 @@ class Utils {
     void log(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
+        String log = excludeName(traces[5].getMethodName()) + excludeName(traces[4].getMethodName()) + excludeName(traceClassName(traces[3].getClassName()))+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.w(tag, log);
         append2file(logFile, log);
     }
@@ -166,12 +165,12 @@ class Utils {
     void logE(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " |err:"+ tag + "| " + text;
+        String log = excludeName(traces[5].getMethodName()) + excludeName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " |err:"+ tag + "| " + text;
         Log.e("<" + tag + ">" , log);
         append2LogE(logFile, log);
     }
 
-    private String traceName (String s) {
+    private String excludeName(String s) {
         String [] omits = { "performResume", "performCreate", "callActivityOnResume", "access$",
                 "onCreate", "onNotificationPosted", "NotificationListener", "performCreate", "log",
                 "handleReceiver", "handleMessage", "dispatchKeyEvent", "onBindViewHolder"};

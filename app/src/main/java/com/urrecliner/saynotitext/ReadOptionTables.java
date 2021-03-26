@@ -40,9 +40,9 @@ class ReadOptionTables {
         for (int idx = 0; idx < packageTables.length; idx++) {
             String []strings = packageTables[idx].split("\\^");
             if (strings.length >= 3) {
-                packageTypes[idx] = strings[0].trim();
-                packageNickNames[idx] = strings[1].trim();
-                packageIncludeNames[idx] = strings[2].trim();
+                packageNickNames[idx] = strings[0].trim();      // 카톡
+                packageTypes[idx] = strings[1].trim();          // kk
+                packageIncludeNames[idx] = strings[2].trim();   // com.kakako.talk
             }
             else {
                 Toast.makeText(mContext, "PackageTable has no two semicolons(;) \n"+packageTables[idx], Toast.LENGTH_LONG).show();

@@ -71,25 +71,17 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         });
 
         holder.tGroup.addTextChangedListener(new TextWatcher() {
+            String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override
-            public void afterTextChanged(Editable s) {
-                linePos = holder.getAdapterPosition();
-                OneLine oneLine = oneLines.get(linePos); oneLine.setGroup(s.toString().trim());
-                oneLines.set(linePos, oneLine);
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sv = s.toString();
             }
-        });
-
-        holder.tGroup.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
             public void afterTextChanged(Editable s) {
+                if (sv.equals(s.toString()))
+                    return;
                 linePos = holder.getAdapterPosition();
                 OneLine oneLine = oneLines.get(linePos); oneLine.setGroup(s.toString().trim());
                 oneLines.set(linePos, oneLine);
@@ -97,12 +89,17 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         });
 
         holder.tWho.addTextChangedListener(new TextWatcher() {
+            String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sv = s.toString();
+            }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
             public void afterTextChanged(Editable s) {
+                if (sv.equals(s.toString()))
+                    return;
                 linePos = holder.getAdapterPosition();
                 OneLine oneLine = oneLines.get(linePos); oneLine.setWho(s.toString().trim());
                 oneLines.set(linePos, oneLine);
@@ -110,12 +107,17 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         });
 
         holder.tKey1.addTextChangedListener(new TextWatcher() {
+            String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sv = s.toString();
+            }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
             public void afterTextChanged(Editable s) {
+                if (sv.equals(s.toString()))
+                    return;
                 linePos = holder.getAdapterPosition();
                 OneLine oneLine = oneLines.get(linePos); oneLine.setKey1(s.toString().trim());
                 oneLines.set(linePos, oneLine);
@@ -123,12 +125,17 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         });
 
         holder.tKey2.addTextChangedListener(new TextWatcher() {
+            String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sv = s.toString();
+            }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
             public void afterTextChanged(Editable s) {
+                if (sv.equals(s.toString()))
+                    return;
                 linePos = holder.getAdapterPosition();
                 OneLine oneLine = oneLines.get(linePos); oneLine.setKey2(s.toString().trim());
                 oneLines.set(linePos, oneLine);
@@ -136,12 +143,17 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         });
 
         holder.tTalk.addTextChangedListener(new TextWatcher() {
+            String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sv = s.toString();
+            }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
             public void afterTextChanged(Editable s) {
+                if (sv.equals(s.toString()))
+                    return;
                 linePos = holder.getAdapterPosition();
                 OneLine oneLine = oneLines.get(linePos); oneLine.setTalk(s.toString().trim());
                 oneLines.set(linePos, oneLine);
@@ -149,12 +161,17 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         });
 
         holder.tComment.addTextChangedListener(new TextWatcher() {
+            String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sv = s.toString();
+            }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void afterTextChanged(Editable s) {
+                if (sv.equals(s.toString()))
+                    return;
                 linePos = holder.getAdapterPosition();
                 OneLine oneLine = oneLines.get(linePos);
                 oneLine.setComment(s.toString().trim());
