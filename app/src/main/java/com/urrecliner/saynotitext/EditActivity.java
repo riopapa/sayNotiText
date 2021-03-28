@@ -67,7 +67,6 @@ public class EditActivity extends AppCompatActivity {
 
     void build_OneLine(String [] lines) {
         oneLines = new ArrayList<>();
-
         for (int idx = 0; idx < lines.length; idx++) {
             String lGroup, lWho, lKey1, lKey2, lTalk, lComment;
             lines[idx] = lines[idx].replace("\\t","");
@@ -188,7 +187,7 @@ public class EditActivity extends AppCompatActivity {
                     s.append(strPad(oneLine.getTalk(), 12)).append(";");
                     s.append(oneLine.getComment()).append("\n");
                 }
-                write_textFile(sortText(s.toString()));
+                write_textFile(s.toString());
             } else {
                 TextView tv = findViewById(R.id.text_table);
                 String s = tv.getText().toString();

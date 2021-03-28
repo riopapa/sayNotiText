@@ -175,10 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void prepareTable() {
-//        utils.log(logID, "prepared");
         readOptionTables.read();
-//        TextView tV = findViewById(R.id.text_table);
-//        tV.setText("");
         Toast.makeText(getApplicationContext(),"Reading param files",Toast.LENGTH_SHORT).show();
     }
 

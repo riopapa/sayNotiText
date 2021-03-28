@@ -2,22 +2,17 @@ package com.urrecliner.saynotitext;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.urrecliner.saynotitext.EditActivity.dupView;
-import static com.urrecliner.saynotitext.EditActivity.removeView;
 import static com.urrecliner.saynotitext.Vars.linePos;
 import static com.urrecliner.saynotitext.Vars.oneLines;
-import static com.urrecliner.saynotitext.Vars.utils;
 
 public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> {
 
@@ -73,11 +68,9 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         holder.tGroup.addTextChangedListener(new TextWatcher() {
             String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                sv = s.toString();
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { sv = s.toString(); }
             @Override
             public void afterTextChanged(Editable s) {
                 if (sv.equals(s.toString()))
@@ -91,11 +84,9 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         holder.tWho.addTextChangedListener(new TextWatcher() {
             String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                sv = s.toString();
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { sv = s.toString(); }
             @Override
             public void afterTextChanged(Editable s) {
                 if (sv.equals(s.toString()))
@@ -109,11 +100,9 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         holder.tKey1.addTextChangedListener(new TextWatcher() {
             String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                sv = s.toString();
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { sv = s.toString(); }
             @Override
             public void afterTextChanged(Editable s) {
                 if (sv.equals(s.toString()))
@@ -127,11 +116,9 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         holder.tKey2.addTextChangedListener(new TextWatcher() {
             String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                sv = s.toString();
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { sv = s.toString(); }
             @Override
             public void afterTextChanged(Editable s) {
                 if (sv.equals(s.toString()))
@@ -145,11 +132,9 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         holder.tTalk.addTextChangedListener(new TextWatcher() {
             String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                sv = s.toString();
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { sv = s.toString(); }
             @Override
             public void afterTextChanged(Editable s) {
                 if (sv.equals(s.toString()))
@@ -163,18 +148,15 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         holder.tComment.addTextChangedListener(new TextWatcher() {
             String sv = null;
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                sv = s.toString();
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { sv = s.toString(); }
             @Override
             public void afterTextChanged(Editable s) {
                 if (sv.equals(s.toString()))
                     return;
                 linePos = holder.getAdapterPosition();
-                OneLine oneLine = oneLines.get(linePos);
-                oneLine.setComment(s.toString().trim());
+                OneLine oneLine = oneLines.get(linePos); oneLine.setComment(s.toString().trim());
                 oneLines.set(linePos, oneLine);
             }
         });
