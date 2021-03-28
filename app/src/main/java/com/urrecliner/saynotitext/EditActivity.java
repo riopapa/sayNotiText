@@ -122,7 +122,7 @@ public class EditActivity extends AppCompatActivity {
             if (isPackageTable) {
                 String [] comment = t.split(";");
                 String [] fields = comment[0].split("\\^");
-                String oneLine = blankPad(fields[0],14) + "^" + strPad(fields[1], 10) + "^"
+                String oneLine = strPad(fields[0],14) + "^" + strPad(fields[1], 10) + "^"
                         + strPad(fields[2], 40);
                 if (comment.length > 1)
                     oneLine += "; " + comment[1].trim();
@@ -155,6 +155,7 @@ public class EditActivity extends AppCompatActivity {
         int padR = size - chars - padL;
         return blank.substring(0, padL)+ s + blank.substring(0, padR);
     }
+
     private String blankPad(String s, int size) {
         int chars = 0;
         s = s.trim();

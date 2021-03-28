@@ -46,11 +46,10 @@ public class NotificationListener extends NotificationListenerService {
     final String AN_ANDROID = "an";
     final String TO_TEXT_ONLY = "to";
     final String DELIMITER = " ~ ";
-    final String NONE = "없음";
     private long lastTime = 0;
     private String lastAppName = "없음";
     String eWho, eText, lastWho;
-    String eGroup = NONE;
+    String eGroup = null;
     String packageFullName, packageNickName, packageType;
     String oldText = "";
 
@@ -82,13 +81,18 @@ public class NotificationListener extends NotificationListenerService {
             return;
 
         try {
-            eGroup = ""+extras.getString(Notification.EXTRA_SUB_TEXT);  // if no Group then "null"
+            eGroup = ""+extras.getString(Notification.EXTRA_SUB_TEXT);  // if no Group then return String "null"
+            if (eGroup.equals("null"))
+                eGroup = null;
         } catch (Exception e) {
             utils.logE("Grp","is SpannableString "+eText+" with "+eText);
-            eGroup = NONE;
+            eGroup = null;
         }
+
         try {
             eText = ""+extras.get(Notification.EXTRA_TEXT);
+            if (eText.equals("null"))
+                return;
             eText = eText.replaceAll("[\\n]", "|");
         } catch (Exception e) {
 //            Set<String> keys = extras.keySet();
@@ -101,8 +105,7 @@ public class NotificationListener extends NotificationListenerService {
 //            }
             return;
         }
-        if (isInTable(eText, textIgnores) || (isInTable(eWho, textIgnores)) ||
-                (!eGroup.equals(NONE) && (isInTable(eGroup, textIgnores))))
+        if (isInTable(eText, textIgnores) || isInTable(eWho, textIgnores) || isInTable(eGroup, textIgnores))
             return;
 
         long nowTime = System.currentTimeMillis();
@@ -159,7 +162,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayKaTalk() {
-        if (eText == null || eText.equals(NONE))
+        if (eText == null)
             return;
         if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eWho, textSpeaks) || shouldSpeak(eGroup, textSpeaks)) {
             logThenSpeech(eGroup + "_" +packageNickName , "주의 주의 [" + eWho + "] 님이. 단톡방 ["+ eGroup + "]에서 " + eText);
@@ -167,7 +170,7 @@ public class NotificationListener extends NotificationListenerService {
         else if (isInTable(eWho, kakaoIgnores) || isInTable(eText, kakaoPersons)) {
             return;
         }
-        if (eGroup == null || eGroup.equals(NONE))
+        if (eGroup == null)
             logThenSpeech( eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
         else
             groupTalk();
@@ -176,31 +179,27 @@ public class NotificationListener extends NotificationListenerService {
     private void groupTalk() {
         if (eText.equals(oldText))
             return;
-        utils.log(eGroup+":"+eWho, eText);
+        utils.log(eGroup+";"+eWho, eText);
+        if (isInTable(eGroup, kakaoIgnores) || isInTable(eWho, kakaoPersons))
+            return;
 
         if (isInTable(eGroup, kakaoAGroup)) {   // 특정 단톡방
-            int aIdx = getAlertIndex(eGroup + eWho);
-            if (aIdx != -1) { // stock open chat
-                if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
-                    String s = (eText.length()>100) ? eText.substring(0, 99): eText;
-                    append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup +":"+ eWho, s);
-                    append2App("/stocks/"+ eGroup + ".txt",eGroup +":"+ eWho, s);
-                    if (sayMessage || kakaoTalk[aIdx].length() > 1) {
-                        s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
-                                eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
-                        speechText(s, 50);
+                int aIdx = getAlertIndex(eGroup + eWho);
+                if (aIdx != -1) { // stock open chat
+                    if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
+                        String s = (eText.length()>100) ? eText.substring(0, 99): eText;
+                        append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup +":"+ eWho, s);
+                        append2App("/stocks/"+ eGroup + ".txt",eGroup +":"+ eWho, s);
+                        if (sayMessage || kakaoTalk[aIdx].length() > 1) {
+                            s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
+                                    eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
+                            speechText(s, 50);
+                        }
                     }
+                    oldText = eText;
                 }
-                oldText = eText;
-            }
-        } else {
-            if (isInTable(eGroup, kakaoIgnores) || isInTable(eWho, kakaoPersons))
-                return;
-            if (eGroup == null)
-                logThenSpeech("None_단톡", "단.톡 [" + eWho + "] 님이 " + eText);
-            else
-                logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이 " + eText);
-        }
+        } else
+             logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
     }
 
     private void sayAndroid() {
@@ -215,10 +214,8 @@ public class NotificationListener extends NotificationListenerService {
             return;
         if (isInTable(eWho,systemIgnores) || isInTable(eText, textIgnores) || isInTable(eWho, textIgnores))
             return;
-        if (eGroup.equals(NONE))
-            logThenSpeech(packageNickName+"_"+ eWho,"["+packageNickName + "]_로 부터. " + eText);
-        else
-            logThenSpeech(packageNickName,"["+packageNickName + "] 에서  [" + eGroup+" 팀 " + eWho + "]_로 부터. " + eText);
+        String groupName = (eGroup == null) ? " " : "[" + eGroup+" 팀]의 ";
+        logThenSpeech(packageNickName,"["+packageNickName + "] 에서 " + groupName + eWho + "_로 부터. " + eText);
     }
 
     private void saySMS() {

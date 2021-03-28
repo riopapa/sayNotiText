@@ -196,24 +196,24 @@ public class MainActivity extends AppCompatActivity {
                 case CALL_STATE_RINGING:
                     isPhoneIdle = false;
                     Toast.makeText(mContext, "Phone CALL_STATE_RINGING", Toast.LENGTH_LONG).show();
-                    utils.logE("^phone^"+callNumber,"CALL_STATE_RINGING");
-//                    text2Speech.speak("폰 상태 변화 : 전화 울림");
+                    utils.log("^phone^"+callNumber,"CALL_STATE_RINGING");
+                    text2Speech.speak("폰 상태 변화 : 전화 울림");
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     isPhoneIdle = false;
                     Toast.makeText(mContext, "Phone CALL_STATE_OFFHOOK", Toast.LENGTH_LONG).show();
-                    utils.logE("^phone^"+callNumber,"CALL_STATE_OFFHOOK");
-//                    text2Speech.speak("폰 상태 변화 : 전화 걸기");
+                    utils.log("^phone^"+callNumber,"CALL_STATE_OFFHOOK");
+                    text2Speech.speak("폰 상태 변화 : 전화 걸기");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
-//                    Toast.makeText(mContext, "CALL_STATE_IDLE", Toast.LENGTH_LONG).show();
-                    utils.logE("^^phone^"+callNumber,"Phone CALL_STATE_IDLE");
-//                    text2Speech.speak("폰 상태 변화 : 사용 안함");
+                    Toast.makeText(mContext, "CALL_STATE_IDLE", Toast.LENGTH_LONG).show();
+                    utils.log("^^phone^"+callNumber,"Phone CALL_STATE_IDLE");
+                    text2Speech.speak("폰 상태 변화 : 사용 안함");
                     isPhoneIdle = true;
                     break;
                 default:
-                    utils.logE("^^phone^"+callNumber,"Phone STATE UNKNOWN "+state);
-//                    text2Speech.speak("폰 상태 변화 : 상태 모름 모름 "+state);
+                    utils.log("^^phone^"+callNumber,"Phone STATE UNKNOWN "+state);
+                    text2Speech.speak("폰 상태 변화 : 상태 모름 모름 "+state);
                     isPhoneIdle = true;
             }
             super.onCallStateChanged(state, callNumber);
