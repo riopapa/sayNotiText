@@ -95,28 +95,7 @@ class Utils {
         }
     }
 
-    void append2LogE(String filename, String textLine) {
-        BufferedWriter bw = null;
-        FileWriter fw = null;
-        try {
-            File file = new File(packageDirectory, filename);
-            String outText = String.format("%s %s\n", getTimeStamp(), textLine);
-            // true = append file
-            fw = new FileWriter(file.getAbsoluteFile(), true);
-            bw = new BufferedWriter(fw);
-            bw.write(outText);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bw != null) bw.close();
-                if (fw != null) fw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-//    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
+    //    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
     private File getTodayFolder() {
         if (!packageDirectory.exists()) {
             try {
@@ -157,17 +136,17 @@ class Utils {
     void log(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = excludeName(traces[5].getMethodName()) + excludeName(traces[4].getMethodName()) + excludeName(traceClassName(traces[3].getClassName()))+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
-        Log.w(tag, log);
-        append2file(logFile, log);
+        String logText = excludeName(traces[5].getMethodName()) + excludeName(traces[4].getMethodName()) + excludeName(traceClassName(traces[3].getClassName()))+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
+        Log.w(tag, logText);
+        append2file(logFile, logText);
     }
 
     void logE(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = excludeName(traces[5].getMethodName()) + excludeName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " |err:"+ tag + "| " + text;
-        Log.e("<" + tag + ">" , log);
-        append2LogE(logFile, log);
+        String logText = excludeName(traces[5].getMethodName()) + excludeName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " |err:"+ tag + "| " + text;
+        Log.e("<" + tag + ">" , logText);
+        append2file(logFile, logText);
     }
 
     private String excludeName(String s) {

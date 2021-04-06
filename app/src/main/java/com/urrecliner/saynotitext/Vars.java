@@ -33,7 +33,6 @@ class Vars {
     static String[] systemIgnores = null;
     static String[] textIgnores = null;
     static String[] textSpeaks = null;
-    static boolean Booted = false;
     static String nowFileName;
 
     static SharedPreferences sharePrefer;
@@ -49,7 +48,7 @@ class Vars {
     static boolean sayMessage = true; /* default is say */
     static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
-    static boolean isPhoneIdle = true;
+    static boolean isPhoneBusy = false;
 
     static ArrayList<OneLine> oneLines;
     static int linePos = 999;

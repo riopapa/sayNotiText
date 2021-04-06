@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
-import static com.urrecliner.saynotitext.Vars.isPhoneIdle;
+import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
 import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
 import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
 import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
@@ -179,7 +179,7 @@ public class NotificationListener extends NotificationListenerService {
     private void groupTalk() {
         if (eText.equals(oldText))
             return;
-        utils.log(eGroup+";"+eWho, eText);
+        utils.log(eGroup+";"+eWho, isPhoneBusy +" "+eText);
         if (isInTable(eGroup, kakaoIgnores) || isInTable(eWho, kakaoPersons))
             return;
 
@@ -282,17 +282,18 @@ public class NotificationListener extends NotificationListenerService {
 
     private void logThenSpeech(String tag, String text, Integer... txtLen) {
         String filename = tag + ".txt";
-        utils.append2file(filename, text);
+        utils.append2file(filename, ((isPhoneBusy)? "폰 비지 ":" ")+ text);
         speechText(text, (txtLen.length > 0) ? txtLen[0] :200);
     }
 
     private void speechText(String text, int i) {
         if (text2Speech == null) {
-//                utils.log(logID, "tts is null, reCreated");
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
         }
-        if (isPhoneIdle && (isHeadphonesPlugged() || isRingerON())) {
+        if (isPhoneBusy)
+            return;
+        if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";
             text2Speech.speak("잠시만요. " + text);

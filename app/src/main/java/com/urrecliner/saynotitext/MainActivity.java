@@ -28,15 +28,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.telephony.TelephonyManager.CALL_STATE_RINGING;
-import static com.urrecliner.saynotitext.Vars.Booted;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
-import static com.urrecliner.saynotitext.Vars.isPhoneIdle;
+import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.utils;
-import static java.nio.charset.StandardCharsets.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,9 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar mSeekBarSpeed;
     private TextView mPitchView;
     private TextView mSpeedView;
-    private String logID = "Main";
-    private TextView [] tableViews = null;
-    TelephonyManager manager;
+    TelephonyManager phoneManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,24 +52,25 @@ public class MainActivity extends AppCompatActivity {
         askPermission();
         utils = new Utils();
         mContext = this;
-        utils.log(logID,"Started");
+        utils.log("Main","Started");
 
         if (!isNotificationAllowed()) {
             utils.customToast("Allow permission on Android notification");
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
-        Intent intent = getIntent();
-        Booted = intent.hasExtra("boot");
+        text2Speech = new Text2Speech();
+        text2Speech.initiateTTS(getApplicationContext());
 
         sharePrefer = getApplicationContext().getSharedPreferences("sayText", MODE_PRIVATE);
         ActionBar ab = getSupportActionBar() ;
 
-        ab.setIcon(R.mipmap.icon_launcher) ;
-        ab.setDisplayUseLogoEnabled(true) ;
-        ab.setDisplayShowHomeEnabled(true) ;
+        assert ab != null;
+        ab.setIcon(R.mipmap.icon_launcher);
+        ab.setDisplayUseLogoEnabled(true);
+        ab.setDisplayShowHomeEnabled(true);
 
-        DecimalFormat df=new DecimalFormat("0.0");
+        DecimalFormat df = new DecimalFormat("0.0");
         int pitch = sharePrefer.getInt("pitch", 70);
         mSeekBarPitch = findViewById(R.id.seek_bar_pitch);
         mSeekBarPitch.setProgress(pitch);
@@ -90,33 +87,19 @@ public class MainActivity extends AppCompatActivity {
         setSeekBarSpeed();
         readOptionTables = new ReadOptionTables();
         prepareTable();
+        utils.readyAudioManager(getApplicationContext());
         text2Speech = new Text2Speech();
         text2Speech.initiateTTS(getApplicationContext());
         text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
         text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
-        utils.readyAudioManager(getApplicationContext());
 
-//        if (Booted) {
-//            Booted = false;
-//            Intent i = new Intent(mContext, MainActivity.class);
-//            i.addCategory("android.intent.category.HOME");
-//            i.setFlags(Intent.FLAG_FROM_BACKGROUND);
-//            startActivity(i);
-//            finish();
-//        }
-//        else {
-            new Timer().schedule(new TimerTask() {
-                public void run () {
-                    Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
-                    updateIntent.putExtra("isUpdate", true);
-                    startService(updateIntent);
-                }
-            }, 100);
-//        }
-        tableViews = new TextView [] {findViewById(R.id.btn_kakaoIgnores), findViewById(R.id.btn_kakaoPersons),
-                findViewById(R.id.btn_packageIgnores), findViewById(R.id.btn_packageTables),  findViewById(R.id.btn_kakaoAlert),
-                findViewById(R.id.btn_smsIgnores), findViewById(R.id.btn_systemIgnores),
-                findViewById(R.id.btn_textIgnores), findViewById(R.id.btn_textSpeak)};
+        new Timer().schedule(new TimerTask() {
+            public void run () {
+                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
+                updateIntent.putExtra("isUpdate", true);
+                startService(updateIntent);
+            }
+        }, 100);
         ready_Telephony();
     }
 
@@ -180,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void ready_Telephony() {
-        manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        manager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        phoneManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        phoneManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     public PhoneStateListener phoneStateListener = new PhoneStateListener()
@@ -189,30 +172,37 @@ public class MainActivity extends AppCompatActivity {
         public void onCallStateChanged(int state, String callNumber)
         {
 
+            utils.log("Phone State", "state is "+state+" ///// "+callNumber);
             switch (state) {
                 case CALL_STATE_RINGING:
-                    isPhoneIdle = false;
-                    Toast.makeText(mContext, "Phone CALL_STATE_RINGING", Toast.LENGTH_LONG).show();
-                    utils.log("^phone^"+callNumber,"CALL_STATE_RINGING");
+                    isPhoneBusy = true;
+                    Toast.makeText(mContext, "\n\n\n\nCALL_STATE_OFFHOOK\n\n\n\nCALL_STATE_OFFHOOK\\n\n\n\n", Toast.LENGTH_LONG).show();
+                    utils.log("^phone^ "+callNumber,"RINGING RINGING RINGING ["+callNumber+"]");
                     text2Speech.speak("폰 상태 변화 : 전화 울림");
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
-                    isPhoneIdle = false;
-                    Toast.makeText(mContext, "Phone CALL_STATE_OFFHOOK", Toast.LENGTH_LONG).show();
-                    utils.log("^phone^"+callNumber,"CALL_STATE_OFFHOOK");
+                    isPhoneBusy = true;
+                    Toast.makeText(mContext, "\n\n\n\nCALL_STATE_OFFHOOK\n\n\n\nCALL_STATE_OFFHOOK\n\n\n\n", Toast.LENGTH_LONG).show();
+                    utils.log("^phone^ ["+callNumber+"]"," OFFHOOK OFFHOOK OFFHOOK OFFHOOK ["+callNumber+"]");
                     text2Speech.speak("폰 상태 변화 : 전화 걸기");
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     Toast.makeText(mContext, "CALL_STATE_IDLE", Toast.LENGTH_LONG).show();
-                    utils.log("^^phone^"+callNumber,"Phone CALL_STATE_IDLE");
+                    utils.log("^^phone^ ["+callNumber+"]","Phone CALL_STATE_IDLE ["+callNumber+"]");
                     text2Speech.speak("폰 상태 변화 : 사용 안함");
-                    isPhoneIdle = true;
+                    isPhoneBusy = false;
                     break;
                 default:
-                    utils.log("^^phone^"+callNumber,"Phone STATE UNKNOWN "+state);
+                    utils.log("^^phone^ ["+callNumber+"]","--------///----- Phone STATE UNKNOWN ------------"+state);
                     text2Speech.speak("폰 상태 변화 : 상태 모름 모름 "+state);
-                    isPhoneIdle = true;
+                    isPhoneBusy = false;
             }
+//            if (callNumber != null && !callNumber.equals("")) {
+//                Toast.makeText(mContext, "CALL NUMBER "+"["+callNumber+"]", Toast.LENGTH_LONG).show();
+//                utils.log("^phone^", "call number found "+"["+callNumber+"]");
+//                isPhoneBusy = true;
+//            }
+
             super.onCallStateChanged(state, callNumber);
         }
     };

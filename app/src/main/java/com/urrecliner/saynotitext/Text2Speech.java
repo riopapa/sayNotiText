@@ -41,11 +41,6 @@ class Text2Speech {
                 }
             }
         });
-        if (ttsPitch == 0f) {
-            ttsPitch = 1.2f;
-            ttsSpeed = 1.4f;
-//            utils.append2file(logFile, "pitch, speed ZERO ");
-        }
         readyAudioTTS();
     }
 
@@ -120,15 +115,11 @@ class Text2Speech {
     }
 
     void readyAudioTTS() {
-        utils.readyAudioManager(mContext);
-        if (ttsPitch == 0f) {
-            ttsPitch = 1.2f;
-            ttsSpeed = 1.4f;
-        }
-        if (mTTS == null) {
-            utils.log(logID, "$$ mTTS NULL ");
-            initiateTTS(mContext);
-        }
+//        utils.readyAudioManager(mContext);
+//        if (mTTS == null) {
+//            utils.log(logID, "$$ mTTS NULL ");
+//            initiateTTS(mContext);
+//        }
         mTTS.setPitch(ttsPitch);
         mTTS.setSpeechRate(ttsSpeed);
     }

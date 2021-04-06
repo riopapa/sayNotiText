@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
 
-import static com.urrecliner.saynotitext.Vars.Booted;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 public class BootReceiver extends BroadcastReceiver {
@@ -34,7 +33,6 @@ public class BootReceiver extends BroadcastReceiver {
             }
         }
         utils.log("outgoing action="+action,  " statestr=" + stateStr + " state=" + state + " number=" + number);
-        Booted = true;
 
         Intent i = new Intent(context, MainActivity.class);
         context.startActivity(i);
