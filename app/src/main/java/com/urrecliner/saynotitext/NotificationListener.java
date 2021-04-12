@@ -44,6 +44,7 @@ public class NotificationListener extends NotificationListenerService {
     final String SM_SMS = "sms";
     final String KK_KAKAO = "kk";
     final String AN_ANDROID = "an";
+    final String NAH_MOO = "nh";
     final String TO_TEXT_ONLY = "to";
     final String DELIMITER = " ~ ";
     private long lastTime = 0;
@@ -147,6 +148,9 @@ public class NotificationListener extends NotificationListenerService {
             case AN_ANDROID :
                 sayAndroid();
                 break;
+            case NAH_MOO :
+                sayNHStock();
+                break;
             default :
                 if (!isInTable(eWho, systemIgnores))
                     logThenSpeech("unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
@@ -207,6 +211,11 @@ public class NotificationListener extends NotificationListenerService {
                 || (isInTable(eWho, systemIgnores) || isInTable(eText, systemIgnores)))
             return;
         logThenSpeech(packageFullName, " Android Title [" + eWho + "], Text =" + eText);
+    }
+
+    private void sayNHStock() {
+        logThenSpeech(packageNickName, eWho + "_로 부터. " + eText);
+        append2App("/"+ eWho + ".txt", eWho, eText);
     }
 
     private void sayTitleText() {

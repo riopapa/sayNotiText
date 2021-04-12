@@ -158,8 +158,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void prepareTable() {
+        Toast.makeText(getApplicationContext(),"loading tables",Toast.LENGTH_SHORT).show();
         readOptionTables.read();
-        Toast.makeText(getApplicationContext(),"Reading param files",Toast.LENGTH_SHORT).show();
     }
 
     void ready_Telephony() {
@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         phoneManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
+    String savedNumber = "x";
     public PhoneStateListener phoneStateListener = new PhoneStateListener()
     {
         public void onCallStateChanged(int state, String callNumber)
@@ -176,20 +177,25 @@ public class MainActivity extends AppCompatActivity {
             switch (state) {
                 case CALL_STATE_RINGING:
                     isPhoneBusy = true;
-                    Toast.makeText(mContext, "\n\n\n\nCALL_STATE_OFFHOOK\n\n\n\nCALL_STATE_OFFHOOK\\n\n\n\n", Toast.LENGTH_LONG).show();
-                    utils.log("^phone^ "+callNumber,"RINGING RINGING RINGING ["+callNumber+"]");
-                    text2Speech.speak("폰 상태 변화 : 전화 울림");
+                    Toast.makeText(mContext, "\nRINGING\n\nRINGING\n", Toast.LENGTH_LONG).show();
+                    utils.log("^phone^ "+callNumber,"RINGING RINGING ["+callNumber+"]");
+                    if (callNumber.length()> 2)
+                        savedNumber = callNumber;
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     isPhoneBusy = true;
-                    Toast.makeText(mContext, "\n\n\n\nCALL_STATE_OFFHOOK\n\n\n\nCALL_STATE_OFFHOOK\n\n\n\n", Toast.LENGTH_LONG).show();
-                    utils.log("^phone^ ["+callNumber+"]"," OFFHOOK OFFHOOK OFFHOOK OFFHOOK ["+callNumber+"]");
-                    text2Speech.speak("폰 상태 변화 : 전화 걸기");
+                    Toast.makeText(mContext, "\nOFFHOOK\n\nOFFHOOK\n", Toast.LENGTH_LONG).show();
+                    utils.log("^phone^ ["+callNumber+"]"," OFFHOOK OFFHOOK ["+callNumber+"]");
+                    if (callNumber.length()> 2)
+                        savedNumber = callNumber;
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     Toast.makeText(mContext, "CALL_STATE_IDLE", Toast.LENGTH_LONG).show();
-                    utils.log("^^phone^ ["+callNumber+"]","Phone CALL_STATE_IDLE ["+callNumber+"]");
-                    text2Speech.speak("폰 상태 변화 : 사용 안함");
+                    utils.log("^^phone^ ["+callNumber+"]","Phone IDLE ["+callNumber+"]");
+                    if (callNumber.equals(savedNumber)) {
+                        savedNumber = "x";
+                        isPhoneBusy = false;
+                    }
                     isPhoneBusy = false;
                     break;
                 default:
@@ -197,11 +203,6 @@ public class MainActivity extends AppCompatActivity {
                     text2Speech.speak("폰 상태 변화 : 상태 모름 모름 "+state);
                     isPhoneBusy = false;
             }
-//            if (callNumber != null && !callNumber.equals("")) {
-//                Toast.makeText(mContext, "CALL NUMBER "+"["+callNumber+"]", Toast.LENGTH_LONG).show();
-//                utils.log("^phone^", "call number found "+"["+callNumber+"]");
-//                isPhoneBusy = true;
-//            }
 
             super.onCallStateChanged(state, callNumber);
         }
