@@ -2,7 +2,6 @@ package com.urrecliner.saynotitext;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,12 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.urrecliner.saynotitext.Vars.linePos;
-import static com.urrecliner.saynotitext.Vars.oneLines;
+import static com.urrecliner.saynotitext.Vars.alertOneLines;
 
 public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> {
 
     @Override
-    public int getItemCount() { return oneLines.size(); }
+    public int getItemCount() { return alertOneLines.size(); }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -44,23 +43,23 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final OneLine oneLine = oneLines.get(position);
-        holder.tSelect.setText(oneLine.isSelect() ? "☑":"☐");
-        holder.tGroup.setText(oneLine.getGroup());
-        holder.tWho.setText(oneLine.getWho());
-        holder.tKey1.setText(oneLine.getKey1());
-        holder.tKey2.setText(oneLine.getKey2());
-        holder.tTalk.setText(oneLine.getTalk());
-        holder.tComment.setText(oneLine.getComment());
+        final AlertOneLine alertOneLine = alertOneLines.get(position);
+        holder.tSelect.setText(alertOneLine.isSelect() ? "☑":"☐");
+        holder.tGroup.setText(alertOneLine.getGroup());
+        holder.tWho.setText(alertOneLine.getWho());
+        holder.tKey1.setText(alertOneLine.getKey1());
+        holder.tKey2.setText(alertOneLine.getKey2());
+        holder.tTalk.setText(alertOneLine.getTalk());
+        holder.tComment.setText(alertOneLine.getComment());
 
         holder.tSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 linePos = holder.getAdapterPosition();
-                OneLine oneLine1 = oneLines.get(linePos);
-                boolean select = !oneLine1.isSelect();
-                oneLine1.setSelect(select);
-                oneLines.set(linePos, oneLine1);
+                AlertOneLine alertOneLine1 = alertOneLines.get(linePos);
+                boolean select = !alertOneLine1.isSelect();
+                alertOneLine1.setSelect(select);
+                alertOneLines.set(linePos, alertOneLine1);
                 holder.tSelect.setText((select) ? "☑":"☐");
             }
         });
@@ -76,8 +75,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
                 if (sv.equals(s.toString()))
                     return;
                 linePos = holder.getAdapterPosition();
-                OneLine oneLine = oneLines.get(linePos); oneLine.setGroup(s.toString().trim());
-                oneLines.set(linePos, oneLine);
+                AlertOneLine alertOneLine = alertOneLines.get(linePos); alertOneLine.setGroup(s.toString().trim());
+                alertOneLines.set(linePos, alertOneLine);
             }
         });
 
@@ -92,8 +91,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
                 if (sv.equals(s.toString()))
                     return;
                 linePos = holder.getAdapterPosition();
-                OneLine oneLine = oneLines.get(linePos); oneLine.setWho(s.toString().trim());
-                oneLines.set(linePos, oneLine);
+                AlertOneLine alertOneLine = alertOneLines.get(linePos); alertOneLine.setWho(s.toString().trim());
+                alertOneLines.set(linePos, alertOneLine);
             }
         });
 
@@ -108,8 +107,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
                 if (sv.equals(s.toString()))
                     return;
                 linePos = holder.getAdapterPosition();
-                OneLine oneLine = oneLines.get(linePos); oneLine.setKey1(s.toString().trim());
-                oneLines.set(linePos, oneLine);
+                AlertOneLine alertOneLine = alertOneLines.get(linePos); alertOneLine.setKey1(s.toString().trim());
+                alertOneLines.set(linePos, alertOneLine);
             }
         });
 
@@ -124,8 +123,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
                 if (sv.equals(s.toString()))
                     return;
                 linePos = holder.getAdapterPosition();
-                OneLine oneLine = oneLines.get(linePos); oneLine.setKey2(s.toString().trim());
-                oneLines.set(linePos, oneLine);
+                AlertOneLine alertOneLine = alertOneLines.get(linePos); alertOneLine.setKey2(s.toString().trim());
+                alertOneLines.set(linePos, alertOneLine);
             }
         });
 
@@ -140,8 +139,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
                 if (sv.equals(s.toString()))
                     return;
                 linePos = holder.getAdapterPosition();
-                OneLine oneLine = oneLines.get(linePos); oneLine.setTalk(s.toString().trim());
-                oneLines.set(linePos, oneLine);
+                AlertOneLine alertOneLine = alertOneLines.get(linePos); alertOneLine.setTalk(s.toString().trim());
+                alertOneLines.set(linePos, alertOneLine);
             }
         });
 
@@ -156,8 +155,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
                 if (sv.equals(s.toString()))
                     return;
                 linePos = holder.getAdapterPosition();
-                OneLine oneLine = oneLines.get(linePos); oneLine.setComment(s.toString().trim());
-                oneLines.set(linePos, oneLine);
+                AlertOneLine alertOneLine = alertOneLines.get(linePos); alertOneLine.setComment(s.toString().trim());
+                alertOneLines.set(linePos, alertOneLine);
             }
         });
     }

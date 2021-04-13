@@ -68,7 +68,7 @@ public class NotificationListener extends NotificationListenerService {
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
         }
-        checkTables();
+        readyTables();
 
         packageFullName = sbn.getPackageName().toLowerCase();
         if (packageFullName.equals("") || isInTable(packageFullName, packageIgnores)) {
@@ -149,7 +149,7 @@ public class NotificationListener extends NotificationListenerService {
                 sayAndroid();
                 break;
             case NAH_MOO :
-                sayNHStock();
+                sayNHStock("NH ");
                 break;
             default :
                 if (!isInTable(eWho, systemIgnores))
@@ -158,8 +158,9 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    private void checkTables() {
+    private void readyTables() {
         if (packageIgnores == null) {
+            utils.logE("table","** not READY **");
             readOptionTables = new ReadOptionTables();
             readOptionTables.read();
         }
@@ -183,7 +184,7 @@ public class NotificationListener extends NotificationListenerService {
     private void groupTalk() {
         if (eText.equals(oldText))
             return;
-        utils.log(eGroup+";"+eWho, isPhoneBusy +" "+eText);
+        utils.log(eGroup+";"+eWho, eText);
         if (isInTable(eGroup, kakaoIgnores) || isInTable(eWho, kakaoPersons))
             return;
 
@@ -194,6 +195,7 @@ public class NotificationListener extends NotificationListenerService {
                         String s = (eText.length()>100) ? eText.substring(0, 99): eText;
                         append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup +":"+ eWho, s);
                         append2App("/stocks/"+ eGroup + ".txt",eGroup +":"+ eWho, s);
+                        append2App("/stocks/merged.txt",eGroup +":"+ eWho, s);
                         if (sayMessage || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
@@ -213,9 +215,9 @@ public class NotificationListener extends NotificationListenerService {
         logThenSpeech(packageFullName, " Android Title [" + eWho + "], Text =" + eText);
     }
 
-    private void sayNHStock() {
+    private void sayNHStock(String s) {
         logThenSpeech(packageNickName, eWho + "_로 부터. " + eText);
-        append2App("/"+ eWho + ".txt", eWho, eText);
+        append2App("/"+ eWho + ".txt", eWho, s + eText);
     }
 
     private void sayTitleText() {
@@ -230,9 +232,10 @@ public class NotificationListener extends NotificationListenerService {
     private void saySMS() {
         if (isOnlyPhoneNumber(eWho) || isInTable(eWho, smsIgnores) || isInTable(eText, textIgnores))
             return;
-
         eText = eText.replace("[Web발신]","");
         logThenSpeech(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
+        if (eWho.equals("NH증권"))
+            sayNHStock("SMS ");
     }
     
 //    private void dumpExtras(String eTitle, String Grp, String eText, String msgText){
@@ -253,7 +256,7 @@ public class NotificationListener extends NotificationListenerService {
             if (packageFullName.contains(packageIncludeNames[idx]))
                 return packageTypes[idx];
         }
-        return "noType";
+        return "notFnd";
     }
 
     private String getPackageNickName(String packageFullName){
@@ -261,7 +264,7 @@ public class NotificationListener extends NotificationListenerService {
             if (packageFullName.contains(packageIncludeNames[idx]))
                 return packageNickNames[idx];
         }
-        return "noNickName";
+        return "noNick";
     }
 
     private boolean isInTable(String text, String [] lists) {
@@ -292,16 +295,16 @@ public class NotificationListener extends NotificationListenerService {
     private void logThenSpeech(String tag, String text, Integer... txtLen) {
         String filename = tag + ".txt";
         utils.append2file(filename, ((isPhoneBusy)? "폰 비지 ":" ")+ text);
-        speechText(text, (txtLen.length > 0) ? txtLen[0] :200);
+        if (!isPhoneBusy)
+            speechText(text, (txtLen.length > 0) ? txtLen[0] :200);
     }
 
     private void speechText(String text, int i) {
         if (text2Speech == null) {
+            utils.logE("tts"," not READY ");
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
         }
-        if (isPhoneBusy)
-            return;
         if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";

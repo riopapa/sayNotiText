@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
         public void onCallStateChanged(int state, String callNumber)
         {
 
-            utils.log("Phone State", "state is "+state+" ///// "+callNumber);
             switch (state) {
                 case CALL_STATE_RINGING:
                     isPhoneBusy = true;
@@ -190,13 +189,12 @@ public class MainActivity extends AppCompatActivity {
                         savedNumber = callNumber;
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
-                    Toast.makeText(mContext, "CALL_STATE_IDLE", Toast.LENGTH_LONG).show();
-                    utils.log("^^phone^ ["+callNumber+"]","Phone IDLE ["+callNumber+"]");
+                    Toast.makeText(mContext, "CALL IDLE", Toast.LENGTH_LONG).show();
                     if (callNumber.equals(savedNumber)) {
                         savedNumber = "x";
                         isPhoneBusy = false;
                     }
-                    isPhoneBusy = false;
+                    utils.log("^^phone^ "+isPhoneBusy,isPhoneBusy+" Phone IDLE ["+callNumber+"]");
                     break;
                 default:
                     utils.log("^^phone^ ["+callNumber+"]","--------///----- Phone STATE UNKNOWN ------------"+state);

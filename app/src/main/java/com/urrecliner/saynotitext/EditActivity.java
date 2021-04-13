@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import static com.urrecliner.saynotitext.Vars.nowFileName;
-import static com.urrecliner.saynotitext.Vars.oneLines;
+import static com.urrecliner.saynotitext.Vars.alertOneLines;
 import static com.urrecliner.saynotitext.Vars.linePos;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.tableDirectory;
@@ -66,7 +66,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     void build_OneLine(String [] lines) {
-        oneLines = new ArrayList<>();
+        alertOneLines = new ArrayList<>();
         for (int idx = 0; idx < lines.length; idx++) {
             String lGroup, lWho, lKey1, lKey2, lTalk, lComment;
             lines[idx] = lines[idx].replace("\\t","");
@@ -78,7 +78,7 @@ public class EditActivity extends AppCompatActivity {
             lKey1 = strings[2].trim();
             lKey2 = strings[3].trim();
             lTalk = (strings.length > 4) ? strings[4].trim(): "";
-            oneLines.add(new OneLine(false, lGroup, lWho, lKey1, lKey2, lTalk, lComment));
+            alertOneLines.add(new AlertOneLine(false, lGroup, lWho, lKey1, lKey2, lTalk, lComment));
         }
         recyclerView = findViewById(R.id.lineList);
         alertAdapter = new AlertAdapter();
@@ -172,20 +172,20 @@ public class EditActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.action_save) {
             if (isAlertFile) {
-                Collections.sort(oneLines, new Comparator<OneLine>(){       // object Sort
-                    public int compare(OneLine obj1, OneLine obj2) {
+                Collections.sort(alertOneLines, new Comparator<AlertOneLine>(){       // object Sort
+                    public int compare(AlertOneLine obj1, AlertOneLine obj2) {
                         return (obj1.getGroup()+obj1.getWho()).compareTo((obj2.getGroup()+obj2.getWho()));
                     }
                 });
                 StringBuilder s = new StringBuilder();
-                for (int i = 0; i < oneLines.size(); i++) {
-                    OneLine oneLine = oneLines.get(i);
-                    s.append(strPad(oneLine.getGroup(), 18)).append("^");
-                    s.append(strPad(oneLine.getWho(), 32)).append("^");
-                    s.append(strPad(oneLine.getKey1(), 12)).append("^");
-                    s.append(strPad(oneLine.getKey2(), 12)).append("^");
-                    s.append(strPad(oneLine.getTalk(), 12)).append(";");
-                    s.append(oneLine.getComment()).append("\n");
+                for (int i = 0; i < alertOneLines.size(); i++) {
+                    AlertOneLine alertOneLine = alertOneLines.get(i);
+                    s.append(strPad(alertOneLine.getGroup(), 18)).append("^");
+                    s.append(strPad(alertOneLine.getWho(), 32)).append("^");
+                    s.append(strPad(alertOneLine.getKey1(), 12)).append("^");
+                    s.append(strPad(alertOneLine.getKey2(), 12)).append("^");
+                    s.append(strPad(alertOneLine.getTalk(), 12)).append(";");
+                    s.append(alertOneLine.getComment()).append("\n");
                 }
                 write_textFile(s.toString());
             } else {
@@ -198,10 +198,10 @@ public class EditActivity extends AppCompatActivity {
             finish();
         } else if (item.getItemId() == R.id.action_dup) {
             if (isAlertFile) {
-                OneLine oneLine = oneLines.get(linePos);
-                oneLine.setSelect(false);
-                oneLines.set(linePos, oneLine);
-                oneLines.add(linePos, oneLine);
+                AlertOneLine alertOneLine = alertOneLines.get(linePos);
+                alertOneLine.setSelect(false);
+                alertOneLines.set(linePos, alertOneLine);
+                alertOneLines.add(linePos, alertOneLine);
                 linePos++;
                 alertAdapter.notifyDataSetChanged();
             } else
@@ -211,11 +211,11 @@ public class EditActivity extends AppCompatActivity {
                 textInsert_tab();
         } else if (item.getItemId() == R.id.action_remove) {
             if (isAlertFile) {
-                OneLine oneLine = oneLines.get(linePos-1);
-                if (oneLine.isSelect())
-                    oneLines.remove(linePos-1);
+                AlertOneLine alertOneLine = alertOneLines.get(linePos-1);
+                if (alertOneLine.isSelect())
+                    alertOneLines.remove(linePos-1);
                 else
-                    oneLines.remove(linePos);
+                    alertOneLines.remove(linePos);
                 alertAdapter.notifyDataSetChanged();
             } else
                 textRemove_line();
