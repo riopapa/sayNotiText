@@ -216,8 +216,8 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayNHStock(String s) {
-        logThenSpeech(packageNickName, eWho + "_로 부터. " + eText);
-        append2App("/"+ eWho + ".txt", eWho, s + eText);
+        logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText);
+        append2App("/_"+ packageNickName + ".txt", eWho, s + eText);
     }
 
     private void sayTitleText() {
@@ -234,8 +234,6 @@ public class NotificationListener extends NotificationListenerService {
             return;
         eText = eText.replace("[Web발신]","");
         logThenSpeech(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
-        if (eWho.equals("NH증권"))
-            sayNHStock("SMS ");
     }
     
 //    private void dumpExtras(String eTitle, String Grp, String eText, String msgText){
@@ -345,7 +343,6 @@ public class NotificationListener extends NotificationListenerService {
         FileWriter fw = null;
         try {
             File file = new File(Environment.getExternalStorageDirectory(),"download/"+filename);
-//            File file = new File (getAbsoluteFile("download",getApplicationContext()), filename);
             if (!file.exists() && !file.createNewFile())
                 return;
             String outText = groupWho + DELIMITER + DELIMITER + hourMinFormat.format(new Date())

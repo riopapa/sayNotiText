@@ -88,11 +88,9 @@ public class NotificationService extends Service {
     private void createNotification() {
 
         if (null == mNotificationChannel) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 mNotificationChannel = new NotificationChannel("default","default", NotificationManager.IMPORTANCE_DEFAULT);
                 mNotificationManager.createNotificationChannel(mNotificationChannel);
-//            }
         }
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")
