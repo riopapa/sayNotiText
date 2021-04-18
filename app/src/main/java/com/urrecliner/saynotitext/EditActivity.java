@@ -2,6 +2,7 @@ package com.urrecliner.saynotitext;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Selection;
 import android.view.Menu;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.BufferedWriter;
@@ -43,6 +45,7 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         isAlertFile = nowFileName.equals("kakaoAlerts");
         isPackageTable = nowFileName.equals("packageTables");
         removeView = findViewById(R.id.action_remove);
@@ -154,18 +157,18 @@ public class EditActivity extends AppCompatActivity {
         int padR = size - chars - padL;
         return blank.substring(0, padL)+ s + blank.substring(0, padR);
     }
-
-    private String blankPad(String s, int size) {
-        int chars = 0;
-        s = s.trim();
-        for (int i = 0; i < s.length(); i++) {
-            String bite = s.substring(i,i+1);
-            chars += (bite.compareTo(del)>0)? 2:1;
-        }
-        if (chars >= size)
-            return s;
-        return s+blank.substring(0, size-chars);
-    }
+//
+//    private String blankPad(String s, int size) {
+//        int chars = 0;
+//        s = s.trim();
+//        for (int i = 0; i < s.length(); i++) {
+//            String bite = s.substring(i,i+1);
+//            chars += (bite.compareTo(del)>0)? 2:1;
+//        }
+//        if (chars >= size)
+//            return s;
+//        return s+blank.substring(0, size-chars);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -200,10 +203,17 @@ public class EditActivity extends AppCompatActivity {
             if (isAlertFile) {
                 AlertOneLine alertOneLine = alertOneLines.get(linePos);
                 alertOneLine.setSelect(false);
-                alertOneLines.set(linePos, alertOneLine);
-                alertOneLines.add(linePos, alertOneLine);
+//                alertOneLines.set(linePos, alertOneLine);
+//                alertOneLines.add(linePos, alertOneLine);
+                alertOneLines.add(alertOneLine);
                 linePos++;
                 alertAdapter.notifyDataSetChanged();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.scrollToPosition(alertOneLines.size()-1);
+                    }
+                }, 100);
             } else
                 textDuplicate_line();
         } else if (item.getItemId() == R.id.action_tab) {

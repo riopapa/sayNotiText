@@ -23,15 +23,12 @@ import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.tableDirectory;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
-import static com.urrecliner.saynotitext.Vars.textSpeaks;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 class ReadOptionTables {
-    private String logID = "prepareLists";
 
     void read () {
 
-        utils.log(logID, "read()");
         packageTables =  readOptionFile("packageTables");
         packageNickNames = new String[packageTables.length];
         packageTypes = new String[packageTables.length];
@@ -56,7 +53,6 @@ class ReadOptionTables {
         smsIgnores =  readOptionFile("smsIgnores");
         systemIgnores =  readOptionFile("systemIgnores");
         textIgnores =  readOptionFile("textIgnores");
-        textSpeaks =  readOptionFile("textSpeaks");
 
         // 카카오 단톡방에서 특별히 얘기 되는 자만
         kakaoAGroup = new String[kakaoAlerts.length];   // 단톡방 명

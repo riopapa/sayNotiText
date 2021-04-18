@@ -206,8 +206,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    String[] editTables = {"textIgnores", "textSpeaks",
-                            "kakaoIgnores","kakaoPersons", "kakaoAlerts",
+    String[] editTables = { "textIgnores", "kakaoIgnores",
+                            "kakaoPersons", "kakaoAlerts",
                             "packageIgnores","packageTables",
                             "smsIgnores", "systemIgnores"};
     public void edit_table(View v) {

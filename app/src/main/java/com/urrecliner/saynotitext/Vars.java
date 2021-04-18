@@ -30,7 +30,6 @@ class Vars {
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
     static String[] textIgnores = null;
-    static String[] textSpeaks = null;
     static String nowFileName;
 
     static SharedPreferences sharePrefer;

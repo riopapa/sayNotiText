@@ -35,7 +35,6 @@ import static com.urrecliner.saynotitext.Vars.sayMessage;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
-import static com.urrecliner.saynotitext.Vars.textSpeaks;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 public class NotificationListener extends NotificationListenerService {
@@ -143,7 +142,7 @@ public class NotificationListener extends NotificationListenerService {
                 sayTitleText();
                 break;
             case TO_TEXT_ONLY :
-                logThenSpeech(packageNickName,  packageNickName + " 로 부터 " + eText);
+                logThenSpeech(packageNickName, packageNickName,  packageNickName + " 로 부터 " + eText);
                 break;
             case AN_ANDROID :
                 sayAndroid();
@@ -153,7 +152,7 @@ public class NotificationListener extends NotificationListenerService {
                 break;
             default :
                 if (!isInTable(eWho, systemIgnores))
-                    logThenSpeech("unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
+                    logThenSpeech("잠시만","unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
                 break;
         }
     }
@@ -169,14 +168,11 @@ public class NotificationListener extends NotificationListenerService {
     private void sayKaTalk() {
         if (eText == null)
             return;
-        if (shouldSpeak(eText, textSpeaks) || shouldSpeak(eWho, textSpeaks) || shouldSpeak(eGroup, textSpeaks)) {
-            logThenSpeech(eGroup + "_" +packageNickName , "주의 주의 [" + eWho + "] 님이. 단톡방 ["+ eGroup + "]에서 " + eText);
-        }
-        else if (isInTable(eWho, kakaoIgnores) || isInTable(eText, kakaoPersons)) {
+        if (isInTable(eWho, kakaoIgnores) || isInTable(eText, kakaoPersons)) {
             return;
         }
         if (eGroup == null)
-            logThenSpeech( eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
+            logThenSpeech( packageNickName, eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
         else
             groupTalk();
     }
@@ -199,24 +195,24 @@ public class NotificationListener extends NotificationListenerService {
                         if (sayMessage || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
-                            speechText(s, 50);
+                            speechText("카톡", s, 50);
                         }
                     }
                     oldText = eText;
                 }
         } else
-             logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
+             logThenSpeech("카톡", eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
     }
 
     private void sayAndroid() {
         if (eWho == null || eText == null || eText.equals("")
                 || (isInTable(eWho, systemIgnores) || isInTable(eText, systemIgnores)))
             return;
-        logThenSpeech(packageFullName, " Android Title [" + eWho + "], Text =" + eText);
+        logThenSpeech(packageNickName, packageFullName, " Android Title [" + eWho + "], Text =" + eText);
     }
 
     private void sayNHStock(String s) {
-        logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText);
+        logThenSpeech(packageNickName, packageNickName, eWho + "_로 연락옴. " + eText);
         append2App("/_"+ packageNickName + ".txt", eWho, s + eText);
     }
 
@@ -226,14 +222,14 @@ public class NotificationListener extends NotificationListenerService {
         if (isInTable(eWho,systemIgnores) || isInTable(eText, textIgnores) || isInTable(eWho, textIgnores))
             return;
         String groupName = (eGroup == null) ? " " : "[" + eGroup+" 팀]의 ";
-        logThenSpeech(packageNickName,"["+packageNickName + "] 에서 " + groupName + eWho + "_로 부터. " + eText);
+        logThenSpeech(packageNickName, packageNickName,"["+packageNickName + "] 에서 " + groupName + eWho + "_로 부터. " + eText);
     }
 
     private void saySMS() {
         if (isOnlyPhoneNumber(eWho) || isInTable(eWho, smsIgnores) || isInTable(eText, textIgnores))
             return;
         eText = eText.replace("[Web발신]","");
-        logThenSpeech(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
+        logThenSpeech(packageNickName, eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String Grp, String eText, String msgText){
@@ -290,14 +286,14 @@ public class NotificationListener extends NotificationListenerService {
         return false;
     }
 
-    private void logThenSpeech(String tag, String text, Integer... txtLen) {
+    private void logThenSpeech(String prefix, String tag, String text, Integer... txtLen) {
         String filename = tag + ".txt";
         utils.append2file(filename, ((isPhoneBusy)? "폰 비지 ":" ")+ text);
         if (!isPhoneBusy)
-            speechText(text, (txtLen.length > 0) ? txtLen[0] :200);
+            speechText(prefix, text, (txtLen.length > 0) ? txtLen[0] :200);
     }
 
-    private void speechText(String text, int i) {
+    private void speechText(String prefix, String text, int i) {
         if (text2Speech == null) {
             utils.logE("tts"," not READY ");
             text2Speech = new Text2Speech();
@@ -306,7 +302,7 @@ public class NotificationListener extends NotificationListenerService {
         if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";
-            text2Speech.speak("잠시만요. " + text);
+            text2Speech.speak(prefix+" " + text);
         }
     }
 
