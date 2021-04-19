@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         text2Speech.initiateTTS(getApplicationContext());
 
         sharePrefer = getApplicationContext().getSharedPreferences("sayText", MODE_PRIVATE);
-        ActionBar ab = getSupportActionBar() ;
 
+        ActionBar ab = getSupportActionBar() ;
         assert ab != null;
         ab.setIcon(R.mipmap.icon_launcher);
         ab.setDisplayUseLogoEnabled(true);
@@ -193,7 +193,8 @@ public class MainActivity extends AppCompatActivity {
                     if (callNumber.equals(savedNumber)) {
                         savedNumber = "x";
                         isPhoneBusy = false;
-                    }
+                    } else if (callNumber.length() > 2)
+                        savedNumber = callNumber;
                     utils.log("^^phone^ "+isPhoneBusy,isPhoneBusy+" Phone IDLE ["+callNumber+"]");
                     break;
                 default:

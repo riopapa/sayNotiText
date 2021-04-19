@@ -121,15 +121,9 @@ public class NotificationListener extends NotificationListenerService {
         packageType = getPackageType(packageFullName);
         packageNickName = getPackageNickName(packageFullName);
 
-//        String msgText;
-//        try {
-//            msgText = extras.getString(Notification.EXTRA_MESSAGES);
-//        } catch (Exception e) {
-//            msgText = null;
-//        }
-
 //        dumpExtras(eTitle, Grp, eText, msgText);
-//        utils.log(logID, "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+
+
+//        utils.log("log", "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+
 //                ", who "+eWho+", text "+((eText.length()> 50)? eText.substring(0,49):eText));
         switch (packageType) {
             case KK_KAKAO :
@@ -142,17 +136,17 @@ public class NotificationListener extends NotificationListenerService {
                 sayTitleText();
                 break;
             case TO_TEXT_ONLY :
-                logThenSpeech(packageNickName, packageNickName,  packageNickName + " 로 부터 " + eText);
+                logThenSpeech(packageNickName,  packageNickName + " 로 부터 " + eText);
                 break;
             case AN_ANDROID :
                 sayAndroid();
                 break;
             case NAH_MOO :
-                sayNHStock("NH ");
+                sayNHStock();
                 break;
             default :
                 if (!isInTable(eWho, systemIgnores))
-                    logThenSpeech("잠시만","unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
+                    logThenSpeech("unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
                 break;
         }
     }
@@ -172,7 +166,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         if (eGroup == null)
-            logThenSpeech( packageNickName, eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
+            logThenSpeech( eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
         else
             groupTalk();
     }
@@ -195,25 +189,25 @@ public class NotificationListener extends NotificationListenerService {
                         if (sayMessage || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
-                            speechText("카톡", s, 50);
+                            speechText(s, 50);
                         }
                     }
                     oldText = eText;
                 }
         } else
-             logThenSpeech("카톡", eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
+             logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
     }
 
     private void sayAndroid() {
         if (eWho == null || eText == null || eText.equals("")
                 || (isInTable(eWho, systemIgnores) || isInTable(eText, systemIgnores)))
             return;
-        logThenSpeech(packageNickName, packageFullName, " Android Title [" + eWho + "], Text =" + eText);
+        logThenSpeech(packageFullName, " Android Title [" + eWho + "], Text =" + eText);
     }
 
-    private void sayNHStock(String s) {
-        logThenSpeech(packageNickName, packageNickName, eWho + "_로 연락옴. " + eText);
-        append2App("/_"+ packageNickName + ".txt", eWho, s + eText);
+    private void sayNHStock() {
+        logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText);
+        append2App("/_"+ packageNickName + ".txt", eWho, eText);
     }
 
     private void sayTitleText() {
@@ -222,14 +216,14 @@ public class NotificationListener extends NotificationListenerService {
         if (isInTable(eWho,systemIgnores) || isInTable(eText, textIgnores) || isInTable(eWho, textIgnores))
             return;
         String groupName = (eGroup == null) ? " " : "[" + eGroup+" 팀]의 ";
-        logThenSpeech(packageNickName, packageNickName,"["+packageNickName + "] 에서 " + groupName + eWho + "_로 부터. " + eText);
+        logThenSpeech(packageNickName,"["+packageNickName + "] 에서 " + groupName + eWho + "_로 부터. " + eText);
     }
 
     private void saySMS() {
         if (isOnlyPhoneNumber(eWho) || isInTable(eWho, smsIgnores) || isInTable(eText, textIgnores))
             return;
         eText = eText.replace("[Web발신]","");
-        logThenSpeech(packageNickName, eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
+        logThenSpeech(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
     }
     
 //    private void dumpExtras(String eTitle, String Grp, String eText, String msgText){
@@ -277,23 +271,15 @@ public class NotificationListener extends NotificationListenerService {
         }
         return -1;
     }
-    private boolean shouldSpeak(String text, String [] speaks) {
-        if (text == null)
-            return false;
-        for (String s : speaks) {
-            if (text.contains(s)) return true;
-        }
-        return false;
-    }
 
-    private void logThenSpeech(String prefix, String tag, String text, Integer... txtLen) {
-        String filename = tag + ".txt";
-        utils.append2file(filename, ((isPhoneBusy)? "폰 비지 ":" ")+ text);
+//    private void logThenSpeech(String logFile, String text, Integer... txtLen) {
+    private void logThenSpeech(String logFile, String text) {
+        utils.append2file(logFile + ".txt", ((isPhoneBusy)? "폰 비지 ":" ")+ text);
         if (!isPhoneBusy)
-            speechText(prefix, text, (txtLen.length > 0) ? txtLen[0] :200);
+            speechText(text, 200);
     }
 
-    private void speechText(String prefix, String text, int i) {
+    private void speechText(String text, int i) {
         if (text2Speech == null) {
             utils.logE("tts"," not READY ");
             text2Speech = new Text2Speech();
@@ -302,7 +288,7 @@ public class NotificationListener extends NotificationListenerService {
         if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";
-            text2Speech.speak(prefix+" " + text);
+            text2Speech.speak("아 "+text);
         }
     }
 
