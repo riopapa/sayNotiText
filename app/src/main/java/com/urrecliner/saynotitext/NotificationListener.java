@@ -294,12 +294,6 @@ public class NotificationListener extends NotificationListenerService {
                 text = text.substring(0, i) + ". 등등등";
             utils.beepOnce(0);
             text2Speech.speak(text);
-//            final String fText = text;
-//            Handler mHandler = new Handler();
-//            mHandler.postDelayed(new Runnable()  {
-//                public void run() {
-//                }
-//            }, 200); // 0.5초후
         }
     }
 
