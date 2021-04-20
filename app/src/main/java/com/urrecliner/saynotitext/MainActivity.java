@@ -1,6 +1,7 @@
 package com.urrecliner.saynotitext;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.icu.text.DecimalFormat;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.telephony.PhoneStateListener;
@@ -22,6 +25,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.Timer;
@@ -29,6 +35,7 @@ import java.util.TimerTask;
 
 import static android.telephony.TelephonyManager.CALL_STATE_RINGING;
 import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saynotitext.Vars.mediaPlayer;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
 import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
@@ -85,13 +92,8 @@ public class MainActivity extends AppCompatActivity {
         mSpeedView = findViewById(R.id.bar_speed);
         mSpeedView.setText(df.format((float) speed / 50));
         setSeekBarSpeed();
-        readOptionTables = new ReadOptionTables();
         prepareTable();
-        utils.readyAudioManager(getApplicationContext());
-        text2Speech = new Text2Speech();
-        text2Speech.initiateTTS(getApplicationContext());
-        text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
-        text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
+        prepare_Speech();
 
         new Timer().schedule(new TimerTask() {
             public void run () {
@@ -100,7 +102,18 @@ public class MainActivity extends AppCompatActivity {
                 startService(updateIntent);
             }
         }, 100);
-        ready_Telephony();
+        prepare_Telephony();
+    }
+
+    private void prepare_Speech() {
+        utils.readyAudioManager(getApplicationContext());
+        text2Speech = new Text2Speech();
+        text2Speech.initiateTTS(getApplicationContext());
+        text2Speech.setPitch((float) mSeekBarPitch.getProgress() / 50);
+        text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
+
+        utils.beepsInitiate();
+        utils.beepOnce(0);
     }
 
     private void setSeekBarPitch() {
@@ -159,10 +172,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void prepareTable() {
         Toast.makeText(getApplicationContext(),"loading tables",Toast.LENGTH_SHORT).show();
+        readOptionTables = new ReadOptionTables();
         readOptionTables.read();
     }
 
-    void ready_Telephony() {
+    void prepare_Telephony() {
         phoneManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         phoneManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }

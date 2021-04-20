@@ -2,8 +2,11 @@ package com.urrecliner.saynotitext;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -199,6 +202,48 @@ class Utils {
             }
         //noinspection ResultOfMethodCallIgnored
         fileOrDirectory.delete();
+    }
+
+    private SoundPool soundPool = null;
+    private final int[] beepSound = {
+            R.raw.say_notification,
+            R.raw.leading_sound                   //  event button pressed
+    };
+    private int[] soundNbr = new int[beepSound.length];
+
+    void beepsInitiate() {
+
+        SoundPool.Builder builder;
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+
+        builder = new SoundPool.Builder();
+        builder.setAudioAttributes(audioAttributes).setMaxStreams(5);
+        soundPool = builder.build();
+        for (int i = 0; i < beepSound.length; i++) {
+            soundNbr[i] = soundPool.load(mContext, beepSound[i], 1);
+        }
+    }
+
+    void beepOnce(final int soundId) {
+
+        if (soundPool == null) {
+            beepsInitiate();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    beepSound(soundId);
+                }
+            }, 100);
+        } else {
+            beepSound(soundId);
+        }
+    }
+    private void beepSound(int soundId) {
+        soundPool.play(soundNbr[soundId], 1f, 1f, 1, 0, 1f);
     }
 
 }

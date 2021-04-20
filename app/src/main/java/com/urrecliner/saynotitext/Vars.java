@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Environment;
 
 import java.io.File;
@@ -32,6 +34,7 @@ class Vars {
     static String[] textIgnores = null;
     static String nowFileName;
 
+    static MediaPlayer mediaPlayer;
     static SharedPreferences sharePrefer;
 
     @SuppressLint("StaticFieldLeak")

@@ -6,6 +6,7 @@ import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
@@ -25,6 +26,8 @@ import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.kakaoTalk;
+import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saynotitext.Vars.mediaPlayer;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
@@ -182,6 +185,7 @@ public class NotificationListener extends NotificationListenerService {
                 int aIdx = getAlertIndex(eGroup + eWho);
                 if (aIdx != -1) { // stock open chat
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
+                        utils.beepOnce(1);
                         String s = (eText.length()>100) ? eText.substring(0, 99): eText;
                         append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup +":"+ eWho, s);
                         append2App("/stocks/"+ eGroup + ".txt",eGroup +":"+ eWho, s);
@@ -288,7 +292,14 @@ public class NotificationListener extends NotificationListenerService {
         if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";
-            text2Speech.speak("아 "+text);
+            utils.beepOnce(0);
+            text2Speech.speak(text);
+//            final String fText = text;
+//            Handler mHandler = new Handler();
+//            mHandler.postDelayed(new Runnable()  {
+//                public void run() {
+//                }
+//            }, 200); // 0.5초후
         }
     }
 
