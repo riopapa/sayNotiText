@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                 startService(updateIntent);
             }
         }, 100);
-        prepare_Telephony();
     }
 
     private void prepare_Speech() {
@@ -175,51 +174,6 @@ public class MainActivity extends AppCompatActivity {
         readOptionTables = new ReadOptionTables();
         readOptionTables.read();
     }
-
-    void prepare_Telephony() {
-        phoneManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        phoneManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-    }
-
-    String savedNumber = "x";
-    public PhoneStateListener phoneStateListener = new PhoneStateListener()
-    {
-        public void onCallStateChanged(int state, String callNumber)
-        {
-
-            switch (state) {
-                case CALL_STATE_RINGING:
-                    isPhoneBusy = true;
-                    Toast.makeText(mContext, "\nRINGING\n\nRINGING\n", Toast.LENGTH_LONG).show();
-                    utils.log("^phone^ "+callNumber,"RINGING RINGING ["+callNumber+"]");
-                    if (callNumber.length()> 2)
-                        savedNumber = callNumber;
-                    break;
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    isPhoneBusy = true;
-                    Toast.makeText(mContext, "\nOFFHOOK\n\nOFFHOOK\n", Toast.LENGTH_LONG).show();
-                    utils.log("^phone^ ["+callNumber+"]"," OFFHOOK OFFHOOK ["+callNumber+"]");
-                    if (callNumber.length()> 2)
-                        savedNumber = callNumber;
-                    break;
-                case TelephonyManager.CALL_STATE_IDLE:
-                    Toast.makeText(mContext, "CALL IDLE", Toast.LENGTH_LONG).show();
-                    if (callNumber.equals(savedNumber)) {
-                        savedNumber = "x";
-                        isPhoneBusy = false;
-                    } else if (callNumber.length() > 2)
-                        savedNumber = callNumber;
-                    utils.log("^^phone^ "+isPhoneBusy,isPhoneBusy+" Phone IDLE ["+callNumber+"]");
-                    break;
-                default:
-                    utils.log("^^phone^ ["+callNumber+"]","--------///----- Phone STATE UNKNOWN ------------"+state);
-                    text2Speech.speak("폰 상태 변화 : 상태 모름 모름 "+state);
-                    isPhoneBusy = false;
-            }
-
-            super.onCallStateChanged(state, callNumber);
-        }
-    };
 
     String[] editTables = { "textIgnores", "kakaoIgnores",
                             "kakaoPersons", "kakaoAlerts",
