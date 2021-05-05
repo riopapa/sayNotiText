@@ -6,7 +6,6 @@ import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
@@ -26,8 +25,6 @@ import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.kakaoTalk;
-import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.mediaPlayer;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
@@ -186,20 +183,20 @@ public class NotificationListener extends NotificationListenerService {
                 if (aIdx != -1) { // stock open chat
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
                         utils.beepOnce(1);
-                        String s = (eText.length()>100) ? eText.substring(0, 99): eText;
+                        String s = (eText.length()>120) ? eText.substring(0, 119): eText;
                         append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup +":"+ eWho, s);
                         append2App("/stocks/"+ eGroup + ".txt",eGroup +":"+ eWho, s);
                         append2App("/stocks/merged.txt",eGroup +":"+ eWho, s);
                         if (sayMessage || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
-                            speechText(s, 50);
+                            speechText(s, 55);
                         }
                     }
-                    oldText = eText;
                 }
         } else
              logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
+        oldText = eText;
     }
 
     private void sayAndroid() {
@@ -210,6 +207,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayNHStock() {
+        utils.beepOnce(1);
         logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText);
         append2App("/_"+ packageNickName + ".txt", eWho, eText);
     }
@@ -236,7 +234,7 @@ public class NotificationListener extends NotificationListenerService {
 //                eText = eText.substring(0,100);
 //            eText = eText.replaceAll("\n", "|");
 //        }
-//        String dumpText = "TIT:" + eTitle + ", SUBT:" + Grp + ", TEXT:" + eText + ", MESSAGE:" + msgText;
+//        String dumpText = "TIT:" + eTitle + ", Group:" + Grp + ", TEXT:" + eText + ", MESSAGE:" + msgText;
 //        utils.log(logID, dumpText);
 //    }
 

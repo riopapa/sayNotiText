@@ -28,13 +28,16 @@ public class PhoneReceiver extends BroadcastReceiver {
         utils.log("^phone^",  " stateStr=" + stateStr + " number=" + number);
         if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
             isPhoneBusy = false;
-            Toast.makeText(mContext, "\nIDLE\n" + number + "\nIDLE", Toast.LENGTH_LONG).show();
+            if (number != null)
+                Toast.makeText(mContext, "\nIDLE\n" + number + "\nIDLE", Toast.LENGTH_LONG).show();
         } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
             isPhoneBusy = true;
-            Toast.makeText(mContext, "\nOFFHOOK\n"+number+"\nOFFHOOK\n", Toast.LENGTH_LONG).show();
+            if (number != null)
+                Toast.makeText(mContext, "\nOFFHOOK\n"+number+"\nOFFHOOK\n", Toast.LENGTH_LONG).show();
         } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
             isPhoneBusy = true;
-            Toast.makeText(mContext, "\nRING\n"+number+"\nRING\n", Toast.LENGTH_LONG).show();
+            if (number != null)
+                Toast.makeText(mContext, "\nRING\n"+number+"\nRING\n", Toast.LENGTH_LONG).show();
         }
     }
 }
