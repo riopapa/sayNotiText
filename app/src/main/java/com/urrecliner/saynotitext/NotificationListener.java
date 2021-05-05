@@ -51,11 +51,13 @@ public class NotificationListener extends NotificationListenerService {
     String eWho, eText, lastWho;
     String eGroup = null;
     String packageFullName, packageNickName, packageType;
-    String oldText = "";
+    String oldText = "", s;
+    AudioManager audioManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Override
@@ -183,10 +185,10 @@ public class NotificationListener extends NotificationListenerService {
                 if (aIdx != -1) { // stock open chat
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
                         utils.beepOnce(1);
-                        String s = (eText.length()>120) ? eText.substring(0, 119): eText;
-                        append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup +":"+ eWho, s);
-                        append2App("/stocks/"+ eGroup + ".txt",eGroup +":"+ eWho, s);
-                        append2App("/stocks/merged.txt",eGroup +":"+ eWho, s);
+                        s = (eText.length()>120) ? eText.substring(0, 119): eText;
+                        append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup, eWho, s);
+                        append2App("/stocks/"+ eGroup + ".txt",eGroup, eWho, s);
+                        append2App("/stocks/merged.txt",eGroup, eWho, s);
                         if (sayMessage || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
@@ -209,7 +211,7 @@ public class NotificationListener extends NotificationListenerService {
     private void sayNHStock() {
         utils.beepOnce(1);
         logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText);
-        append2App("/_"+ packageNickName + ".txt", eWho, eText);
+        append2App("/_"+ packageNickName + ".txt", packageNickName, eWho, eText);
     }
 
     private void sayTitleText() {
@@ -258,10 +260,10 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean isInTable(String text, String [] lists) {
-        if (text == null)
-            return false;
-        for (String s : lists) {
-            if (text.contains(s)) return true;
+        if (text != null) {
+            for (String s : lists) {
+                if (text.contains(s)) return true;
+            }
         }
         return false;
     }
@@ -290,21 +292,25 @@ public class NotificationListener extends NotificationListenerService {
         if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + ". 등등등";
+            beepAgain = true;
             utils.beepOnce(0);
             text2Speech.speak(text);
         }
     }
+    static boolean beepAgain = false;
+    static void beepBell() {
+        if (beepAgain) {
+            utils.beepOnce(0);
+            beepAgain = false;
+        }
+    }
 
     private boolean isRingerON() {
-        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        assert am != null;
-        return am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
+        return audioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
     }
 
     private boolean isHeadphonesPlugged(){
-        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        assert am != null;
-        AudioDeviceInfo[] audioDevices = am.getDevices(AudioManager.GET_DEVICES_INPUTS);
+        AudioDeviceInfo[] audioDevices = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS);
         for(AudioDeviceInfo deviceInfo : audioDevices){
             if(deviceInfo.getType()==AudioDeviceInfo.TYPE_WIRED_HEADPHONES
                     || deviceInfo.getType()==AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
@@ -323,15 +329,15 @@ public class NotificationListener extends NotificationListenerService {
     private final SimpleDateFormat hourMinFormat = new SimpleDateFormat("yy-MM-dd HH.mm", Locale.KOREA);
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd", Locale.KOREA);
 
-    private void append2App(String filename, String groupWho, String textLine) {
+    private void append2App(String filename, String group, String who, String textLine) {
         BufferedWriter bw = null;
         FileWriter fw = null;
         try {
             File file = new File(Environment.getExternalStorageDirectory(),"download/"+filename);
             if (!file.exists() && !file.createNewFile())
                 return;
-            String outText = groupWho + DELIMITER + DELIMITER + hourMinFormat.format(new Date())
-                    + DELIMITER  + textLine + "\n";
+            String outText = group + DELIMITER + hourMinFormat.format(new Date()) + DELIMITER
+                    + who + DELIMITER  + DELIMITER + textLine + "\n";
             // true = append file
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);

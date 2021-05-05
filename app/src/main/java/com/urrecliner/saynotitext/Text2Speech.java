@@ -16,7 +16,7 @@ import static com.urrecliner.saynotitext.Vars.utils;
 
 class Text2Speech {
 
-    private String logID = "TTS";
+    private final String logID = "TTS";
     private TextToSpeech mTTS;
 
     void initiateTTS(Context context) {
@@ -27,18 +27,15 @@ class Text2Speech {
         mContext = context;
 //        utils.append2file(notifyFile, "initiate mTTS ");
         mTTS = null;
-        mTTS = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    int result = mTTS.setLanguage(Locale.KOREA);
-                    if (result == TextToSpeech.LANG_MISSING_DATA
-                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        utils.logE(logID, "Language not supported");
-                    }
-                } else {
-                    utils.logE(logID, "Initialization failed");
+        mTTS = new TextToSpeech(context, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = mTTS.setLanguage(Locale.KOREA);
+                if (result == TextToSpeech.LANG_MISSING_DATA
+                        || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    utils.logE(logID, "Language not supported");
                 }
+            } else {
+                utils.logE(logID, "Initialization failed");
             }
         });
         readyAudioTTS();
@@ -86,6 +83,7 @@ class Text2Speech {
             // this method will always called from a background thread.
             public void onDone(String utteranceId) {
                 mAudioManager.abandonAudioFocusRequest(mFocusGain);
+                NotificationListener.beepBell();
             }
 
             @Override
