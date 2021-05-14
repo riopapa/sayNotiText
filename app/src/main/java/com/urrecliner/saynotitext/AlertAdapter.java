@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.urrecliner.saynotitext.Vars.linePos;
 import static com.urrecliner.saynotitext.Vars.alertOneLines;
+import static com.urrecliner.saynotitext.Vars.utils;
 
 public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> {
 
@@ -46,7 +47,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final AlertOneLine alertOneLine = alertOneLines.get(position);
-        holder.tSelect.setText(alertOneLine.isSelect() ? "☑":"☐");
+        holder.tSelect.setText(alertOneLine.isSelect() ? "▣":"▢");
         holder.tGroup.setText(alertOneLine.getGroup());
         holder.tWho.setText(alertOneLine.getWho());
         holder.tKey1.setText(alertOneLine.getKey1());
@@ -62,7 +63,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
                 boolean select = !alertOneLine1.isSelect();
                 alertOneLine1.setSelect(select);
                 alertOneLines.set(linePos, alertOneLine1);
-                holder.tSelect.setText((select) ? "☑":"☐");
+                holder.tSelect.setText((select) ? "▣":"▢");
             }
         });
 
@@ -90,8 +91,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { sv = s.toString(); }
             @Override
             public void afterTextChanged(Editable s) {
-                if (sv.equals(s.toString()))
-                    return;
+//                if (sv.equals(s.toString()))
+//                    return;
                 linePos = holder.getAdapterPosition();
                 AlertOneLine alertOneLine = alertOneLines.get(linePos); alertOneLine.setWho(s.toString().trim());
                 alertOneLines.set(linePos, alertOneLine);
@@ -160,6 +161,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
                 AlertOneLine alertOneLine = alertOneLines.get(linePos); alertOneLine.setComment(s.toString().trim());
                 alertOneLines.set(linePos, alertOneLine);
             }
+
         });
     }
+
 }

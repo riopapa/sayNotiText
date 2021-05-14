@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.BufferedWriter;
@@ -23,8 +22,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 
 import static com.urrecliner.saynotitext.Vars.nowFileName;
 import static com.urrecliner.saynotitext.Vars.alertOneLines;
@@ -67,6 +64,7 @@ public class EditActivity extends AppCompatActivity {
             tv.setFocusableInTouchMode(true);
         }
     }
+
 
     void build_OneLine(String [] lines) {
         alertOneLines = new ArrayList<>();
@@ -175,11 +173,8 @@ public class EditActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.action_save) {
             if (isAlertFile) {
-                Collections.sort(alertOneLines, new Comparator<AlertOneLine>(){       // object Sort
-                    public int compare(AlertOneLine obj1, AlertOneLine obj2) {
-                        return (obj1.getGroup()+obj1.getWho()).compareTo((obj2.getGroup()+obj2.getWho()));
-                    }
-                });
+                // object Sort
+                alertOneLines.sort((obj1, obj2) -> (obj1.getGroup() + obj1.getWho()).compareTo((obj2.getGroup() + obj2.getWho())));
                 StringBuilder s = new StringBuilder();
                 for (int i = 0; i < alertOneLines.size(); i++) {
                     AlertOneLine alertOneLine = alertOneLines.get(i);
@@ -201,24 +196,15 @@ public class EditActivity extends AppCompatActivity {
             finish();
         } else if (item.getItemId() == R.id.action_dup) {
             if (isAlertFile) {
-                AlertOneLine alertOneLine = alertOneLines.get(linePos);
-                alertOneLine.setSelect(false);
-//                alertOneLines.set(linePos, alertOneLine);
-//                alertOneLines.add(linePos, alertOneLine);
-                alertOneLines.add(alertOneLine);
-                linePos++;
+                AlertOneLine alertThisLine = alertOneLines.get(linePos);
+                alertThisLine.setSelect(false);
+                alertOneLines.set(linePos, alertThisLine);
+                alertThisLine.setComment(alertThisLine.getComment()+"dup");
+                alertOneLines.add(linePos,alertThisLine);
                 alertAdapter.notifyDataSetChanged();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.scrollToPosition(alertOneLines.size()-1);
-                    }
-                }, 100);
+//                new Handler().postDelayed(() -> recyclerView.scrollToPosition(alertOneLines.size()-1), 100);
             } else
                 textDuplicate_line();
-        } else if (item.getItemId() == R.id.action_tab) {
-            if (!isAlertFile)
-                textInsert_tab();
         } else if (item.getItemId() == R.id.action_remove) {
             if (isAlertFile) {
                 AlertOneLine alertOneLine = alertOneLines.get(linePos-1);
@@ -231,17 +217,6 @@ public class EditActivity extends AppCompatActivity {
                 textRemove_line();
         }
         return false;
-    }
-
-    private void textInsert_tab() {
-        EditText tv;
-        tv = findViewById(R.id.text_table);
-        int cPos = tv.getSelectionStart();
-        String txt = tv.getText().toString();
-        txt = txt.substring(0, cPos) + "    "+"\t" + txt.substring(cPos);
-        tv.setText(txt);
-        Editable et = tv.getText();
-        Selection.setSelection(et, cPos);
     }
 
     private void textRemove_line() {
@@ -270,4 +245,5 @@ public class EditActivity extends AppCompatActivity {
         Editable et = tv.getText();
         Selection.setSelection(et, cPos);
     }
+
 }

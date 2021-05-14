@@ -10,13 +10,6 @@
         android:title="@string/todo" />
 
     <item
-        android:id="@+id/action_tab"
-        android:orderInCategory="100"
-        android:icon="@mipmap/tab_key"
-        app:showAsAction="always"
-        android:title="@string/todo" />
-
-    <item
         android:id="@+id/action_dup"
         android:orderInCategory="100"
         android:icon="@mipmap/duplicate"
