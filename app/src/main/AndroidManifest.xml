@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditActivity"/>
+        <activity android:name=".EditAlertActivity"/>
         <service
             android:name=".NotificationListener"
             android:enabled="true"

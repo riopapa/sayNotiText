@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
 import static com.urrecliner.saynotitext.Vars.alertLines;
 import static com.urrecliner.saynotitext.Vars.linePos;
@@ -67,17 +68,17 @@ public class EditActivity extends AppCompatActivity {
     void buildAlertLines(String [] lines) {
         alertLines = new ArrayList<>();
         for (int idx = 0; idx < lines.length; idx++) {
-            String lGroup, lWho, lKey1, lKey2, lTalk, lComment;
+            String lGroup, lWho, lKey1, lKey2, lTalk, lMemo;
             lines[idx] = lines[idx].replace("\\t","");
             String[] strings = lines[idx].split(";");
-            lComment = (strings.length > 1) ? strings[1].trim() : "";
+            lMemo = (strings.length > 1) ? strings[1].trim() : "";
             strings = strings[0].split("\\^");
             lGroup = strings[0].trim();
             lWho = strings[1].trim();
             lKey1 = strings[2].trim();
             lKey2 = strings[3].trim();
             lTalk = (strings.length > 4) ? strings[4].trim(): "";
-            alertLines.add(new AlertLine(false, lGroup, lWho, lKey1, lKey2, lTalk, lComment));
+            alertLines.add(new AlertLine(lGroup, lWho, lKey1, lKey2, lTalk, lMemo));
         }
         recyclerView = findViewById(R.id.lineList);
         alertAdapter = new AlertAdapter();
@@ -118,12 +119,12 @@ public class EditActivity extends AppCompatActivity {
         StringBuilder sortedText = new StringBuilder();
         for (String t: arrText) {
             if (isPackageTable) {
-                String [] comment = t.split(";");
-                String [] fields = comment[0].split("\\^");
+                String [] memo = t.split(";");
+                String [] fields = memo[0].split("\\^");
                 String oneLine = strPad(fields[0],14) + "^" + strPad(fields[1], 10) + "^"
                         + strPad(fields[2], 40);
-                if (comment.length > 1)
-                    oneLine += "; " + comment[1].trim();
+                if (memo.length > 1)
+                    oneLine += "; " + memo[1].trim();
                 sortedText.append(oneLine).append("\n");
             } else
                 sortedText.append(t).append("\n");
@@ -181,7 +182,7 @@ public class EditActivity extends AppCompatActivity {
                     s.append(strPad(alertLine.getKey1(), 12)).append("^");
                     s.append(strPad(alertLine.getKey2(), 12)).append("^");
                     s.append(strPad(alertLine.getTalk(), 12)).append(";");
-                    s.append(alertLine.getComment()).append("\n");
+                    s.append(alertLine.getMemo()).append("\n");
                 }
                 writeTextFile(s.toString());
             } else {
@@ -189,27 +190,9 @@ public class EditActivity extends AppCompatActivity {
                 String s = tv.getText().toString();
                 writeTextFile((isPackageTable) ? sortPackage(s) : sortText(s));
             }
-            Toast.makeText(getApplicationContext(),"Table Saved",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Table Saved", Toast.LENGTH_SHORT).show();
             readOptionTables.read();
             finish();
-        } else if (item.getItemId() == R.id.action_dup) {
-            if (isAlertFile) {
-                AlertLine alertThisLine = alertLines.get(linePos);
-                alertThisLine.setSelect(false);
-                alertThisLine.setComment(alertThisLine.getComment()+"X");
-//                alertLines.set(linePos, alertThisLine);
-                alertLines.add(linePos, alertThisLine);
-                alertAdapter.notifyDataSetChanged();
-//                new Handler().postDelayed(() -> recyclerView.scrollToPosition(0), 100);
-            } else
-                textDuplicate_line();
-        } else if (item.getItemId() == R.id.action_remove) {
-            if (isAlertFile) {
-                if (alertLines.get(linePos).isSelect())
-                    alertLines.remove(linePos);
-                alertAdapter.notifyDataSetChanged();
-            } else
-                textRemove_line();
         }
         return false;
     }
@@ -241,4 +224,9 @@ public class EditActivity extends AppCompatActivity {
         Selection.setSelection(et, cPos);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        alertAdapter.notifyDataSetChanged();
+    }
 }

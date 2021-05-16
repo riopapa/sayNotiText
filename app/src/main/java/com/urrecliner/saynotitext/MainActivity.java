@@ -1,19 +1,14 @@
 package com.urrecliner.saynotitext;
 
 import android.app.AlertDialog;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.icu.text.DecimalFormat;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 
-import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -25,19 +20,14 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.telephony.TelephonyManager.CALL_STATE_RINGING;
+import static com.urrecliner.saynotitext.Vars.mActivity;
 import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.mediaPlayer;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
-import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
@@ -59,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         askPermission();
         utils = new Utils();
         mContext = this;
+        mActivity = this;
         utils.log("Main","Started");
 
         if (!isNotificationAllowed()) {

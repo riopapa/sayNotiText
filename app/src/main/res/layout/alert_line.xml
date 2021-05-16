@@ -8,61 +8,52 @@
     android:padding="1dp" >
 
     <TextView
-        android:id="@+id/one_Select"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="@dimen/font_size"
-        />
-
-    <EditText
         android:id="@+id/one_group"
         android:layout_width="0dp"
         android:layout_weight="4"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/textFore"
-        android:textSize="@dimen/font_size"
+        android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
 
-    <EditText
+    <TextView
         android:id="@+id/one_who"
         android:layout_width="0dp"
-        android:layout_weight="5"
+        android:layout_weight="6"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/todo"
-        android:textSize="@dimen/font_size"
+        android:textColor="@color/textFore"
+        android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
 
-    <EditText
+    <TextView
         android:id="@+id/one_key1"
         android:layout_width="0dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/todo"
         android:textColor="@color/textFore"
-        android:textSize="@dimen/font_size"
+        android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
 
-    <EditText
+    <TextView
         android:id="@+id/one_key2"
         android:layout_width="0dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/todo"
         android:textColor="@color/textFore"
-        android:textSize="@dimen/font_size"
+        android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
 
-    <EditText
+    <TextView
         android:id="@+id/one_talk"
         android:layout_width="0dp"
         android:layout_weight="3"
@@ -70,19 +61,19 @@
         android:gravity="center"
         android:text="@string/todo"
         android:textColor="@color/textFore"
-        android:textSize="@dimen/font_size"
+        android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
 
-    <EditText
-        android:id="@+id/one_comment"
+    <TextView
+        android:id="@+id/one_memo"
         android:layout_width="0dp"
         android:layout_weight="8"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/todo"
         android:textColor="@color/textFore"
-        android:textSize="@dimen/font_size"
+        android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
 

@@ -1,6 +1,7 @@
 package com.urrecliner.saynotitext;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioFocusRequest;
@@ -38,6 +39,7 @@ class Vars {
 
     @SuppressLint("StaticFieldLeak")
     static Context mContext = null;
+    static Activity mActivity = null;
     static AudioManager mAudioManager = null;
     static AudioFocusRequest mFocusGain = null;
 
