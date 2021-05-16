@@ -30,7 +30,7 @@ import static com.urrecliner.saynotitext.Vars.utils;
 
 public class EditActivity extends AppCompatActivity {
 
-    boolean isAlertFile, isPackageTable;
+    boolean isAlertFile, isPackageTable, isRotate = false;
     RecyclerView recyclerView;
     AlertAdapter alertAdapter;
     ImageView removeView, dupView;
@@ -39,9 +39,14 @@ public class EditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         isAlertFile = nowFileName.equals("kakaoAlerts");
+        if (isAlertFile)
+            isRotate = true;
+        if (nowFileName.equals("packageTables"))
+            isRotate = true;
+        if (isRotate)
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         isPackageTable = nowFileName.equals("packageTables");
         removeView = findViewById(R.id.action_remove);
         dupView = findViewById(R.id.action_dup);
@@ -191,6 +196,10 @@ public class EditActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Table Saved", Toast.LENGTH_SHORT).show();
             readOptionTables.read();
             finish();
+        } else if (item.getItemId() == R.id.action_rotate) {
+            isRotate = !isRotate;
+            this.setRequestedOrientation(
+                    (isRotate) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         return false;
     }
@@ -225,6 +234,7 @@ public class EditActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        alertAdapter.notifyDataSetChanged();
+        if (isAlertFile)
+            alertAdapter.notifyDataSetChanged();
     }
 }
