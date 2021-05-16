@@ -192,7 +192,7 @@ public class NotificationListener extends NotificationListenerService {
                         if (sayMessage || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
-                            speechText(s, 55);
+                            speechText(s, 55,"");
                         }
                     }
                 }
@@ -280,10 +280,10 @@ public class NotificationListener extends NotificationListenerService {
     private void logThenSpeech(String logFile, String text) {
         utils.append2file(logFile + ".txt", ((isPhoneBusy)? "폰 비지 ":" ")+ text);
         if (!isPhoneBusy)
-            speechText(text, 200);
+            speechText(text, 200, "등등");
     }
 
-    private void speechText(String text, int i) {
+    private void speechText(String text, int i, String added) {
         if (text2Speech == null) {
             utils.logE("tts"," not READY ");
             text2Speech = new Text2Speech();
@@ -291,18 +291,19 @@ public class NotificationListener extends NotificationListenerService {
         }
         if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
-                text = text.substring(0, i) + ". 등등등";
-            beepAgain = true;
-            utils.beepOnce(0);
+                text = text.substring(0, i) + added;
+//            beepAgain = true;
+            beepBell();
             text2Speech.speak(text);
         }
     }
-    static boolean beepAgain = false;
+//    static boolean beepAgain = false;
     static void beepBell() {
-        if (beepAgain) {
+//        if (beepAgain) {
             utils.beepOnce(0);
-            beepAgain = false;
-        }
+            utils.beepOnce(1);
+//            beepAgain = false;
+//        }
     }
 
     private boolean isRingerON() {

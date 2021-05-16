@@ -198,11 +198,11 @@ public class EditActivity extends AppCompatActivity {
             if (isAlertFile) {
                 AlertOneLine alertThisLine = alertOneLines.get(linePos);
                 alertThisLine.setSelect(false);
+                alertThisLine.setComment(alertThisLine.getComment()+"X");
                 alertOneLines.set(linePos, alertThisLine);
-                alertThisLine.setComment(alertThisLine.getComment()+"dup");
-                alertOneLines.add(linePos,alertThisLine);
+                alertOneLines.add(linePos, alertThisLine);
                 alertAdapter.notifyDataSetChanged();
-//                new Handler().postDelayed(() -> recyclerView.scrollToPosition(alertOneLines.size()-1), 100);
+//                new Handler().postDelayed(() -> recyclerView.scrollToPosition(0), 100);
             } else
                 textDuplicate_line();
         } else if (item.getItemId() == R.id.action_remove) {
