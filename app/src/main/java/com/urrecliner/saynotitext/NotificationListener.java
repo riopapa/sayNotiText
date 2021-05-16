@@ -184,7 +184,7 @@ public class NotificationListener extends NotificationListenerService {
                 int aIdx = getAlertIndex(eGroup + eWho);
                 if (aIdx != -1) { // stock open chat
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
-                        utils.beepOnce(1);
+                        beepBells();
                         s = (eText.length()>120) ? eText.substring(0, 119): eText;
                         append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup, eWho, s);
                         append2App("/stocks/"+ eGroup + ".txt",eGroup, eWho, s);
@@ -194,6 +194,7 @@ public class NotificationListener extends NotificationListenerService {
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
                             speechText(s, 55,"");
                         }
+                        utils.beepOnce(0);
                     }
                 }
         } else
@@ -209,7 +210,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayNHStock() {
-        utils.beepOnce(1);
+        beepBells();
         logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText);
         append2App("/_"+ packageNickName + ".txt", packageNickName, eWho, eText);
     }
@@ -292,18 +293,12 @@ public class NotificationListener extends NotificationListenerService {
         if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + added;
-//            beepAgain = true;
-            beepBell();
+            beepBells();
             text2Speech.speak(text);
         }
     }
-//    static boolean beepAgain = false;
-    static void beepBell() {
-//        if (beepAgain) {
-            utils.beepOnce(0);
-            utils.beepOnce(1);
-//            beepAgain = false;
-//        }
+    static void beepBells() {
+        utils.beepOnce(0); utils.beepOnce(1);
     }
 
     private boolean isRingerON() {

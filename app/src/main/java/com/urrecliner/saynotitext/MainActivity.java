@@ -103,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
         text2Speech.setSpeed((float) mSeekBarSpeed.getProgress() / 50);
 
         utils.beepsInitiate();
-        utils.beepOnce(0);
+        utils.beepOnce(0); utils.beepOnce(1);
+
     }
 
     private void setSeekBarPitch() {

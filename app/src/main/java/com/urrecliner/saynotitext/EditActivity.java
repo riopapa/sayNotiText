@@ -22,10 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
 import static com.urrecliner.saynotitext.Vars.alertLines;
-import static com.urrecliner.saynotitext.Vars.linePos;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.tableDirectory;
 import static com.urrecliner.saynotitext.Vars.utils;
@@ -197,32 +195,32 @@ public class EditActivity extends AppCompatActivity {
         return false;
     }
 
-    private void textRemove_line() {
-        EditText tv;
-        tv = findViewById(R.id.text_table);
-        int cPos = tv.getSelectionStart();
-        String txt = tv.getText().toString();
-        int sPos = txt.lastIndexOf("\n", cPos);
-        int ePos = txt.indexOf("\n", cPos + 1);
-        txt = txt.substring(0, sPos) + txt.substring(ePos);
-        tv.setText(txt);
-        Editable et = tv.getText();
-        Selection.setSelection(et, cPos);
-    }
-
-    private void textDuplicate_line() {
-        EditText tv;
-        tv = findViewById(R.id.text_table);
-        int cPos = tv.getSelectionStart();
-        String txt = tv.getText().toString();
-        int sPos = txt.lastIndexOf("\n", cPos);
-        int ePos = txt.indexOf("\n",cPos+1);
-        String currLine = txt.substring(sPos, ePos);
-        txt = txt.substring(0,sPos)+currLine+txt.substring(sPos);
-        tv.setText(txt);
-        Editable et = tv.getText();
-        Selection.setSelection(et, cPos);
-    }
+//    private void textRemove_line() {
+//        EditText tv;
+//        tv = findViewById(R.id.text_table);
+//        int cPos = tv.getSelectionStart();
+//        String txt = tv.getText().toString();
+//        int sPos = txt.lastIndexOf("\n", cPos);
+//        int ePos = txt.indexOf("\n", cPos + 1);
+//        txt = txt.substring(0, sPos) + txt.substring(ePos);
+//        tv.setText(txt);
+//        Editable et = tv.getText();
+//        Selection.setSelection(et, cPos);
+//    }
+//
+//    private void textDuplicate_line() {
+//        EditText tv;
+//        tv = findViewById(R.id.text_table);
+//        int cPos = tv.getSelectionStart();
+//        String txt = tv.getText().toString();
+//        int sPos = txt.lastIndexOf("\n", cPos);
+//        int ePos = txt.indexOf("\n",cPos+1);
+//        String currLine = txt.substring(sPos, ePos);
+//        txt = txt.substring(0,sPos)+currLine+txt.substring(sPos);
+//        tv.setText(txt);
+//        Editable et = tv.getText();
+//        Selection.setSelection(et, cPos);
+//    }
 
     @Override
     public void onResume() {
