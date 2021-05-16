@@ -1,10 +1,10 @@
 package com.urrecliner.saynotitext;
 
-class AlertOneLine {
+class AlertLine {
     private boolean select;
     private String group, who, key1, key2, talk, comment;
 
-    AlertOneLine(boolean select, String group, String who, String key1, String key2, String talk, String comment) {
+    AlertLine(boolean select, String group, String who, String key1, String key2, String talk, String comment) {
         this.select = select; this.group = group;this.who = who;
         this.key1 = key1;this.key2 = key2;this.talk = talk;this.comment = comment;
     }

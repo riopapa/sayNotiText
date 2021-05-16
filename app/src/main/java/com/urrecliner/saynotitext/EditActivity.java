@@ -2,7 +2,6 @@ package com.urrecliner.saynotitext;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.Selection;
 import android.view.Menu;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static com.urrecliner.saynotitext.Vars.nowFileName;
-import static com.urrecliner.saynotitext.Vars.alertOneLines;
+import static com.urrecliner.saynotitext.Vars.alertLines;
 import static com.urrecliner.saynotitext.Vars.linePos;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.tableDirectory;
@@ -51,7 +50,7 @@ public class EditActivity extends AppCompatActivity {
         String [] lines = utils.readLines(new File(tableDirectory, nowFileName+".txt"));
         if (isAlertFile) {
             tv.setVisibility(View.GONE);
-            build_OneLine(lines);
+            buildAlertLines(lines);
         } else {
             tv.setVisibility(View.VISIBLE);
             StringBuilder sb = new StringBuilder();
@@ -65,9 +64,8 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
-
-    void build_OneLine(String [] lines) {
-        alertOneLines = new ArrayList<>();
+    void buildAlertLines(String [] lines) {
+        alertLines = new ArrayList<>();
         for (int idx = 0; idx < lines.length; idx++) {
             String lGroup, lWho, lKey1, lKey2, lTalk, lComment;
             lines[idx] = lines[idx].replace("\\t","");
@@ -79,14 +77,14 @@ public class EditActivity extends AppCompatActivity {
             lKey1 = strings[2].trim();
             lKey2 = strings[3].trim();
             lTalk = (strings.length > 4) ? strings[4].trim(): "";
-            alertOneLines.add(new AlertOneLine(false, lGroup, lWho, lKey1, lKey2, lTalk, lComment));
+            alertLines.add(new AlertLine(false, lGroup, lWho, lKey1, lKey2, lTalk, lComment));
         }
         recyclerView = findViewById(R.id.lineList);
         alertAdapter = new AlertAdapter();
         recyclerView.setAdapter(alertAdapter);
     }
 
-    void write_textFile(String outText) {
+    void writeTextFile(String outText) {
 
         try {
             File targetFile = new File(tableDirectory,  nowFileName +".txt");
@@ -174,44 +172,41 @@ public class EditActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_save) {
             if (isAlertFile) {
                 // object Sort
-                alertOneLines.sort((obj1, obj2) -> (obj1.getGroup() + obj1.getWho()).compareTo((obj2.getGroup() + obj2.getWho())));
+                alertLines.sort((obj1, obj2) -> (obj1.getGroup() + obj1.getWho()).compareTo((obj2.getGroup() + obj2.getWho())));
                 StringBuilder s = new StringBuilder();
-                for (int i = 0; i < alertOneLines.size(); i++) {
-                    AlertOneLine alertOneLine = alertOneLines.get(i);
-                    s.append(strPad(alertOneLine.getGroup(), 18)).append("^");
-                    s.append(strPad(alertOneLine.getWho(), 32)).append("^");
-                    s.append(strPad(alertOneLine.getKey1(), 12)).append("^");
-                    s.append(strPad(alertOneLine.getKey2(), 12)).append("^");
-                    s.append(strPad(alertOneLine.getTalk(), 12)).append(";");
-                    s.append(alertOneLine.getComment()).append("\n");
+                for (int i = 0; i < alertLines.size(); i++) {
+                    AlertLine alertLine = alertLines.get(i);
+                    s.append(strPad(alertLine.getGroup(), 18)).append("^");
+                    s.append(strPad(alertLine.getWho(), 32)).append("^");
+                    s.append(strPad(alertLine.getKey1(), 12)).append("^");
+                    s.append(strPad(alertLine.getKey2(), 12)).append("^");
+                    s.append(strPad(alertLine.getTalk(), 12)).append(";");
+                    s.append(alertLine.getComment()).append("\n");
                 }
-                write_textFile(s.toString());
+                writeTextFile(s.toString());
             } else {
                 TextView tv = findViewById(R.id.text_table);
                 String s = tv.getText().toString();
-                write_textFile((isPackageTable) ? sortPackage(s) : sortText(s));
+                writeTextFile((isPackageTable) ? sortPackage(s) : sortText(s));
             }
             Toast.makeText(getApplicationContext(),"Table Saved",Toast.LENGTH_SHORT).show();
             readOptionTables.read();
             finish();
         } else if (item.getItemId() == R.id.action_dup) {
             if (isAlertFile) {
-                AlertOneLine alertThisLine = alertOneLines.get(linePos);
+                AlertLine alertThisLine = alertLines.get(linePos);
                 alertThisLine.setSelect(false);
                 alertThisLine.setComment(alertThisLine.getComment()+"X");
-                alertOneLines.set(linePos, alertThisLine);
-                alertOneLines.add(linePos, alertThisLine);
+//                alertLines.set(linePos, alertThisLine);
+                alertLines.add(linePos, alertThisLine);
                 alertAdapter.notifyDataSetChanged();
 //                new Handler().postDelayed(() -> recyclerView.scrollToPosition(0), 100);
             } else
                 textDuplicate_line();
         } else if (item.getItemId() == R.id.action_remove) {
             if (isAlertFile) {
-                AlertOneLine alertOneLine = alertOneLines.get(linePos-1);
-                if (alertOneLine.isSelect())
-                    alertOneLines.remove(linePos-1);
-                else
-                    alertOneLines.remove(linePos);
+                if (alertLines.get(linePos).isSelect())
+                    alertLines.remove(linePos);
                 alertAdapter.notifyDataSetChanged();
             } else
                 textRemove_line();

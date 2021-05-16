@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.os.Environment;
 
 import java.io.File;
@@ -50,6 +49,6 @@ class Vars {
     static Utils utils = null;
     static boolean isPhoneBusy = false;
 
-    static ArrayList<AlertOneLine> alertOneLines;
+    static ArrayList<AlertLine> alertLines;
     static int linePos = 999;
 }
