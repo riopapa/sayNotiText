@@ -194,7 +194,6 @@ public class NotificationListener extends NotificationListenerService {
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
                             speechText(s, 55,"");
                         }
-                        utils.beepOnce(0);
                     }
                 }
         } else
@@ -293,7 +292,6 @@ public class NotificationListener extends NotificationListenerService {
         if ((isHeadphonesPlugged() || isRingerON())) {
             if (text.length() > i)
                 text = text.substring(0, i) + added;
-            beepBells();
             text2Speech.speak(text);
         }
     }

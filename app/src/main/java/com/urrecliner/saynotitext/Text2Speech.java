@@ -83,7 +83,7 @@ class Text2Speech {
             // this method will always called from a background thread.
             public void onDone(String utteranceId) {
                 mAudioManager.abandonAudioFocusRequest(mFocusGain);
-                NotificationListener.beepBells();
+                utils.beepOnce(0);
             }
 
             @Override
