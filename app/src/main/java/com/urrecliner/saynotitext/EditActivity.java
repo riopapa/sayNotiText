@@ -2,8 +2,6 @@ package com.urrecliner.saynotitext;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.Selection;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -145,12 +143,8 @@ public class EditActivity extends AppCompatActivity {
     final String blank = "                         ";
     final String del = String.copyValueOf(new char[]{(char) Byte.parseByte("7F", 16)});
     private String strPad(String s, int size) {
-        int chars = 0;
         s = s.trim();
-        for (int i = 0; i < s.length(); i++) {
-            String bite = s.substring(i,i+1);
-            chars += (bite.compareTo(del)>0)? 2:1;
-        }
+        int chars = getByteLength(s);
         if (chars >= size)
             return s;
         int padL = (size - chars) / 2;
@@ -178,6 +172,7 @@ public class EditActivity extends AppCompatActivity {
                 // object Sort
                 alertLines.sort((obj1, obj2) -> (obj1.getGroup() + obj1.getWho()).compareTo((obj2.getGroup() + obj2.getWho())));
                 String sv = "sv";
+                int [] padLen = getMaxLengths();
                 StringBuilder s = new StringBuilder();
                 for (int i = 0; i < alertLines.size(); i++) {
                     AlertLine alertLine = alertLines.get(i);
@@ -185,11 +180,11 @@ public class EditActivity extends AppCompatActivity {
                         sv = alertLine.getGroup();
                         s.append("\n");
                     }
-                    s.append(strPad(alertLine.getGroup(), 18)).append("^");
-                    s.append(strPad(alertLine.getWho(), 32)).append("^");
-                    s.append(strPad(alertLine.getKey1(), 12)).append("^");
-                    s.append(strPad(alertLine.getKey2(), 12)).append("^");
-                    s.append(strPad(alertLine.getTalk(), 12)).append(";");
+                    s.append(strPad(alertLine.getGroup(), padLen[0])).append("^");
+                    s.append(strPad(alertLine.getWho(), padLen[1])).append("^");
+                    s.append(strPad(alertLine.getKey1(), padLen[2])).append("^");
+                    s.append(strPad(alertLine.getKey2(), padLen[3])).append("^");
+                    s.append(strPad(alertLine.getTalk(), padLen[4])).append(";");
                     s.append(alertLine.getMemo()).append("\n");
                 }
                 writeTextFile(s.toString());
@@ -209,6 +204,28 @@ public class EditActivity extends AppCompatActivity {
         return false;
     }
 
+    int [] getMaxLengths() {
+        int [] maxLen = new int[5];
+        int bl;
+        for (int i = 0; i < alertLines.size(); i++ ){
+            AlertLine al = alertLines.get(i);
+            bl = getByteLength(al.getGroup()); if (bl > maxLen[0]) maxLen[0] = bl;
+            bl = getByteLength(al.getWho()); if (bl > maxLen[1]) maxLen[1] = bl;
+            bl = getByteLength(al.getKey1()); if (bl > maxLen[2]) maxLen[2] = bl;
+            bl = getByteLength(al.getKey2()); if (bl > maxLen[3]) maxLen[3] = bl;
+            bl = getByteLength(al.getTalk()); if (bl > maxLen[4]) maxLen[4] = bl;
+        }
+        return maxLen;
+    }
+
+    int getByteLength(String s) {
+        int chars = 0;
+        for (int i = 0; i < s.length(); i++) {
+            String bite = s.substring(i,i+1);
+            chars += (bite.compareTo(del)>0)? 2:1;
+        }
+        return chars;
+    }
 //    private void textRemove_line() {
 //        EditText tv;
 //        tv = findViewById(R.id.text_table);
