@@ -1,19 +1,17 @@
 package com.urrecliner.saynotitext;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.Selection;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import static com.urrecliner.saynotitext.Vars.alertLines;
 import static com.urrecliner.saynotitext.Vars.linePos;
-import static com.urrecliner.saynotitext.Vars.readOptionTables;
 
 public class EditAlertActivity extends AppCompatActivity {
 
@@ -52,9 +50,8 @@ public class EditAlertActivity extends AppCompatActivity {
             alertLines.set(linePos, alertLine);
             finish();
         } else if (item.getItemId() == R.id.action_dup) {
-            alertLine.setMemo(alertLine.getMemo()+"m");
             alertLines.add(linePos, alertLine);
-            finish();
+            eTMemo.setText(new SimpleDateFormat("MM-dd", Locale.KOREA).format(new Date()));
         } else if (item.getItemId() == R.id.action_remove) {
             alertLines.remove(linePos);
             finish();

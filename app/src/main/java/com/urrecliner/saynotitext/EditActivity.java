@@ -177,9 +177,14 @@ public class EditActivity extends AppCompatActivity {
             if (isAlertFile) {
                 // object Sort
                 alertLines.sort((obj1, obj2) -> (obj1.getGroup() + obj1.getWho()).compareTo((obj2.getGroup() + obj2.getWho())));
+                String sv = "sv";
                 StringBuilder s = new StringBuilder();
                 for (int i = 0; i < alertLines.size(); i++) {
                     AlertLine alertLine = alertLines.get(i);
+                    if (!alertLine.getGroup().equals(sv)) {
+                        sv = alertLine.getGroup();
+                        s.append("\n");
+                    }
                     s.append(strPad(alertLine.getGroup(), 18)).append("^");
                     s.append(strPad(alertLine.getWho(), 32)).append("^");
                     s.append(strPad(alertLine.getKey1(), 12)).append("^");

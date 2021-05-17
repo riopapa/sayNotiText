@@ -55,6 +55,7 @@ class ReadOptionTables {
         textIgnores =  readOptionFile("textIgnores");
 
         // 카카오 단톡방에서 특별히 얘기 되는 자만
+
         kakaoAGroup = new String[kakaoAlerts.length];   // 단톡방 명
         kakaoAWho = new String[kakaoAlerts.length];   // 누가
         kakaoAKey1 = new String[kakaoAlerts.length];   // 인식 문자 1
@@ -80,7 +81,6 @@ class ReadOptionTables {
     static String[] readOptionFile(String filename) {
         String[] lines = utils.readLines(new File(tableDirectory, filename+".txt"));
         for (int idx = 0; idx < lines.length; idx++) {      // remove to end after ; characters
-            lines[idx] = lines[idx].replace("\\t","");
             String[] strings = lines[idx].split(";");
             lines[idx] = strings[0].trim();  // ignore from ;
         }
