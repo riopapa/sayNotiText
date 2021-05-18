@@ -1,21 +1,18 @@
 package com.urrecliner.saynotitext;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import static com.urrecliner.saynotitext.Vars.sayMessage;
+import static com.urrecliner.saynotitext.Vars.speakOnOff;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.utils;
 
@@ -27,8 +24,7 @@ public class NotificationService extends Service {
     NotificationManager mNotificationManager;
     private RemoteViews mRemoteViews;
     private static final int STOP_SAY = 10011;
-    private static final int SPEAK_ON = 1003;
-    private static final int SPEAK_OFF = 1004;
+    private static final int SPEAK_ON_OFF = 1003;
 
     @Override
     public void onCreate() {
@@ -68,20 +64,17 @@ public class NotificationService extends Service {
             case STOP_SAY:
                 text2Speech.ttsStop();
                 break;
-            case SPEAK_ON:
-                sayMessage = true;
-//                mBuilder.setSmallIcon(R.mipmap.icon_launcher);
-//                mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
-                break;
-            case SPEAK_OFF:
-                sayMessage = false;
+            case SPEAK_ON_OFF:
+                speakOnOff = !speakOnOff;
+                Log.w("sayMessage","is "+ speakOnOff);
 //                mBuilder.setSmallIcon(R.mipmap.icon_launcher);
 //                mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
                 break;
             default:
                 break;
         }
-        startForeground(100, mBuilder.build());
+//        startForeground(100, mBuilder.build());
+        updateRemoteViews();
         return START_STICKY;
     }
 
@@ -112,11 +105,11 @@ public class NotificationService extends Service {
         mRemoteViews.setOnClickPendingIntent(R.id.Stop_Now, stopSayPi);
 
         Intent popIntent = new Intent(this, NotificationService.class);
-        popIntent.putExtra("operation", (sayMessage)? SPEAK_OFF : SPEAK_ON);
+        popIntent.putExtra("operation", SPEAK_ON_OFF);
         PendingIntent popPI = PendingIntent.getService(mContext, 3, popIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 //        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
         mBuilder.setContentIntent(popPI);
-        mRemoteViews.setOnClickPendingIntent(R.id.say_Msg, popPI);
+        mRemoteViews.setOnClickPendingIntent(R.id.Speak, popPI);
 //        utils.log("speak on off",""+sayMessage);
     }
 
@@ -124,7 +117,10 @@ public class NotificationService extends Service {
 //        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
 //        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
 //        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
+        mRemoteViews.setImageViewResource(R.id.Speak, (speakOnOff) ? R.mipmap.speak_on: R.mipmap.speak_off);
         mRemoteViews.setImageViewResource(R.id.Stop_Now, R.mipmap.mute_right_now);
+        mNotificationManager.notify(100, mBuilder.build());
+
     }
 
     @Override

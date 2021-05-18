@@ -13,6 +13,4 @@ class AlertLine {
     public String getKey2() { return key2; }
     public String getTalk() { return talk; }
     public String getMemo() { return memo; }
-
-    public void setMemo(String memo) { this.memo = memo; }
 }

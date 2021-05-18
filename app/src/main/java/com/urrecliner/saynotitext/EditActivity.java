@@ -2,11 +2,14 @@ package com.urrecliner.saynotitext;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +52,7 @@ public class EditActivity extends AppCompatActivity {
         removeView = findViewById(R.id.action_remove);
         dupView = findViewById(R.id.action_dup);
         EditText tv = findViewById(R.id.text_table);
-        String [] lines = utils.readLines(new File(tableDirectory, nowFileName+".txt"));
+        String[] lines = utils.readLines(new File(tableDirectory, nowFileName + ".txt"));
         if (isAlertFile) {
             tv.setVisibility(View.GONE);
             buildAlertLines(lines);
@@ -66,11 +69,11 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
-    void buildAlertLines(String [] lines) {
+    void buildAlertLines(String[] lines) {
         alertLines = new ArrayList<>();
         for (int idx = 0; idx < lines.length; idx++) {
             String lGroup, lWho, lKey1, lKey2, lTalk, lMemo;
-            lines[idx] = lines[idx].replace("\\t","");
+            lines[idx] = lines[idx].replace("\\t", "");
             String[] strings = lines[idx].split(";");
             lMemo = (strings.length > 1) ? strings[1].trim() : "";
             strings = strings[0].split("\\^");
@@ -78,7 +81,7 @@ public class EditActivity extends AppCompatActivity {
             lWho = strings[1].trim();
             lKey1 = strings[2].trim();
             lKey2 = strings[3].trim();
-            lTalk = (strings.length > 4) ? strings[4].trim(): "";
+            lTalk = (strings.length > 4) ? strings[4].trim() : "";
             alertLines.add(new AlertLine(lGroup, lWho, lKey1, lKey2, lTalk, lMemo));
         }
         recyclerView = findViewById(R.id.lineList);
@@ -89,40 +92,39 @@ public class EditActivity extends AppCompatActivity {
     void writeTextFile(String outText) {
 
         try {
-            File targetFile = new File(tableDirectory,  nowFileName +".txt");
+            File targetFile = new File(tableDirectory, nowFileName + ".txt");
             FileWriter fileWriter = new FileWriter(targetFile, false);
 
             // Always wrap FileWriter in BufferedWriter.
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(outText);
             bufferedWriter.close();
-        }
-        catch(IOException ex) {
-            utils.logE("editor",nowFileName + "'\n"+ex.toString());
-            Toast.makeText(getApplicationContext(), "Write table error "+nowFileName,Toast.LENGTH_LONG).show();
+        } catch (IOException ex) {
+            utils.logE("editor", nowFileName + "'\n" + ex.toString());
+            Toast.makeText(getApplicationContext(), "Write table error " + nowFileName, Toast.LENGTH_LONG).show();
         }
     }
 
     String sortText(String txt) {
-        String [] arrText = txt.split("\n");
+        String[] arrText = txt.split("\n");
         Arrays.sort(arrText);
         StringBuilder sortedText = new StringBuilder();
-        for (String t: arrText)
+        for (String t : arrText)
             sortedText.append(t).append("\n");
         return sortedText.toString();
     }
 
     String sortPackage(String txt) {
-        String [] arrText = txt.split("\n");
+        String[] arrText = txt.split("\n");
         for (int i = 0; i < arrText.length; i++)
             arrText[i] = arrText[i].trim();
         Arrays.sort(arrText);
         StringBuilder sortedText = new StringBuilder();
-        for (String t: arrText) {
+        for (String t : arrText) {
             if (isPackageTable) {
-                String [] memo = t.split(";");
-                String [] fields = memo[0].split("\\^");
-                String oneLine = strPad(fields[0],14) + "^" + strPad(fields[1], 10) + "^"
+                String[] memo = t.split(";");
+                String[] fields = memo[0].split("\\^");
+                String oneLine = strPad(fields[0], 14) + "^" + strPad(fields[1], 10) + "^"
                         + strPad(fields[2], 40);
                 if (memo.length > 1)
                     oneLine += "; " + memo[1].trim();
@@ -142,6 +144,7 @@ public class EditActivity extends AppCompatActivity {
 
     final String blank = "                         ";
     final String del = String.copyValueOf(new char[]{(char) Byte.parseByte("7F", 16)});
+
     private String strPad(String s, int size) {
         s = s.trim();
         int chars = getByteLength(s);
@@ -149,7 +152,7 @@ public class EditActivity extends AppCompatActivity {
             return s;
         int padL = (size - chars) / 2;
         int padR = size - chars - padL;
-        return blank.substring(0, padL)+ s + blank.substring(0, padR);
+        return blank.substring(0, padL) + s + blank.substring(0, padR);
     }
 //
 //    private String blankPad(String s, int size) {
@@ -172,7 +175,7 @@ public class EditActivity extends AppCompatActivity {
                 // object Sort
                 alertLines.sort((obj1, obj2) -> (obj1.getGroup() + obj1.getWho()).compareTo((obj2.getGroup() + obj2.getWho())));
                 String sv = "sv";
-                int [] padLen = getMaxLengths();
+                int[] padLen = getMaxLengths();
                 StringBuilder s = new StringBuilder();
                 for (int i = 0; i < alertLines.size(); i++) {
                     AlertLine alertLine = alertLines.get(i);
@@ -188,6 +191,7 @@ public class EditActivity extends AppCompatActivity {
                     s.append(alertLine.getMemo()).append("\n");
                 }
                 writeTextFile(s.toString());
+
             } else {
                 TextView tv = findViewById(R.id.text_table);
                 String s = tv.getText().toString();
@@ -199,7 +203,7 @@ public class EditActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_rotate) {
             isRotate = !isRotate;
             this.setRequestedOrientation(
-                    (isRotate) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    (isRotate) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         return false;
     }

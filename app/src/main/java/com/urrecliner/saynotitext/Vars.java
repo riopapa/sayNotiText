@@ -34,7 +34,6 @@ class Vars {
     static String[] textIgnores = null;
     static String nowFileName;
 
-    static MediaPlayer mediaPlayer;
     static SharedPreferences sharePrefer;
 
     @SuppressLint("StaticFieldLeak")
@@ -46,7 +45,7 @@ class Vars {
     static Text2Speech text2Speech = null;
     static float ttsPitch = 1.2f;
     static float ttsSpeed = 1.4f;
-    static boolean sayMessage = true; /* default is say */
+    static boolean speakOnOff = true; /* default is say */
     static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
     static boolean isPhoneBusy = false;

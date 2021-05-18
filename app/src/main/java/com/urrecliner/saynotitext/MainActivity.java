@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
@@ -39,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar mSeekBarSpeed;
     private TextView mPitchView;
     private TextView mSpeedView;
-    TelephonyManager phoneManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

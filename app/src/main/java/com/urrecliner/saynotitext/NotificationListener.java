@@ -31,7 +31,7 @@ import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.saynotitext.Vars.sayMessage;
+import static com.urrecliner.saynotitext.Vars.speakOnOff;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
@@ -189,7 +189,7 @@ public class NotificationListener extends NotificationListenerService {
                         append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup, eWho, s);
                         append2App("/stocks/"+ eGroup + ".txt",eGroup, eWho, s);
                         append2App("/stocks/merged.txt",eGroup, eWho, s);
-                        if (sayMessage || kakaoTalk[aIdx].length() > 1) {
+                        if (speakOnOff || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
                             speechText(s, 55,"");
@@ -210,7 +210,8 @@ public class NotificationListener extends NotificationListenerService {
 
     private void sayNHStock() {
         beepBells();
-        logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText);
+        String s = eText.contains("매수") ? "주식 매수 확인": "";
+        logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText+ s);
         append2App("/_"+ packageNickName + ".txt", packageNickName, eWho, eText);
     }
 
