@@ -2,6 +2,7 @@ package com.urrecliner.saynotitext;
 
 import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.kakaoTalk;
+import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
@@ -167,8 +169,10 @@ public class NotificationListener extends NotificationListenerService {
         if (isInTable(eWho, kakaoIgnores) || isInTable(eText, kakaoPersons)) {
             return;
         }
-        if (eGroup == null)
-            logThenSpeech( eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
+        if (eGroup == null) {
+            logThenSpeech(eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
+            updateNotification(eWho+":"+eText);
+        }
         else
             groupTalk();
     }
@@ -193,6 +197,7 @@ public class NotificationListener extends NotificationListenerService {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
                             speechText(s, 55,"");
+                            updateNotification(eGroup+":"+eText);
                         }
                     }
                 }
@@ -210,9 +215,10 @@ public class NotificationListener extends NotificationListenerService {
 
     private void sayNHStock() {
         beepBells();
-        String s = eText.contains("매수") ? "주식 매수 확인": "";
-        logThenSpeech(packageNickName, eWho + "_로 연락옴. " + eText+ s);
+        String s = eText.contains("매수") ? " 주식 삼, 시세포착 ": "";
+        logThenSpeech(packageNickName, eWho + "_로 연락옴. " + s+ eText);
         append2App("/_"+ packageNickName + ".txt", packageNickName, eWho, eText);
+        updateNotification("NH "+eText);
     }
 
     private void sayTitleText() {
@@ -229,8 +235,16 @@ public class NotificationListener extends NotificationListenerService {
             return;
         eText = eText.replace("[Web발신]","");
         logThenSpeech(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
+        updateNotification("SMS "+eText);
     }
-    
+
+    private void updateNotification(String msg) {
+        Intent updateIntent = new Intent(mContext, NotificationService.class);
+        updateIntent.putExtra("operation", 1234);
+        updateIntent.putExtra("msg", (msg.length() > 45) ? msg.substring(0,44) : msg);
+        startService(updateIntent);
+    }
+
 //    private void dumpExtras(String eTitle, String Grp, String eText, String msgText){
 //        if (eText != null) {
 //            if (eText.length() > 100)

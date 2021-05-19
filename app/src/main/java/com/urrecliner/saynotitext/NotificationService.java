@@ -6,11 +6,18 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import static com.urrecliner.saynotitext.Vars.speakOnOff;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
@@ -25,6 +32,8 @@ public class NotificationService extends Service {
     private RemoteViews mRemoteViews;
     private static final int STOP_SAY = 10011;
     private static final int SPEAK_ON_OFF = 1003;
+    private static final int SHOW_MESSAGE = 1234;
+    String msgText;
 
     @Override
     public void onCreate() {
@@ -46,6 +55,7 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (utils == null) utils = new Utils();
+        msgText = null;
         int operation;
         try {
             operation = intent.getIntExtra("operation", -1);
@@ -53,13 +63,13 @@ public class NotificationService extends Service {
             utils.logE("operation",e.toString());
             operation = -1;
         }
-        boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
         createNotification();
-        if (isUpdate) {
-            updateRemoteViews();
-            startForeground(100, mBuilder.build());
-            return START_STICKY;
-        }
+//        boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
+//        if (isUpdate) {
+//            updateRemoteViews();
+//            startForeground(100, mBuilder.build());
+//            return START_STICKY;
+//        }
         switch (operation) {
             case STOP_SAY:
                 text2Speech.ttsStop();
@@ -69,6 +79,9 @@ public class NotificationService extends Service {
                 Log.w("sayMessage","is "+ speakOnOff);
 //                mBuilder.setSmallIcon(R.mipmap.icon_launcher);
 //                mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
+                break;
+            case SHOW_MESSAGE:
+                msgText = intent.getStringExtra("msg");
                 break;
             default:
                 break;
@@ -114,11 +127,16 @@ public class NotificationService extends Service {
     }
 
     private void updateRemoteViews() {
-//        mRemoteViews.setImageViewResource(R.id.reLoad, R.mipmap.ic_reloading);
-//        mRemoteViews.setImageViewResource(R.id.popCast_OnOff, (isPopCastOn)? R.mipmap.popcast_off :R.mipmap.popcast_on);
-//        mRemoteViews.setImageViewResource(R.id.stock_OnOff, (isSayStockOn)? R.mipmap.say_stock_off :R.mipmap.say_stock_on);
         mRemoteViews.setImageViewResource(R.id.Speak, (speakOnOff) ? R.mipmap.speak_on: R.mipmap.speak_off);
-        mRemoteViews.setImageViewResource(R.id.Stop_Now, R.mipmap.mute_right_now);
+//        mRemoteViews.setImageViewResource(R.id.Stop_Now, R.mipmap.mute_right_now);
+        if (msgText == null) {
+            mRemoteViews.setViewVisibility(R.id.msgLine, View.INVISIBLE);
+        } else {
+            mRemoteViews.setViewVisibility(R.id.msgLine, View.VISIBLE);
+            String s = new SimpleDateFormat("HH:mm:ss", Locale.KOREA).format(new Date());
+            mRemoteViews.setTextViewText(R.id.msgTime, s);
+            mRemoteViews.setTextViewText(R.id.msgText, msgText);
+        }
         mNotificationManager.notify(100, mBuilder.build());
 
     }
