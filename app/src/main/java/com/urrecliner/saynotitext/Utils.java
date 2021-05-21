@@ -113,7 +113,6 @@ class Utils {
             if (!directoryDate.exists()) {
                 if (directoryDate.mkdirs()) {
                     deleteOldFiles();
-                    log("Directory", directoryDate.toString() + " created ");
                 }
             }
         } catch (Exception e) {
@@ -189,9 +188,18 @@ class Utils {
         for (File file : files) {
             String shortFileName = file.getName();
             if (myCollator.compare(shortFileName, weekAgo) < 0) {
-                deleteRecursive(file);
+                deleteFolder(file);
+//                deleteRecursive(file);
             }
         }
+    }
+
+    private void deleteFolder(File file) {
+        String deleteCmd = "rm -r " + file.toString();
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            runtime.exec(deleteCmd);
+        } catch (IOException e) { }
     }
 
     /* delete directory and files under that directory */

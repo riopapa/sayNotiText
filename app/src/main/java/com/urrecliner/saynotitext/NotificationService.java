@@ -130,10 +130,10 @@ public class NotificationService extends Service {
         mRemoteViews.setImageViewResource(R.id.Speak, (speakOnOff) ? R.mipmap.speak_on: R.mipmap.speak_off);
 //        mRemoteViews.setImageViewResource(R.id.Stop_Now, R.mipmap.mute_right_now);
         if (msgText == null) {
-            mRemoteViews.setViewVisibility(R.id.msgLine, View.INVISIBLE);
+            mRemoteViews.setViewVisibility(R.id.msgLine, View.GONE);
         } else {
             mRemoteViews.setViewVisibility(R.id.msgLine, View.VISIBLE);
-            String s = new SimpleDateFormat("HH:mm:ss", Locale.KOREA).format(new Date());
+            String s = new SimpleDateFormat("HH:mm", Locale.KOREA).format(new Date());
             mRemoteViews.setTextViewText(R.id.msgTime, s);
             mRemoteViews.setTextViewText(R.id.msgText, msgText);
         }

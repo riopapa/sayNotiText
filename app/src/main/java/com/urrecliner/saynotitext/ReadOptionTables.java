@@ -12,6 +12,7 @@ import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
 import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.saynotitext.Vars.kakaoSaved;
 import static com.urrecliner.saynotitext.Vars.kakaoTalk;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
@@ -62,6 +63,7 @@ class ReadOptionTables {
         kakaoAKey2 = new String[kakaoAlerts.length];   // 인식 문자 2
         KakaoAGroupWho = new String[kakaoAlerts.length];   // 인식 문자
         kakaoTalk = new String[kakaoAlerts.length];   // 무조건 speech
+        kakaoSaved = new String[kakaoAlerts.length];   // 무조건 speech
         for (int idx = 0; idx < kakaoAlerts.length; idx++) {
             String []strings = kakaoAlerts[idx].split("\\^");
             try {
@@ -71,6 +73,7 @@ class ReadOptionTables {
                 kakaoAKey2[idx] = strings[3].trim();
                 kakaoTalk[idx] = (strings.length > 4)? strings[4].trim():""; // if  one more +a sign then true;
                 KakaoAGroupWho[idx] = kakaoAGroup[idx] + kakaoAWho[idx];
+                kakaoSaved[idx] = "";
 //                utils.log("array "+idx,kakaoAGroup[idx]+" "+kakaoAWho[idx]+" - "+kakaoAKey1[idx]+" - "+kakaoAKey2[idx]+" "+KakaoAGroupWho[idx]);
             } catch (Exception e) {
                 Toast.makeText(mContext, "Alert Table Error on line "+(idx+1)+" > "+kakaoAlerts[idx],Toast.LENGTH_LONG).show();

@@ -25,6 +25,7 @@ import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
 import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
+import static com.urrecliner.saynotitext.Vars.kakaoSaved;
 import static com.urrecliner.saynotitext.Vars.kakaoTalk;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
@@ -53,7 +54,7 @@ public class NotificationListener extends NotificationListenerService {
     String eWho, eText, lastWho;
     String eGroup = null;
     String packageFullName, packageNickName, packageType;
-    String oldText = "", s;
+    String savedText = "", s;
     AudioManager audioManager;
 
     @Override
@@ -141,6 +142,7 @@ public class NotificationListener extends NotificationListenerService {
                 break;
             case TO_TEXT_ONLY :
                 logThenSpeech(packageNickName,  packageNickName + " 로 부터 " + eText);
+                updateNotification("["+packageNickName+"]"+eText);
                 break;
             case AN_ANDROID :
                 sayAndroid();
@@ -149,8 +151,9 @@ public class NotificationListener extends NotificationListenerService {
                 sayNHStock();
                 break;
             default :
-                if (!isInTable(eWho, systemIgnores))
+                if (!isInTable(eWho, systemIgnores)) {
                     logThenSpeech("unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
+                }
                 break;
         }
     }
@@ -171,14 +174,14 @@ public class NotificationListener extends NotificationListenerService {
         }
         if (eGroup == null) {
             logThenSpeech(eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
-            updateNotification(eWho+":"+eText);
+            updateNotification("["+eWho+"]"+eText);
         }
         else
             groupTalk();
     }
 
     private void groupTalk() {
-        if (eText.equals(oldText))
+        if (eText.equals(savedText))
             return;
         utils.log(eGroup+";"+eWho, eText);
         if (isInTable(eGroup, kakaoIgnores) || isInTable(eWho, kakaoPersons))
@@ -187,6 +190,8 @@ public class NotificationListener extends NotificationListenerService {
         if (isInTable(eGroup, kakaoAGroup)) {   // 특정 단톡방
                 int aIdx = getAlertIndex(eGroup + eWho);
                 if (aIdx != -1) { // stock open chat
+                    if (eText.equals(kakaoSaved[aIdx])) // 같은 소리 계속 하는 건 빼자
+                        return;
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
                         beepBells();
                         s = (eText.length()>120) ? eText.substring(0, 119): eText;
@@ -197,13 +202,14 @@ public class NotificationListener extends NotificationListenerService {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
                             speechText(s, 55,"");
-                            updateNotification(eGroup+":"+eText);
+                            updateNotification("["+eGroup+"]"+eText);
                         }
                     }
+                    kakaoSaved[aIdx] = eText;
                 }
         } else
              logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
-        oldText = eText;
+        savedText = eText;
     }
 
     private void sayAndroid() {
@@ -218,7 +224,7 @@ public class NotificationListener extends NotificationListenerService {
         String s = eText.contains("매수") ? " 주식 삼, 시세포착 ": "";
         logThenSpeech(packageNickName, eWho + "_로 연락옴. " + s+ eText);
         append2App("/_"+ packageNickName + ".txt", packageNickName, eWho, eText);
-        updateNotification("NH "+eText);
+        updateNotification("[NH]"+eText);
     }
 
     private void sayTitleText() {
@@ -235,13 +241,13 @@ public class NotificationListener extends NotificationListenerService {
             return;
         eText = eText.replace("[Web발신]","");
         logThenSpeech(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
-        updateNotification("SMS "+eText);
+        updateNotification("[SMS]"+eText);
     }
 
     private void updateNotification(String msg) {
         Intent updateIntent = new Intent(mContext, NotificationService.class);
         updateIntent.putExtra("operation", 1234);
-        updateIntent.putExtra("msg", (msg.length() > 45) ? msg.substring(0,44) : msg);
+        updateIntent.putExtra("msg", (msg.length() > 91) ? msg.substring(0,90) : msg);
         startService(updateIntent);
     }
 
