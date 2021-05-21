@@ -194,14 +194,14 @@ public class NotificationListener extends NotificationListenerService {
                         return;
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
                         beepBells();
-                        s = (eText.length()>120) ? eText.substring(0, 119): eText;
+                        s = (eText.length()>110) ? eText.substring(0, 109): eText;
                         append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup, eWho, s);
                         append2App("/stocks/"+ eGroup + ".txt",eGroup, eWho, s);
                         append2App("/stocks/merged.txt",eGroup, eWho, s);
                         if (speakOnOff || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
-                            speechText(s, 55,"");
+                            speechText(s, 45,"");
                             updateNotification("["+eGroup+"]"+eText);
                         }
                     }

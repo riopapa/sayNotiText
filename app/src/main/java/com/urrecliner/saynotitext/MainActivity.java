@@ -44,7 +44,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        askPermission();
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);
+            Permission.ask(this, this, info);
+        } catch (Exception e) {
+            Log.e("Permission", "No Permission "+e.toString());
+        }
+
         utils = new Utils();
         mContext = this;
         mActivity = this;
@@ -196,73 +202,5 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
         // to ignore back key
     }
-
-    // ↓ ↓ ↓ P E R M I S S I O N   RELATED /////// ↓ ↓ ↓ ↓  with no lambda
-    private final static int ALL_PERMISSIONS_RESULT = 101;
-    ArrayList permissionsToRequest;
-    ArrayList<String> permissionsRejected = new ArrayList<>();
-    String [] permissions;
-
-    private void askPermission() {
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);
-            permissions = info.requestedPermissions;//This array contain
-        } catch (Exception e) {
-            Log.e("Permission", "No Permission "+e.toString());
-        }
-
-        permissionsToRequest = findUnAskedPermissions();
-        if (permissionsToRequest.size() != 0) {
-            requestPermissions((String[]) permissionsToRequest.toArray(new String[0]),
-//            requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]),
-                    ALL_PERMISSIONS_RESULT);
-        }
-    }
-
-    private ArrayList findUnAskedPermissions() {
-        ArrayList <String> result = new ArrayList<String>();
-        for (String perm : permissions) if (hasPermission(perm)) result.add(perm);
-        return result;
-    }
-    private boolean hasPermission(String permission) {
-        return (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == ALL_PERMISSIONS_RESULT) {
-            for (Object perms : permissionsToRequest) {
-                if (hasPermission((String) perms)) {
-                    permissionsRejected.add((String) perms);
-                }
-            }
-            if (permissionsRejected.size() > 0) {
-                if (shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
-                    String msg = "These permissions are mandatory for the application. Please allow access.";
-                    showDialog(msg);
-                }
-            }
-        }
-    }
-    private void showDialog(String msg) {
-        showMessageOKCancel(msg,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        MainActivity.this.requestPermissions(permissionsRejected.toArray(
-                                new String[0]), ALL_PERMISSIONS_RESULT);
-                    }
-                });
-    }
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
-    }
-
-// ↑ ↑ ↑ ↑ P E R M I S S I O N    RELATED /////// ↑ ↑ ↑
 
 }
