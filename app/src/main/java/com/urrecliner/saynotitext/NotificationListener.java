@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.widget.TextView;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
 import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
@@ -27,7 +30,9 @@ import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
 import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.kakaoSaved;
 import static com.urrecliner.saynotitext.Vars.kakaoTalk;
+import static com.urrecliner.saynotitext.Vars.mActivity;
 import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saynotitext.Vars.oldMessage;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
@@ -38,6 +43,7 @@ import static com.urrecliner.saynotitext.Vars.speakOnOff;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.textIgnores;
+import static com.urrecliner.saynotitext.Vars.tvOldMessage;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 public class NotificationListener extends NotificationListenerService {
@@ -100,14 +106,6 @@ public class NotificationListener extends NotificationListenerService {
                 return;
             eText = eText.replaceAll("[\\n]", "|");
         } catch (Exception e) {
-//            Set<String> keys = extras.keySet();
-//            Iterator<String> it = keys.iterator();
-//            utils.logE("$$extra dump /// ","Dumping Intent start");
-//            logThenSpeech("DUMP extra","Dumping Intent start size= "+keys.size());
-//            while (it.hasNext()) {
-//                String key = it.next();
-//                logThenSpeech("DUMP extra" ,"key = ["+ extras.get(key)+"]");
-//            }
             return;
         }
         if (isInTable(eText, textIgnores) || isInTable(eWho, textIgnores) || isInTable(eGroup, textIgnores))
@@ -141,7 +139,7 @@ public class NotificationListener extends NotificationListenerService {
                 sayTitleText();
                 break;
             case TO_TEXT_ONLY :
-                logThenSpeech(packageNickName,  packageNickName + " 로 부터 " + eText);
+                logBeepThenSpeak(packageNickName,  packageNickName + " 로 부터 " + eText);
                 updateNotification("["+packageNickName+"]"+eText);
                 break;
             case AN_ANDROID :
@@ -152,7 +150,8 @@ public class NotificationListener extends NotificationListenerService {
                 break;
             default :
                 if (!isInTable(eWho, systemIgnores)) {
-                    logThenSpeech("unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
+                    logBeepThenSpeak("unknown " + packageFullName, "unknown " + eWho + "_text:" + eText);
+                    updateNotification("["+packageNickName+"]"+eText);
                 }
                 break;
         }
@@ -173,7 +172,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         if (eGroup == null) {
-            logThenSpeech(eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
+            logBeepThenSpeak(eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
             updateNotification("["+eWho+"]"+eText);
         }
         else
@@ -193,22 +192,21 @@ public class NotificationListener extends NotificationListenerService {
                     if (eText.equals(kakaoSaved[aIdx])) // 같은 소리 계속 하는 건 빼자
                         return;
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
-                        beepBells();
                         s = (eText.length()>110) ? eText.substring(0, 109): eText;
-                        append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup, eWho, s);
+//                        append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup, eWho, s);
                         append2App("/stocks/"+ eGroup + ".txt",eGroup, eWho, s);
-                        append2App("/stocks/merged.txt",eGroup, eWho, s);
+//                        append2App("/stocks/merged.txt",eGroup, eWho, s);
                         if (speakOnOff || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
                                     eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
-                            speechText(s, 45,"");
+                            beepNSpeak(s, 45,"");
                             updateNotification("["+eGroup+"]"+eText);
                         }
                     }
                     kakaoSaved[aIdx] = eText;
                 }
         } else
-             logThenSpeech(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
+             logBeepThenSpeak(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
         savedText = eText;
     }
 
@@ -216,13 +214,12 @@ public class NotificationListener extends NotificationListenerService {
         if (eWho == null || eText == null || eText.equals("")
                 || (isInTable(eWho, systemIgnores) || isInTable(eText, systemIgnores)))
             return;
-        logThenSpeech(packageFullName, " Android Title [" + eWho + "], Text =" + eText);
+        logBeepThenSpeak(packageFullName, " Android Title [" + eWho + "], Text =" + eText);
     }
 
     private void sayNHStock() {
-        beepBells();
         String s = eText.contains("매수") ? " 주식 삼, 시세포착 ": "";
-        logThenSpeech(packageNickName, eWho + "_로 연락옴. " + s+ eText);
+        logBeepThenSpeak(packageNickName, eWho + "_로 연락옴. " + s+ eText);
         append2App("/_"+ packageNickName + ".txt", packageNickName, eWho, eText);
         updateNotification("[NH]"+eText);
     }
@@ -233,22 +230,30 @@ public class NotificationListener extends NotificationListenerService {
         if (isInTable(eWho,systemIgnores) || isInTable(eText, textIgnores) || isInTable(eWho, textIgnores))
             return;
         String groupName = (eGroup == null) ? " " : "[" + eGroup+" 팀]의 ";
-        logThenSpeech(packageNickName,"["+packageNickName + "] 에서 " + groupName + eWho + "_로 부터. " + eText);
+        logBeepThenSpeak(packageNickName,"["+packageNickName + "] 에서 " + groupName + eWho + "_로 부터. " + eText);
     }
 
     private void saySMS() {
         if (isOnlyPhoneNumber(eWho) || isInTable(eWho, smsIgnores) || isInTable(eText, textIgnores))
             return;
         eText = eText.replace("[Web발신]","");
-        logThenSpeech(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
+        logBeepThenSpeak(eWho + "_" + packageNickName , eWho + " 로부터 문자메시지 왔음. " + eText);
         updateNotification("[SMS]"+eText);
     }
 
     private void updateNotification(String msg) {
         Intent updateIntent = new Intent(mContext, NotificationService.class);
+        s = (msg.length() > 91) ? msg.substring(0,90) : msg;
         updateIntent.putExtra("operation", 1234);
-        updateIntent.putExtra("msg", (msg.length() > 91) ? msg.substring(0,90) : msg);
+        updateIntent.putExtra("msg", s);
         startService(updateIntent);
+        oldMessage = new SimpleDateFormat("HH:mm ", Locale.KOREA).format(new Date()) + s;
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvOldMessage.setText(oldMessage);
+            }
+        });
     }
 
 //    private void dumpExtras(String eTitle, String Grp, String eText, String msgText){
@@ -298,26 +303,28 @@ public class NotificationListener extends NotificationListenerService {
     }
 
 //    private void logThenSpeech(String logFile, String text, Integer... txtLen) {
-    private void logThenSpeech(String logFile, String text) {
-        utils.append2file(logFile + ".txt", ((isPhoneBusy)? "폰 비지 ":" ")+ text);
-        if (!isPhoneBusy)
-            speechText(text, 200, "등등");
+    private void logBeepThenSpeak(String logFile, String text) {
+        utils.append2file(logFile + ".txt", ((isPhoneBusy)? "폰 비지 busy ":" ")+ text);
+        if (!isPhoneBusy) {
+            if ((isHeadphonesPlugged() || isRingerON()))
+                beepNSpeak(text, 200, " 등등");
+        }
     }
 
-    private void speechText(String text, int i, String added) {
+    private void beepNSpeak(String text, int i, String added) {
         if (text2Speech == null) {
-            utils.logE("tts"," not READY ");
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
         }
+        utils.beepOnce(1);
         if ((isHeadphonesPlugged() || isRingerON())) {
-            if (text.length() > i)
-                text = text.substring(0, i) + added;
-            text2Speech.speak(text);
+            final String fText = (text.length() > i)? text.substring(0, i) + added : text;
+            new Timer().schedule(new TimerTask() {
+                public void run () {
+                    text2Speech.speak(fText);
+                }
+            }, 1000);
         }
-    }
-    static void beepBells() {
-        utils.beepOnce(0); utils.beepOnce(1);
     }
 
     private boolean isRingerON() {

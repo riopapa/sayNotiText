@@ -1,14 +1,11 @@
 package com.urrecliner.saynotitext;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
@@ -19,7 +16,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,9 +23,11 @@ import java.util.TimerTask;
 import static com.urrecliner.saynotitext.Vars.mActivity;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
+import static com.urrecliner.saynotitext.Vars.oldMessage;
 import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
+import static com.urrecliner.saynotitext.Vars.tvOldMessage;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         ab.setDisplayUseLogoEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
 
+        tvOldMessage = findViewById(R.id.oldMessage);
+        tvOldMessage.setText(oldMessage);
         DecimalFormat df = new DecimalFormat("0.0");
         int pitch = sharePrefer.getInt("pitch", 70);
         mSeekBarPitch = findViewById(R.id.seek_bar_pitch);

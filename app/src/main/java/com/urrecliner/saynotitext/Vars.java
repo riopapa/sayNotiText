@@ -8,6 +8,7 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Environment;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +41,9 @@ class Vars {
     @SuppressLint("StaticFieldLeak")
     static Context mContext = null;
     static Activity mActivity = null;
+    static TextView tvOldMessage;
+    static String oldMessage = "";
+
     static AudioManager mAudioManager = null;
     static AudioFocusRequest mFocusGain = null;
 

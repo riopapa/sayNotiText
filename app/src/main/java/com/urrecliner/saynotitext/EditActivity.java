@@ -2,14 +2,11 @@ package com.urrecliner.saynotitext;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,15 +36,15 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_list);
 
         isAlertFile = nowFileName.equals("kakaoAlerts");
-        if (isAlertFile)
-            isRotate = true;
-        if (nowFileName.equals("packageTables"))
-            isRotate = true;
-        if (isRotate)
-            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        if (isAlertFile)
+//            isRotate = true;
+//        if (nowFileName.equals("packageTables"))
+//            isRotate = true;
+//        if (isRotate)
+//            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         isPackageTable = nowFileName.equals("packageTables");
         removeView = findViewById(R.id.action_remove);
         dupView = findViewById(R.id.action_dup);
