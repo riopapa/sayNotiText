@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.widget.TextView;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -247,13 +246,8 @@ public class NotificationListener extends NotificationListenerService {
         updateIntent.putExtra("operation", 1234);
         updateIntent.putExtra("msg", s);
         startService(updateIntent);
-        oldMessage = new SimpleDateFormat("HH:mm ", Locale.KOREA).format(new Date()) + s;
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tvOldMessage.setText(oldMessage);
-            }
-        });
+        squeezeOldMessage(new SimpleDateFormat("HH:mm ", Locale.KOREA).format(new Date()) + s);
+        mActivity.runOnUiThread(() -> tvOldMessage.setText(oldMessage));
     }
 
 //    private void dumpExtras(String eTitle, String Grp, String eText, String msgText){
@@ -265,6 +259,17 @@ public class NotificationListener extends NotificationListenerService {
 //        String dumpText = "TIT:" + eTitle + ", Group:" + Grp + ", TEXT:" + eText + ", MESSAGE:" + msgText;
 //        utils.log(logID, dumpText);
 //    }
+
+    void squeezeOldMessage(String sIn) {
+        oldMessage += sIn + "\n";
+        String[] s = oldMessage.split("\n");
+        if (s.length > 4) {
+            oldMessage = "";
+            for (int i = s.length - 4; i < s.length; i++) {
+                oldMessage = oldMessage + s[i] + "\n";
+            }
+        }
+    }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) { }
@@ -349,7 +354,6 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private final SimpleDateFormat hourMinFormat = new SimpleDateFormat("yy-MM-dd HH.mm", Locale.KOREA);
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd", Locale.KOREA);
 
     private void append2App(String filename, String group, String who, String textLine) {
         BufferedWriter bw = null;
