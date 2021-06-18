@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
@@ -12,6 +14,7 @@ import java.util.Locale;
 
 import static com.urrecliner.saynotitext.Vars.alertLines;
 import static com.urrecliner.saynotitext.Vars.linePos;
+import static com.urrecliner.saynotitext.Vars.mContext;
 
 public class EditAlertActivity extends AppCompatActivity {
 
@@ -51,7 +54,8 @@ public class EditAlertActivity extends AppCompatActivity {
             finish();
         } else if (item.getItemId() == R.id.action_dup) {
             alertLines.add(linePos, alertLine);
-            eTMemo.setText(new SimpleDateFormat("MM-dd", Locale.KOREA).format(new Date()));
+            Toast.makeText(mContext,"Duplicated",Toast.LENGTH_LONG).show();
+            eTMemo.setText(new SimpleDateFormat("MM/dd HH:mm", Locale.KOREA).format(new Date()));
         } else if (item.getItemId() == R.id.action_remove) {
             alertLines.remove(linePos);
             finish();

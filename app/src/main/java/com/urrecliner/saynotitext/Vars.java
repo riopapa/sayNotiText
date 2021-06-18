@@ -14,8 +14,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 class Vars {
-    static File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
-    static File tableDirectory = new File(Environment.getExternalStorageDirectory(),"download/sayNoti");
+    static File packageDirectory = new File(Environment.getExternalStorageDirectory(), "_SayNoti");
+    static File tableDirectory = new File(Environment.getExternalStorageDirectory(),"download/_sayNoti");
     static String[] packageIgnores = null;  // ignore some package messages
     static String[] packageTypes = null;    // tt: text with title, to: text only, sm: sms ...
     static String[] packageNickNames = null;

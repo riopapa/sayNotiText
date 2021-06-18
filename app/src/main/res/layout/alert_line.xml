@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/textFore"
+        android:background="@color/columnColor1"
         android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/textFore"
+        android:background="@color/columnColor2"
         android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
@@ -37,6 +39,7 @@
         android:gravity="center"
         android:text="@string/todo"
         android:textColor="@color/textFore"
+        android:background="@color/columnColor1"
         android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
@@ -49,6 +52,7 @@
         android:gravity="center"
         android:text="@string/todo"
         android:textColor="@color/textFore"
+        android:background="@color/columnColor2"
         android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
@@ -61,6 +65,7 @@
         android:gravity="center"
         android:text="@string/todo"
         android:textColor="@color/textFore"
+        android:background="@color/columnColor1"
         android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />
@@ -73,6 +78,7 @@
         android:gravity="center"
         android:text="@string/todo"
         android:textColor="@color/textFore"
+        android:background="@color/columnColor2"
         android:textSize="@dimen/line_font_size"
         android:autofillHints="@string/todo"
         />

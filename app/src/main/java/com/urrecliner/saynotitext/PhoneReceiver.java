@@ -23,21 +23,20 @@ public class PhoneReceiver extends BroadcastReceiver {
             number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
         } catch (Exception e) {
             stateStr = "STATE Error";
-            number = "none";
+            number = null;
         }
         utils.log("^phone^",  " stateStr=" + stateStr + " number=" + number);
-        if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-            isPhoneBusy = false;
-            if (number != null)
+        if (number != null) {
+            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                isPhoneBusy = false;
                 Toast.makeText(mContext, "\nIDLE\n" + number + "\nIDLE", Toast.LENGTH_LONG).show();
-        } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-            isPhoneBusy = true;
-            if (number != null)
-                Toast.makeText(mContext, "\nOFFHOOK\n"+number+"\nOFFHOOK\n", Toast.LENGTH_LONG).show();
-        } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-            isPhoneBusy = true;
-            if (number != null)
-                Toast.makeText(mContext, "\nRING\n"+number+"\nRING\n", Toast.LENGTH_LONG).show();
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                isPhoneBusy = true;
+                Toast.makeText(mContext, "\nOFFHOOK\n" + number + "\nOFFHOOK\n", Toast.LENGTH_LONG).show();
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                isPhoneBusy = true;
+                Toast.makeText(mContext, "\nRING\n" + number + "\nRING\n", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

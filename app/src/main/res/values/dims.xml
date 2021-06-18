@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="line_font_size">18sp</dimen>
+    <dimen name="line_font_size">16sp</dimen>
     <dimen name="edit_font_size">20sp</dimen>
     <dimen name="table_font_size">20sp</dimen>
 </resources>

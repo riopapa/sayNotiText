@@ -10,6 +10,8 @@ import android.os.Environment;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -122,11 +124,6 @@ public class NotificationListener extends NotificationListenerService {
         lastAppName = packageFullName;
         packageType = getPackageType(packageFullName);
         packageNickName = getPackageNickName(packageFullName);
-
-//        dumpExtras(eTitle, Grp, eText, msgText);
-
-//        utils.log("log", "Type "+packageType+", Full "+packageFullName+", Nick "+packageNickName+
-//                ", who "+eWho+", text "+((eText.length()> 50)? eText.substring(0,49):eText));
         switch (packageType) {
             case KK_KAKAO :
                 sayKaTalk();
@@ -193,7 +190,7 @@ public class NotificationListener extends NotificationListenerService {
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
                         s = (eText.length()>110) ? eText.substring(0, 109): eText;
 //                        append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup, eWho, s);
-                        append2App("/stocks/"+ eGroup + ".txt",eGroup, eWho, s);
+                        append2App("/_stocks/"+ eGroup + ".txt",eGroup, eWho, s);
 //                        append2App("/stocks/merged.txt",eGroup, eWho, s);
                         if (speakOnOff || kakaoTalk[aIdx].length() > 1) {
                             s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
@@ -242,7 +239,7 @@ public class NotificationListener extends NotificationListenerService {
 
     private void updateNotification(String msg) {
         Intent updateIntent = new Intent(mContext, NotificationService.class);
-        s = (msg.length() > 91) ? msg.substring(0,90) : msg;
+        s = (msg.length() > 81) ? msg.substring(0,80) : msg;
         updateIntent.putExtra("operation", 1234);
         updateIntent.putExtra("msg", s);
         startService(updateIntent);
@@ -262,10 +259,10 @@ public class NotificationListener extends NotificationListenerService {
 
     void squeezeOldMessage(String sIn) {
         oldMessage += sIn + "\n";
-        String[] s = oldMessage.split("\n");
-        if (s.length > 4) {
+        if (StringUtils.countMatches(oldMessage, "\n") > 7) {
+            String[] s = oldMessage.split("\n");
             oldMessage = "";
-            for (int i = s.length - 4; i < s.length; i++) {
+            for (int i = s.length - 7; i < s.length; i++) {
                 oldMessage = oldMessage + s[i] + "\n";
             }
         }

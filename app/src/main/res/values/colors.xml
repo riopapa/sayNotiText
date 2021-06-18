@@ -3,4 +3,6 @@
     <color name="colorPrimary">#778FA8</color>
     <color name="colorLine">#DADDB9</color>
     <color name="textFore">#222233</color>
+    <color name="columnColor1">#FFFFED</color>
+    <color name="columnColor2">#F3F3D0</color>
 </resources>
