@@ -3,6 +3,7 @@ package com.urrecliner.saynotitext;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
 import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
@@ -11,7 +12,6 @@ import static com.urrecliner.saynotitext.Vars.kakaoAWho;
 import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
 import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.kakaoSaved;
 import static com.urrecliner.saynotitext.Vars.kakaoTalk;
 import static com.urrecliner.saynotitext.Vars.mContext;
@@ -49,7 +49,6 @@ class ReadOptionTables {
 
         packageIgnores =  readOptionFile("packageIgnores");
         kakaoIgnores =  readOptionFile("kakaoIgnores");
-        kakaoPersons =  readOptionFile("kakaoPersons");
         kakaoAlerts =  readOptionFile("kakaoAlerts");
         smsIgnores =  readOptionFile("smsIgnores");
         systemIgnores =  readOptionFile("systemIgnores");

@@ -22,7 +22,6 @@ class Vars {
     static String[] packageIncludeNames = null;
     static String[] packageTables = null;
     static String[] kakaoIgnores = null;
-    static String[] kakaoPersons = null;
     static String[] kakaoAlerts = null;
     static String[] kakaoAGroup = null;
     static String[] kakaoAWho = null;
@@ -51,7 +50,6 @@ class Vars {
     static float ttsPitch = 1.2f;
     static float ttsSpeed = 1.4f;
     static boolean speakOnOff = true; /* default is say */
-    static ReadOptionTables readOptionTables = null;
     static Utils utils = null;
     static boolean isPhoneBusy = false;
 

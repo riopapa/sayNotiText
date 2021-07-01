@@ -28,7 +28,6 @@ import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
 import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
 import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
 import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.saynotitext.Vars.kakaoPersons;
 import static com.urrecliner.saynotitext.Vars.kakaoSaved;
 import static com.urrecliner.saynotitext.Vars.kakaoTalk;
 import static com.urrecliner.saynotitext.Vars.mActivity;
@@ -38,7 +37,6 @@ import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
 import static com.urrecliner.saynotitext.Vars.packageNickNames;
 import static com.urrecliner.saynotitext.Vars.packageTypes;
-import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.smsIgnores;
 import static com.urrecliner.saynotitext.Vars.speakOnOff;
 import static com.urrecliner.saynotitext.Vars.systemIgnores;
@@ -79,7 +77,8 @@ public class NotificationListener extends NotificationListenerService {
             text2Speech = new Text2Speech();
             text2Speech.initiateTTS(getApplicationContext());
         }
-        readyTables();
+        if (packageIgnores == null)
+            new ReadOptionTables().read();
 
         packageFullName = sbn.getPackageName().toLowerCase();
         if (packageFullName.equals("") || isInTable(packageFullName, packageIgnores)) {
@@ -153,20 +152,11 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    private void readyTables() {
-        if (packageIgnores == null) {
-            utils.logE("table","** not READY **");
-            readOptionTables = new ReadOptionTables();
-            readOptionTables.read();
-        }
-    }
-
     private void sayKaTalk() {
         if (eText == null)
             return;
-        if (isInTable(eWho, kakaoIgnores) || isInTable(eText, kakaoPersons)) {
+        if (isInTable(eWho, kakaoIgnores))
             return;
-        }
         if (eGroup == null) {
             logBeepThenSpeak(eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
             updateNotification("["+eWho+"]"+eText);
@@ -179,31 +169,52 @@ public class NotificationListener extends NotificationListenerService {
         if (eText.equals(savedText))
             return;
         utils.log(eGroup+";"+eWho, eText);
-        if (isInTable(eGroup, kakaoIgnores) || isInTable(eWho, kakaoPersons))
+        if (isInTable(eGroup, kakaoIgnores))
             return;
 
         if (isInTable(eGroup, kakaoAGroup)) {   // 특정 단톡방
-                int aIdx = getAlertIndex(eGroup + eWho);
+                int aIdx = getAlertIndex(eGroup + eWho, 0);
                 if (aIdx != -1) { // stock open chat
                     if (eText.equals(kakaoSaved[aIdx])) // 같은 소리 계속 하는 건 빼자
                         return;
                     if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
-                        s = (eText.length()>110) ? eText.substring(0, 109): eText;
-//                        append2App("_stock "+dateFormat.format(new Date()) + ".txt",eGroup, eWho, s);
-                        append2App("/_stocks/"+ eGroup + ".txt",eGroup, eWho, s);
-//                        append2App("/stocks/merged.txt",eGroup, eWho, s);
-                        if (speakOnOff || kakaoTalk[aIdx].length() > 1) {
-                            s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
-                                    eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
-                            beepNSpeak(s, 45,"");
-                            updateNotification("["+eGroup+"]"+eText);
-                        }
+                        sayStockAlert(aIdx);
+                    } else {
+                       while (++aIdx < KakaoAGroupWho.length) { // 한사람이 여러 키워드를 말할 수도 있어서 로직 추가
+                           aIdx = getAlertIndex(eGroup + eWho, aIdx);
+                           if (aIdx >= 0 && eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx]))
+                               sayStockAlert(aIdx);
+                           else
+                               break;
+                       }
                     }
-                    kakaoSaved[aIdx] = eText;
                 }
         } else
              logBeepThenSpeak(eGroup +"_단톡", "단톡방 [" + eGroup + "] 에서 [" + eWho + "] 님이; " + eText);
         savedText = eText;
+    }
+
+    private int getAlertIndex(String text, int sIdx) {  // sIdx is used for same person with diff keys
+        for (int idx = sIdx; idx < KakaoAGroupWho.length; idx++) {
+            int compared= text.compareTo(KakaoAGroupWho[idx]);
+            if (compared == 0)
+                return idx;
+            if (compared < 0)
+                return -1;
+        }
+        return -1;
+    }
+
+    private void sayStockAlert(int aIdx) {
+        s = (eText.length()>110) ? eText.substring(0, 109): eText;
+        append2App("/_stocks/"+ eGroup + ".txt",eGroup, eWho, s);
+        kakaoSaved[aIdx] = eText;
+        if (speakOnOff || kakaoTalk[aIdx].length() > 1) {
+            s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
+                    eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
+            beepNSpeak(s, 45,"");
+            updateNotification("["+eGroup+":"+eWho+"]"+eText);
+        }
     }
 
     private void sayAndroid() {
@@ -217,7 +228,7 @@ public class NotificationListener extends NotificationListenerService {
         String s = eText.contains("매수") ? " 주식 삼, 시세포착 ": "";
         logBeepThenSpeak(packageNickName, eWho + "_로 연락옴. " + s+ eText);
         append2App("/_"+ packageNickName + ".txt", packageNickName, eWho, eText);
-        updateNotification("[NH]"+eText);
+        updateNotification("["+eGroup+":"+eWho+"]"+eText);
     }
 
     private void sayTitleText() {
@@ -294,14 +305,6 @@ public class NotificationListener extends NotificationListenerService {
             }
         }
         return false;
-    }
-
-    private int getAlertIndex(String text) {
-        for (int idx = 0; idx < KakaoAGroupWho.length; idx++) {
-            if (text.contains(KakaoAGroupWho[idx]))
-                return idx;
-        }
-        return -1;
     }
 
 //    private void logThenSpeech(String logFile, String text, Integer... txtLen) {

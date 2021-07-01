@@ -22,7 +22,6 @@ import java.util.Arrays;
 
 import static com.urrecliner.saynotitext.Vars.nowFileName;
 import static com.urrecliner.saynotitext.Vars.alertLines;
-import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.tableDirectory;
 import static com.urrecliner.saynotitext.Vars.utils;
 
@@ -195,7 +194,7 @@ public class EditActivity extends AppCompatActivity {
                 writeTextFile((isPackageTable) ? sortPackage(s) : sortText(s));
             }
             Toast.makeText(getApplicationContext(), "Table Saved", Toast.LENGTH_SHORT).show();
-            readOptionTables.read();
+            new ReadOptionTables().read();
             finish();
         } else if (item.getItemId() == R.id.action_rotate) {
             isRotate = !isRotate;

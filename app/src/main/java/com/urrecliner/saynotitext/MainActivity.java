@@ -23,7 +23,6 @@ import static com.urrecliner.saynotitext.Vars.mActivity;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.nowFileName;
 import static com.urrecliner.saynotitext.Vars.oldMessage;
-import static com.urrecliner.saynotitext.Vars.readOptionTables;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.tvOldMessage;
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         tvOldMessage.setText(oldMessage);
         tvOldMessage.setMovementMethod(new ScrollingMovementMethod());
 
-        prepareTable();
+        new ReadOptionTables().read();
         prepare_Speech();
 
         new Timer().schedule(new TimerTask() {
@@ -93,16 +92,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void prepareTable() {
-        Toast.makeText(getApplicationContext(),"loading tables",Toast.LENGTH_SHORT).show();
-        readOptionTables = new ReadOptionTables();
-        readOptionTables.read();
-    }
-
     String[] editTables = { "textIgnores", "kakaoIgnores",
-                            "kakaoPersons", "kakaoAlerts",
-                            "packageIgnores","packageTables",
-                            "smsIgnores", "systemIgnores"};
+                            "systemIgnores","packageIgnores",
+                            "smsIgnores","packageTables" ,
+                            "kakaoAlerts",};
     public void edit_table(View v) {
         int tag = Integer.parseInt(v.getTag().toString());
         nowFileName = editTables[tag];

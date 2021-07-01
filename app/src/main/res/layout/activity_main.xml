@@ -48,7 +48,7 @@
             android:id="@+id/btn_kakaoIgnores"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="#C0C0C0"
+            android:background="#B8B8B8"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
@@ -67,9 +67,24 @@
             android:clickable="true"
             android:tag="2"
             android:onClick="edit_table"
-            android:id="@+id/btn_kakaoPersons"
+            android:id="@+id/btn_systemIgnores"
             android:layout_width="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
+            android:background="#C0C0C0"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="16dp"
+            android:textSize="@dimen/table_font_size"
+            android:text="System Ignores" />
+        <TextView
+            android:clickable="true"
+            android:tag="3"
+            android:onClick="edit_table"
+            android:id="@+id/btn_packageIgnores"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:background="#C8C8C8"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
@@ -77,22 +92,7 @@
             android:gravity="center"
             android:padding="16dp"
             android:textSize="@dimen/table_font_size"
-            android:text="Kakao Persons" />
-        <TextView
-            android:clickable="true"
-            android:tag="3"
-            android:onClick="edit_table"
-            android:id="@+id/btn_kakaoAlert"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:background="#D0D0D0"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:padding="16dp"
-            android:textSize="@dimen/table_font_size"
-            android:text="Kakao Msg Alert" />
+            android:text="Package Ignores" />
     </LinearLayout>
 
     <LinearLayout
@@ -104,17 +104,17 @@
             android:clickable="true"
             android:tag="4"
             android:onClick="edit_table"
-            android:id="@+id/btn_packageIgnores"
+            android:id="@+id/btn_smsIgnores"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="#D8D8D8"
+            android:background="#D0D0D0"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
             android:padding="16dp"
             android:textSize="@dimen/table_font_size"
-            android:text="Package Ignores" />
+            android:text="SMS Ignores" />
         <TextView
             android:clickable="true"
             android:tag="5"
@@ -122,7 +122,7 @@
             android:id="@+id/btn_packageTables"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="#E0E0E0"
+            android:background="#D8D8D8"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
@@ -141,32 +141,17 @@
             android:clickable="true"
             android:tag="6"
             android:onClick="edit_table"
-            android:id="@+id/btn_smsIgnores"
+            android:id="@+id/btn_kakaoAlert"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="#EAEAEA"
+            android:background="#E0E0E0"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:gravity="center"
             android:padding="16dp"
             android:textSize="@dimen/table_font_size"
-            android:text="SMS Ignores" />
-        <TextView
-            android:clickable="true"
-            android:tag="7"
-            android:onClick="edit_table"
-            android:id="@+id/btn_systemIgnores"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:background="#F0F0F0"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:padding="16dp"
-            android:textSize="@dimen/table_font_size"
-            android:text="System Ignores" />
+            android:text="Kakao Msg Alert" />
     </LinearLayout>
 
 </LinearLayout>
