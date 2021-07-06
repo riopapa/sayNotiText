@@ -15,25 +15,24 @@ public class PhoneReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        String stateStr, number;
+        String phoneState, number;
         if (utils == null)
             utils = new Utils();
         try {
-            stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
+            phoneState = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
             number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
         } catch (Exception e) {
-            stateStr = "STATE Error";
-            number = null;
+            return;
         }
-        utils.log("^phone^",  " stateStr=" + stateStr + " number=" + number);
         if (number != null) {
-            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+            utils.log("^phone^",  " stateStr=" + phoneState + " number=" + number);
+            if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 isPhoneBusy = false;
                 Toast.makeText(mContext, "\nIDLE\n" + number + "\nIDLE", Toast.LENGTH_LONG).show();
-            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+            } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                 isPhoneBusy = true;
                 Toast.makeText(mContext, "\nOFFHOOK\n" + number + "\nOFFHOOK\n", Toast.LENGTH_LONG).show();
-            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+            } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 isPhoneBusy = true;
                 Toast.makeText(mContext, "\nRING\n" + number + "\nRING\n", Toast.LENGTH_LONG).show();
             }

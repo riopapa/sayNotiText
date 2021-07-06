@@ -225,10 +225,10 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void sayNHStock() {
-        String s = eText.contains("매수") ? " 주식 삼, 시세포착 ": "";
+        String s = eText.contains("매수") ? " 시세포착 ": "";
         logBeepThenSpeak(packageNickName, eWho + "_로 연락옴. " + s+ eText);
         append2App("/_"+ packageNickName + ".txt", packageNickName, eWho, eText);
-        updateNotification("["+eGroup+":"+eWho+"]"+eText);
+        updateNotification("[NH:"+eWho+"]"+eText);
     }
 
     private void sayTitleText() {

@@ -8,6 +8,7 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Environment;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 class Vars {
     static File packageDirectory = new File(Environment.getExternalStorageDirectory(), "_SayNoti");
-    static File tableDirectory = new File(Environment.getExternalStorageDirectory(),"download/_sayNoti");
+    static File tableDirectory = new File(Environment.getExternalStorageDirectory(),"download/_sayNotiTable");
     static String[] packageIgnores = null;  // ignore some package messages
     static String[] packageTypes = null;    // tt: text with title, to: text only, sm: sms ...
     static String[] packageNickNames = null;
@@ -41,6 +42,7 @@ class Vars {
     static Context mContext = null;
     static Activity mActivity = null;
     static TextView tvOldMessage;
+    static ScrollView tvOldScroll;
     static String oldMessage = "";
 
     static AudioManager mAudioManager = null;

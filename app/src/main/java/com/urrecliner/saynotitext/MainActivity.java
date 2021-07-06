@@ -26,6 +26,7 @@ import static com.urrecliner.saynotitext.Vars.oldMessage;
 import static com.urrecliner.saynotitext.Vars.sharePrefer;
 import static com.urrecliner.saynotitext.Vars.text2Speech;
 import static com.urrecliner.saynotitext.Vars.tvOldMessage;
+import static com.urrecliner.saynotitext.Vars.tvOldScroll;
 import static com.urrecliner.saynotitext.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         tvOldMessage = findViewById(R.id.oldMessage);
         tvOldMessage.setText(oldMessage);
         tvOldMessage.setMovementMethod(new ScrollingMovementMethod());
+        tvOldScroll = findViewById(R.id.oldScroll);
 
         new ReadOptionTables().read();
         prepare_Speech();
@@ -77,6 +79,15 @@ public class MainActivity extends AppCompatActivity {
                 startService(updateIntent);
             }
         }, 100);
+
+        tvOldMessage.post(() -> {
+            int vTop = tvOldMessage.getTop();
+            int vBottom = tvOldMessage.getBottom();
+            int sHeight = tvOldScroll.getBottom();
+            tvOldScroll.smoothScrollTo(((vTop + vBottom - sHeight) * 3 / 4), 0);
+//            tvOldMessage.scrollTo(0, tvOldMessage.getBottom());
+//            tvOldMessage.scrollTo(0, tvOldMessage.getBottom()/2);
+        });
     }
 
     private void prepare_Speech() {
