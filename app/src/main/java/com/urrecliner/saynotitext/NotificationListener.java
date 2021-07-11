@@ -22,14 +22,14 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
+import static com.urrecliner.saynotitext.Vars.kTalkAGroupWho;
 import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
-import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
-import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
-import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
-import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.saynotitext.Vars.kakaoSaved;
-import static com.urrecliner.saynotitext.Vars.kakaoTalk;
+import static com.urrecliner.saynotitext.Vars.kTalkAGroup;
+import static com.urrecliner.saynotitext.Vars.kTalkAKey1;
+import static com.urrecliner.saynotitext.Vars.kTalkAKey2;
+import static com.urrecliner.saynotitext.Vars.kTalkIgnores;
+import static com.urrecliner.saynotitext.Vars.kTalkSaved;
+import static com.urrecliner.saynotitext.Vars.kTalkSay;
 import static com.urrecliner.saynotitext.Vars.mActivity;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.oldMessage;
@@ -49,7 +49,7 @@ public class NotificationListener extends NotificationListenerService {
 
     final String TT_TITLE_TEXT = "tt";
     final String SM_SMS = "sms";
-    final String KK_KAKAO = "kk";
+    final String KK_TALK = "kk";
     final String AN_ANDROID = "an";
     final String NAH_MOO = "nh";
     final String TO_TEXT_ONLY = "to";
@@ -124,7 +124,7 @@ public class NotificationListener extends NotificationListenerService {
         packageType = getPackageType(packageFullName);
         packageNickName = getPackageNickName(packageFullName);
         switch (packageType) {
-            case KK_KAKAO :
+            case KK_TALK:
                 sayKaTalk();
                 break;
             case SM_SMS :
@@ -155,7 +155,7 @@ public class NotificationListener extends NotificationListenerService {
     private void sayKaTalk() {
         if (eText == null)
             return;
-        if (isInTable(eWho, kakaoIgnores))
+        if (isInTable(eWho, kTalkIgnores))
             return;
         if (eGroup == null) {
             logBeepThenSpeak(eWho + "_카톡", "카톡 [" + eWho + "] 님이." + eText);
@@ -169,20 +169,20 @@ public class NotificationListener extends NotificationListenerService {
         if (eText.equals(savedText))
             return;
         utils.log(eGroup+";"+eWho, eText);
-        if (isInTable(eGroup, kakaoIgnores))
+        if (isInTable(eGroup, kTalkIgnores))
             return;
 
-        if (isInTable(eGroup, kakaoAGroup)) {   // 특정 단톡방
+        if (isInTable(eGroup, kTalkAGroup)) {   // 특정 단톡방
                 int aIdx = getAlertIndex(eGroup + eWho, 0);
                 if (aIdx != -1) { // stock open chat
-                    if (eText.equals(kakaoSaved[aIdx])) // 같은 소리 계속 하는 건 빼자
+                    if (eText.equals(kTalkSaved[aIdx])) // 같은 소리 계속 하는 건 빼자
                         return;
-                    if (eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx])) {
+                    if (eText.contains(kTalkAKey1[aIdx]) && eText.contains(kTalkAKey2[aIdx])) {
                         sayStockAlert(aIdx);
                     } else {
-                       while (++aIdx < KakaoAGroupWho.length) { // 한사람이 여러 키워드를 말할 수도 있어서 로직 추가
+                       while (++aIdx < kTalkAGroupWho.length) { // 한사람이 여러 키워드를 말할 수도 있어서 로직 추가
                            aIdx = getAlertIndex(eGroup + eWho, aIdx);
-                           if (aIdx >= 0 && eText.contains(kakaoAKey1[aIdx]) && eText.contains(kakaoAKey2[aIdx]))
+                           if (aIdx >= 0 && eText.contains(kTalkAKey1[aIdx]) && eText.contains(kTalkAKey2[aIdx]))
                                sayStockAlert(aIdx);
                            else
                                break;
@@ -195,8 +195,8 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private int getAlertIndex(String text, int sIdx) {  // sIdx is used for same person with diff keys
-        for (int idx = sIdx; idx < KakaoAGroupWho.length; idx++) {
-            int compared= text.compareTo(KakaoAGroupWho[idx]);
+        for (int idx = sIdx; idx < kTalkAGroupWho.length; idx++) {
+            int compared= text.compareTo(kTalkAGroupWho[idx]);
             if (compared == 0)
                 return idx;
             if (compared < 0)
@@ -208,10 +208,10 @@ public class NotificationListener extends NotificationListenerService {
     private void sayStockAlert(int aIdx) {
         s = (eText.length()>110) ? eText.substring(0, 109): eText;
         append2App("/_stocks/"+ eGroup + ".txt",eGroup, eWho, s);
-        kakaoSaved[aIdx] = eText;
-        if (speakOnOff || kakaoTalk[aIdx].length() > 1) {
-            s  = kakaoTalk[aIdx]+ "[" + eGroup + " " + kakaoTalk[aIdx]+ " " +
-                    eWho + " 님이. " + kakaoTalk[aIdx]+ " "+eText;
+        kTalkSaved[aIdx] = eText;
+        if (speakOnOff || kTalkSay[aIdx].length() > 1) {
+            s  = kTalkSay[aIdx]+ "[" + eGroup + " " + kTalkSay[aIdx]+ " " +
+                    eWho + " 님이. " + kTalkSay[aIdx]+ " "+eText;
             beepNSpeak(s, 45,"");
             updateNotification("["+eGroup+":"+eWho+"]"+eText);
         }

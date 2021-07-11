@@ -37,7 +37,7 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        isAlertFile = nowFileName.equals("kakaoAlerts");
+        isAlertFile = nowFileName.equals("kTalkAlerts");
 //        if (isAlertFile)
 //            isRotate = true;
 //        if (nowFileName.equals("packageTables"))

@@ -51,7 +51,7 @@
             android:clickable="true"
             android:tag="1"
             android:onClick="edit_table"
-            android:id="@+id/btn_kakaoIgnores"
+            android:id="@+id/btn_kTalkIgnores"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:background="#B8B8B8"
@@ -61,7 +61,7 @@
             android:gravity="center"
             android:padding="16dp"
             android:textSize="@dimen/table_font_size"
-            android:text="Kakao  Ignores" />
+            android:text="KTalk  Ignores" />
     </LinearLayout>
 
     <LinearLayout
@@ -147,7 +147,7 @@
             android:clickable="true"
             android:tag="6"
             android:onClick="edit_table"
-            android:id="@+id/btn_kakaoAlert"
+            android:id="@+id/btn_kAlert"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:background="#E0E0E0"
@@ -157,7 +157,7 @@
             android:gravity="center"
             android:padding="16dp"
             android:textSize="@dimen/table_font_size"
-            android:text="Kakao Msg Alert" />
+            android:text="KTalk Msg Alert" />
     </LinearLayout>
 
 </LinearLayout>

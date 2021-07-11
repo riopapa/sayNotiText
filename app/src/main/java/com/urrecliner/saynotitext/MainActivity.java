@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             int vTop = tvOldMessage.getTop();
             int vBottom = tvOldMessage.getBottom();
             int sHeight = tvOldScroll.getBottom();
-            tvOldScroll.smoothScrollTo(((vTop + vBottom - sHeight) * 3 / 4), 0);
+            tvOldScroll.smoothScrollTo((vTop + vBottom - sHeight), 0);
 //            tvOldMessage.scrollTo(0, tvOldMessage.getBottom());
 //            tvOldMessage.scrollTo(0, tvOldMessage.getBottom()/2);
         });
@@ -103,10 +103,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    String[] editTables = { "textIgnores", "kakaoIgnores",
+    String[] editTables = { "textIgnores", "kTalkIgnores",
                             "systemIgnores","packageIgnores",
                             "smsIgnores","packageTables" ,
-                            "kakaoAlerts",};
+                            "kTalkAlerts",};
     public void edit_table(View v) {
         int tag = Integer.parseInt(v.getTag().toString());
         nowFileName = editTables[tag];

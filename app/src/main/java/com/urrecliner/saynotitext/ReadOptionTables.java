@@ -3,17 +3,16 @@ package com.urrecliner.saynotitext;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.Arrays;
 
-import static com.urrecliner.saynotitext.Vars.KakaoAGroupWho;
-import static com.urrecliner.saynotitext.Vars.kakaoAGroup;
-import static com.urrecliner.saynotitext.Vars.kakaoAKey2;
-import static com.urrecliner.saynotitext.Vars.kakaoAWho;
-import static com.urrecliner.saynotitext.Vars.kakaoAKey1;
-import static com.urrecliner.saynotitext.Vars.kakaoAlerts;
-import static com.urrecliner.saynotitext.Vars.kakaoIgnores;
-import static com.urrecliner.saynotitext.Vars.kakaoSaved;
-import static com.urrecliner.saynotitext.Vars.kakaoTalk;
+import static com.urrecliner.saynotitext.Vars.kTalkAGroupWho;
+import static com.urrecliner.saynotitext.Vars.kTalkAGroup;
+import static com.urrecliner.saynotitext.Vars.kTalkAKey2;
+import static com.urrecliner.saynotitext.Vars.kTalkAWho;
+import static com.urrecliner.saynotitext.Vars.kTalkAKey1;
+import static com.urrecliner.saynotitext.Vars.kTalkAlerts;
+import static com.urrecliner.saynotitext.Vars.kTalkIgnores;
+import static com.urrecliner.saynotitext.Vars.kTalkSaved;
+import static com.urrecliner.saynotitext.Vars.kTalkSay;
 import static com.urrecliner.saynotitext.Vars.mContext;
 import static com.urrecliner.saynotitext.Vars.packageIgnores;
 import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
@@ -48,34 +47,33 @@ class ReadOptionTables {
         }
 
         packageIgnores =  readOptionFile("packageIgnores");
-        kakaoIgnores =  readOptionFile("kakaoIgnores");
-        kakaoAlerts =  readOptionFile("kakaoAlerts");
+        kTalkIgnores =  readOptionFile("kTalkIgnores");
+        kTalkAlerts =  readOptionFile("kTalkAlerts");
         smsIgnores =  readOptionFile("smsIgnores");
         systemIgnores =  readOptionFile("systemIgnores");
         textIgnores =  readOptionFile("textIgnores");
 
         // 카카오 단톡방에서 특별히 얘기 되는 자만
 
-        kakaoAGroup = new String[kakaoAlerts.length];   // 단톡방 명
-        kakaoAWho = new String[kakaoAlerts.length];   // 누가
-        kakaoAKey1 = new String[kakaoAlerts.length];   // 인식 문자 1
-        kakaoAKey2 = new String[kakaoAlerts.length];   // 인식 문자 2
-        KakaoAGroupWho = new String[kakaoAlerts.length];   // 인식 문자
-        kakaoTalk = new String[kakaoAlerts.length];   // 무조건 speech
-        kakaoSaved = new String[kakaoAlerts.length];   // 무조건 speech
-        for (int idx = 0; idx < kakaoAlerts.length; idx++) {
-            String []strings = kakaoAlerts[idx].split("\\^");
+        kTalkAGroup = new String[kTalkAlerts.length];   // 단톡방 명
+        kTalkAWho = new String[kTalkAlerts.length];   // 누가
+        kTalkAKey1 = new String[kTalkAlerts.length];   // 인식 문자 1
+        kTalkAKey2 = new String[kTalkAlerts.length];   // 인식 문자 2
+        kTalkAGroupWho = new String[kTalkAlerts.length];   // 인식 문자
+        kTalkSay = new String[kTalkAlerts.length];   // 무조건 speech
+        kTalkSaved = new String[kTalkAlerts.length];   // 무조건 speech
+        for (int idx = 0; idx < kTalkAlerts.length; idx++) {
+            String []strings = kTalkAlerts[idx].split("\\^");
             try {
-                kakaoAGroup[idx] = strings[0].trim();
-                kakaoAWho[idx] = strings[1].trim();
-                kakaoAKey1[idx] = strings[2].trim();
-                kakaoAKey2[idx] = strings[3].trim();
-                kakaoTalk[idx] = (strings.length > 4)? strings[4].trim():""; // if  one more +a sign then true;
-                KakaoAGroupWho[idx] = kakaoAGroup[idx] + kakaoAWho[idx];
-                kakaoSaved[idx] = "";
-//                utils.log("array "+idx,kakaoAGroup[idx]+" "+kakaoAWho[idx]+" - "+kakaoAKey1[idx]+" - "+kakaoAKey2[idx]+" "+KakaoAGroupWho[idx]);
+                kTalkAGroup[idx] = strings[0].trim();
+                kTalkAWho[idx] = strings[1].trim();
+                kTalkAKey1[idx] = strings[2].trim();
+                kTalkAKey2[idx] = strings[3].trim();
+                kTalkSay[idx] = (strings.length > 4)? strings[4].trim():""; // if  one more +a sign then true;
+                kTalkAGroupWho[idx] = kTalkAGroup[idx] + kTalkAWho[idx];
+                kTalkSaved[idx] = "";
             } catch (Exception e) {
-                Toast.makeText(mContext, "Alert Table Error on line "+(idx+1)+" > "+kakaoAlerts[idx],Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Alert Table Error on line "+(idx+1)+" > "+ kTalkAlerts[idx],Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -24,8 +24,8 @@
 
     |text file| purpose|
     |---|---|
-    |kakaoIgnores| chatting group names to be ignored  |
-    |kakaoPersons| chatting persons to be ignored |
+    |kTalkIgnores| chatting group names to be ignored  |
+    |kTalkPersons| chatting persons to be ignored |
     | packageIgnores | packageNames to be ignored |
     |packageTables|convert packageTables<br>(refer next pharagraph)|
     |smsIgnores| phone numbers to be ignored |
@@ -40,7 +40,7 @@
     
 |type| keyword<br>examples | real application name| remarks|
 | --- | --- | --- |---|
-| kk | kakaoTalk| kakao.talk|kakao is very special |
+| kk | kTalkTalk| kTalk.talk|kTalk is very special |
 | tt | telegram| telegram|text with title |
 | tt | SC Bank| danb.scbankapp | |
 | sm | sms text| android.messaging | SMS, LMS|
@@ -49,7 +49,7 @@
 
 
 - multiple types can be specified in multiple lines
-- package based log file is created under */sdcard/sayNotiText/yy-mm-dd* folder, <br>for example <br>kakaoTalk.txt, telegram.txt<br>where file name is defined in keyword
+- package based log file is created under */sdcard/sayNotiText/yy-mm-dd* folder, <br>for example <br>kTalkTalk.txt, telegram.txt<br>where file name is defined in keyword
 - You may update above table by reviewing these log files especially when you install new application with notifications.
  
 <H3>Table Edit</H3>

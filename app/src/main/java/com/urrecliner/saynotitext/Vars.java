@@ -15,22 +15,22 @@ import java.io.File;
 import java.util.ArrayList;
 
 class Vars {
-    static File packageDirectory = new File(Environment.getExternalStorageDirectory(), "_SayNoti");
-    static File tableDirectory = new File(Environment.getExternalStorageDirectory(),"download/_sayNotiTable");
+    static File packageDirectory = new File(Environment.getExternalStorageDirectory(), "_SayMessage");
+    static File tableDirectory = new File(Environment.getExternalStorageDirectory(),"download/_sayMsgTable");
     static String[] packageIgnores = null;  // ignore some package messages
     static String[] packageTypes = null;    // tt: text with title, to: text only, sm: sms ...
     static String[] packageNickNames = null;
     static String[] packageIncludeNames = null;
     static String[] packageTables = null;
-    static String[] kakaoIgnores = null;
-    static String[] kakaoAlerts = null;
-    static String[] kakaoAGroup = null;
-    static String[] kakaoAWho = null;
-    static String[] KakaoAGroupWho = null;
-    static String[] kakaoAKey1 = null;
-    static String[] kakaoAKey2 = null;
-    static String[] kakaoTalk = null;
-    static String[] kakaoSaved = null;
+    static String[] kTalkIgnores = null;
+    static String[] kTalkAlerts = null;
+    static String[] kTalkAGroup = null;
+    static String[] kTalkAWho = null;
+    static String[] kTalkAGroupWho = null;
+    static String[] kTalkAKey1 = null;
+    static String[] kTalkAKey2 = null;
+    static String[] kTalkSay = null;
+    static String[] kTalkSaved = null;
     static String[] smsIgnores = null;
     static String[] systemIgnores = null;
     static String[] textIgnores = null;
