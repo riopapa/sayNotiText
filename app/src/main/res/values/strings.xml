@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Say Notification</string>
     <string name="number_only">[0-9]|-()|\s</string>
-    <string name="KorEng_only">[^\uAC00-\uD7A3xfe0-9a-zA-Z./,\\s</string>
     <string name="todo">TODO</string>
 
 </resources>
