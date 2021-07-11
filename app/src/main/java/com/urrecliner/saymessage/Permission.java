@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.app.Activity;
 import android.content.Context;

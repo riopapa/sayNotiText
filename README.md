@@ -1,5 +1,5 @@
 # Say notification text
-**sayNotiText** is the android application to speak notification text using google TTS
+**sayMessage** is the android application to speak notification text using google TTS
 
 - it supports table to convert application name into simple keyword
 - it supports table to ignore some cases
@@ -19,7 +19,7 @@
 
 <H3>Tables used</H3>
 
-- Location : /sdcard/sayNotiText/tables
+- Location : /sdcard/sayMessage/tables
 - Files in that directory
 
     |text file| purpose|
@@ -49,7 +49,7 @@
 
 
 - multiple types can be specified in multiple lines
-- package based log file is created under */sdcard/sayNotiText/yy-mm-dd* folder, <br>for example <br>kTalkTalk.txt, telegram.txt<br>where file name is defined in keyword
+- package based log file is created under */sdcard/sayMessage/yy-mm-dd* folder, <br>for example <br>kTalkTalk.txt, telegram.txt<br>where file name is defined in keyword
 - You may update above table by reviewing these log files especially when you install new application with notifications.
  
 <H3>Table Edit</H3>

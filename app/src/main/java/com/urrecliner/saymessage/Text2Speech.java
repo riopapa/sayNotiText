@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,12 +7,12 @@ import android.speech.tts.UtteranceProgressListener;
 
 import java.util.Locale;
 
-import static com.urrecliner.saynotitext.Vars.mAudioManager;
-import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.mFocusGain;
-import static com.urrecliner.saynotitext.Vars.ttsPitch;
-import static com.urrecliner.saynotitext.Vars.ttsSpeed;
-import static com.urrecliner.saynotitext.Vars.utils;
+import static com.urrecliner.saymessage.Vars.mAudioManager;
+import static com.urrecliner.saymessage.Vars.mContext;
+import static com.urrecliner.saymessage.Vars.mFocusGain;
+import static com.urrecliner.saymessage.Vars.ttsPitch;
+import static com.urrecliner.saymessage.Vars.ttsSpeed;
+import static com.urrecliner.saymessage.Vars.utils;
 
 class Text2Speech {
 

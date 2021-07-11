@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -19,15 +19,15 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.urrecliner.saynotitext.Vars.mActivity;
-import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.nowFileName;
-import static com.urrecliner.saynotitext.Vars.oldMessage;
-import static com.urrecliner.saynotitext.Vars.sharePrefer;
-import static com.urrecliner.saynotitext.Vars.text2Speech;
-import static com.urrecliner.saynotitext.Vars.tvOldMessage;
-import static com.urrecliner.saynotitext.Vars.tvOldScroll;
-import static com.urrecliner.saynotitext.Vars.utils;
+import static com.urrecliner.saymessage.Vars.mActivity;
+import static com.urrecliner.saymessage.Vars.mContext;
+import static com.urrecliner.saymessage.Vars.nowFileName;
+import static com.urrecliner.saymessage.Vars.oldMessage;
+import static com.urrecliner.saymessage.Vars.sharePrefer;
+import static com.urrecliner.saymessage.Vars.text2Speech;
+import static com.urrecliner.saymessage.Vars.tvOldMessage;
+import static com.urrecliner.saymessage.Vars.tvOldScroll;
+import static com.urrecliner.saymessage.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
 

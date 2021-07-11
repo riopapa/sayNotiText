@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
-import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
-import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.utils;
+import static com.urrecliner.saymessage.Vars.isPhoneBusy;
+import static com.urrecliner.saymessage.Vars.mContext;
+import static com.urrecliner.saymessage.Vars.utils;
 
 public class PhoneReceiver extends BroadcastReceiver {
 

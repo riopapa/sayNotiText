@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -27,10 +27,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.urrecliner.saynotitext.Vars.mAudioManager;
-import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.mFocusGain;
-import static com.urrecliner.saynotitext.Vars.packageDirectory;
+import static com.urrecliner.saymessage.Vars.mAudioManager;
+import static com.urrecliner.saymessage.Vars.mContext;
+import static com.urrecliner.saymessage.Vars.mFocusGain;
+import static com.urrecliner.saymessage.Vars.packageDirectory;
 
 class Utils {
 
@@ -98,7 +98,7 @@ class Utils {
         }
     }
 
-    //    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "sayNotiText");
+    //    private File packageDirectory = new File(Environment.getExternalStorageDirectory(), "saymessage");
     private File getTodayFolder() {
         if (!packageDirectory.exists()) {
             try {

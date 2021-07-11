@@ -1,29 +1,29 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.widget.Toast;
 
 import java.io.File;
 
-import static com.urrecliner.saynotitext.Vars.kTalkAGroupWho;
-import static com.urrecliner.saynotitext.Vars.kTalkAGroup;
-import static com.urrecliner.saynotitext.Vars.kTalkAKey2;
-import static com.urrecliner.saynotitext.Vars.kTalkAWho;
-import static com.urrecliner.saynotitext.Vars.kTalkAKey1;
-import static com.urrecliner.saynotitext.Vars.kTalkAlerts;
-import static com.urrecliner.saynotitext.Vars.kTalkIgnores;
-import static com.urrecliner.saynotitext.Vars.kTalkSaved;
-import static com.urrecliner.saynotitext.Vars.kTalkSay;
-import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.packageIgnores;
-import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
-import static com.urrecliner.saynotitext.Vars.packageNickNames;
-import static com.urrecliner.saynotitext.Vars.packageTables;
-import static com.urrecliner.saynotitext.Vars.packageTypes;
-import static com.urrecliner.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.saynotitext.Vars.systemIgnores;
-import static com.urrecliner.saynotitext.Vars.tableDirectory;
-import static com.urrecliner.saynotitext.Vars.textIgnores;
-import static com.urrecliner.saynotitext.Vars.utils;
+import static com.urrecliner.saymessage.Vars.kTalkAGroupWho;
+import static com.urrecliner.saymessage.Vars.kTalkAGroup;
+import static com.urrecliner.saymessage.Vars.kTalkAKey2;
+import static com.urrecliner.saymessage.Vars.kTalkAWho;
+import static com.urrecliner.saymessage.Vars.kTalkAKey1;
+import static com.urrecliner.saymessage.Vars.kTalkAlerts;
+import static com.urrecliner.saymessage.Vars.kTalkIgnores;
+import static com.urrecliner.saymessage.Vars.kTalkSaved;
+import static com.urrecliner.saymessage.Vars.kTalkSay;
+import static com.urrecliner.saymessage.Vars.mContext;
+import static com.urrecliner.saymessage.Vars.packageIgnores;
+import static com.urrecliner.saymessage.Vars.packageIncludeNames;
+import static com.urrecliner.saymessage.Vars.packageNickNames;
+import static com.urrecliner.saymessage.Vars.packageTables;
+import static com.urrecliner.saymessage.Vars.packageTypes;
+import static com.urrecliner.saymessage.Vars.smsIgnores;
+import static com.urrecliner.saymessage.Vars.systemIgnores;
+import static com.urrecliner.saymessage.Vars.tableDirectory;
+import static com.urrecliner.saymessage.Vars.textIgnores;
+import static com.urrecliner.saymessage.Vars.utils;
 
 class ReadOptionTables {
 

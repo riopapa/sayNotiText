@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.app.Notification;
 import android.content.Context;
@@ -22,28 +22,28 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.urrecliner.saynotitext.Vars.kTalkAGroupWho;
-import static com.urrecliner.saynotitext.Vars.isPhoneBusy;
-import static com.urrecliner.saynotitext.Vars.kTalkAGroup;
-import static com.urrecliner.saynotitext.Vars.kTalkAKey1;
-import static com.urrecliner.saynotitext.Vars.kTalkAKey2;
-import static com.urrecliner.saynotitext.Vars.kTalkIgnores;
-import static com.urrecliner.saynotitext.Vars.kTalkSaved;
-import static com.urrecliner.saynotitext.Vars.kTalkSay;
-import static com.urrecliner.saynotitext.Vars.mActivity;
-import static com.urrecliner.saynotitext.Vars.mContext;
-import static com.urrecliner.saynotitext.Vars.oldMessage;
-import static com.urrecliner.saynotitext.Vars.packageIgnores;
-import static com.urrecliner.saynotitext.Vars.packageIncludeNames;
-import static com.urrecliner.saynotitext.Vars.packageNickNames;
-import static com.urrecliner.saynotitext.Vars.packageTypes;
-import static com.urrecliner.saynotitext.Vars.smsIgnores;
-import static com.urrecliner.saynotitext.Vars.speakOnOff;
-import static com.urrecliner.saynotitext.Vars.systemIgnores;
-import static com.urrecliner.saynotitext.Vars.text2Speech;
-import static com.urrecliner.saynotitext.Vars.textIgnores;
-import static com.urrecliner.saynotitext.Vars.tvOldMessage;
-import static com.urrecliner.saynotitext.Vars.utils;
+import static com.urrecliner.saymessage.Vars.kTalkAGroupWho;
+import static com.urrecliner.saymessage.Vars.isPhoneBusy;
+import static com.urrecliner.saymessage.Vars.kTalkAGroup;
+import static com.urrecliner.saymessage.Vars.kTalkAKey1;
+import static com.urrecliner.saymessage.Vars.kTalkAKey2;
+import static com.urrecliner.saymessage.Vars.kTalkIgnores;
+import static com.urrecliner.saymessage.Vars.kTalkSaved;
+import static com.urrecliner.saymessage.Vars.kTalkSay;
+import static com.urrecliner.saymessage.Vars.mActivity;
+import static com.urrecliner.saymessage.Vars.mContext;
+import static com.urrecliner.saymessage.Vars.oldMessage;
+import static com.urrecliner.saymessage.Vars.packageIgnores;
+import static com.urrecliner.saymessage.Vars.packageIncludeNames;
+import static com.urrecliner.saymessage.Vars.packageNickNames;
+import static com.urrecliner.saymessage.Vars.packageTypes;
+import static com.urrecliner.saymessage.Vars.smsIgnores;
+import static com.urrecliner.saymessage.Vars.speakOnOff;
+import static com.urrecliner.saymessage.Vars.systemIgnores;
+import static com.urrecliner.saymessage.Vars.text2Speech;
+import static com.urrecliner.saymessage.Vars.textIgnores;
+import static com.urrecliner.saymessage.Vars.tvOldMessage;
+import static com.urrecliner.saymessage.Vars.utils;
 
 public class NotificationListener extends NotificationListenerService {
 

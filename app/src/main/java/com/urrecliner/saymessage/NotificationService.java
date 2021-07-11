@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -19,9 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.urrecliner.saynotitext.Vars.speakOnOff;
-import static com.urrecliner.saynotitext.Vars.text2Speech;
-import static com.urrecliner.saynotitext.Vars.utils;
+import static com.urrecliner.saymessage.Vars.speakOnOff;
+import static com.urrecliner.saymessage.Vars.text2Speech;
+import static com.urrecliner.saymessage.Vars.utils;
 
 public class NotificationService extends Service {
 

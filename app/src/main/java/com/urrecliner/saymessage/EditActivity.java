@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.urrecliner.saynotitext.Vars.nowFileName;
-import static com.urrecliner.saynotitext.Vars.alertLines;
-import static com.urrecliner.saynotitext.Vars.tableDirectory;
-import static com.urrecliner.saynotitext.Vars.utils;
+import static com.urrecliner.saymessage.Vars.nowFileName;
+import static com.urrecliner.saymessage.Vars.alertLines;
+import static com.urrecliner.saymessage.Vars.tableDirectory;
+import static com.urrecliner.saymessage.Vars.utils;
 
 public class EditActivity extends AppCompatActivity {
 

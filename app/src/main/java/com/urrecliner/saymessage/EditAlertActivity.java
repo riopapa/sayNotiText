@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,9 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.urrecliner.saynotitext.Vars.alertLines;
-import static com.urrecliner.saynotitext.Vars.linePos;
-import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saymessage.Vars.alertLines;
+import static com.urrecliner.saymessage.Vars.linePos;
+import static com.urrecliner.saymessage.Vars.mContext;
 
 public class EditAlertActivity extends AppCompatActivity {
 

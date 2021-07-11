@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 class AlertLine {
     private String group, who, key1, key2, talk, memo;

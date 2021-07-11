@@ -1,4 +1,4 @@
-package com.urrecliner.saynotitext;
+package com.urrecliner.saymessage;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,10 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.urrecliner.saynotitext.Vars.linePos;
-import static com.urrecliner.saynotitext.Vars.alertLines;
-import static com.urrecliner.saynotitext.Vars.mActivity;
-import static com.urrecliner.saynotitext.Vars.mContext;
+import static com.urrecliner.saymessage.Vars.linePos;
+import static com.urrecliner.saymessage.Vars.alertLines;
+import static com.urrecliner.saymessage.Vars.mActivity;
+import static com.urrecliner.saymessage.Vars.mContext;
 
 public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> {
 
