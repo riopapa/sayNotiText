@@ -1,4 +1,4 @@
-# Say notification text
+# SayMessage
 **sayMessage** is the android application to speak notification text using google TTS
 
 - it supports table to convert application name into simple keyword
